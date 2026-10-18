@@ -1,0 +1,22 @@
+{
+  "frozen_at": "2026-10-18T21:39:22.765279+00:00",
+  "code_sha256": {
+    "triage_desk/core.py": "c3d1e358972b84b0c17cc7123d397f68baa31d1c9c007c2c33c0223d34fe72ec",
+    "triage_desk/generation.py": "75182a2be10bf12cb7cb8e08056ef044cf99daec1f51cb458ef78924e0817ed1",
+    "triage_desk/workflow.py": "6f821bdc4a22dfb94db4b79fc81a15607a4f5fdbfcbb5cf6c646d9edc06147e9",
+    "triage_desk/retrieval_lab.py": "5bab9da45d08e5d8e9450d062ee0f6baf556a6cfac0e2cdeb9785bf03debd716",
+    "triage_desk/hosted_embeddings.py": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "triage_desk/knowledge_graph.py": "95abd9c3c14f2102d8dd216af1bd63617e5b9ba9cbdd24cc7f531924f1705fd7",
+    "evaluation/workflow.py": "4b516126e37d1415f1e9f5e3215618749e27115467753411a45ec975cb0c4360"
+  },
+  "dataset_sha256": "1beedd20ab48292707fe659d25bf9c51b41150aee2493e44166b557d17793b2f",
+  "dataset_role": "Regression evaluation: independently authored before the prior version, subsequently reviewed during development. Not an unseen or human-authored benchmark.",
+  "settings": {
+    "embedding_model": "Qwen/Qwen3-Embedding-8B",
+    "dimensions": 1024,
+    "synthesis_model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+    "support_model": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+    "rerank": true,
+    "graph": true
+  }
+}

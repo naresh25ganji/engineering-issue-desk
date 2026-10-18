@@ -1,0 +1,614 @@
+{
+  "schema_version": 1,
+  "corpus": "Official Streamlit documentation and selected public issue reports",
+  "started_at": "2026-10-18T01:25:49Z",
+  "completed_at": "2026-10-18T01:25:49Z",
+  "docs_repository": "https://github.com/streamlit/docs",
+  "docs_commit": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+  "streamlit_repository": "https://github.com/streamlit/streamlit",
+  "streamlit_commit": "4278206f51bde8026a20c7d91c4ef473fece6c69",
+  "api_reference_version": "1.66.0",
+  "source_count": 65,
+  "counts": {
+    "contributing": 2,
+    "documentation": 38,
+    "issue": 24,
+    "release": 1
+  },
+  "issue_allowlist": [
+    8534,
+    13627,
+    12911,
+    12607,
+    12146,
+    11396,
+    11115,
+    7216,
+    16388,
+    17119,
+    17215,
+    17175,
+    17210,
+    17011,
+    7079,
+    4164,
+    4664,
+    5336,
+    11528,
+    10615,
+    6920,
+    17031,
+    16341,
+    12800
+  ],
+  "issue_states": {
+    "open": 8,
+    "closed": 16
+  },
+  "selection": "Explicit curated allowlists in scripts/fetch_corpus.py; no live issue discovery in the app.",
+  "limits": {
+    "documentation_pages": 38,
+    "issue_reports": 24,
+    "issue_body_characters": 30000,
+    "release_excerpt_characters": 38000,
+    "max_response_bytes": 60000000,
+    "workers": 4,
+    "issue_comments": false,
+    "attachments": false,
+    "private_sources": false
+  },
+  "cleaning": [
+    "Preserve headings, tables and fenced code as text; remove MDX display wrappers.",
+    "Convert generated API docstring HTML to text without executing it.",
+    "Remove issue template checklist, author/profile metadata and @mentions.",
+    "Redact obvious email addresses, GitHub/OpenAI/AWS credentials and URL tokens."
+  ],
+  "limitations": [
+    "Issue bodies are unverified reports; no issue comments or fix commits are included.",
+    "Closed issue state does not establish a fix or affected-version range.",
+    "Documentation is commit-pinned; generated API references specifically cover the recorded version.",
+    "Corpus is a selected snapshot, not exhaustive coverage or a live bug database.",
+    "Redaction is conservative pattern matching and is not a guarantee of PII detection."
+  ],
+  "sources_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "sources": [
+    {
+      "source_id": "contributing-bug-report",
+      "kind": "contributing",
+      "url": "https://github.com/streamlit/streamlit/blob/4278206f51bde8026a20c7d91c4ef473fece6c69/.github/ISSUE_TEMPLATE/bug_report.yml",
+      "characters": 4601,
+      "text_sha256": "f033d8820e50ce9a86d4e8a06e69e516720938a63fe3992a2e5e0cfd3b3d8af3",
+      "raw_sha256": "9c77f185563c9f12dec0722749f3ae5a8875902a1d44c95f328124b19d84b230"
+    },
+    {
+      "source_id": "contributing-guide",
+      "kind": "contributing",
+      "url": "https://github.com/streamlit/streamlit/blob/4278206f51bde8026a20c7d91c4ef473fece6c69/CONTRIBUTING.md",
+      "characters": 27365,
+      "text_sha256": "a44dba787e7fc7005e3ef382fdc6cde7b1c536fc67905707aae83845e690ca11",
+      "raw_sha256": "37cfdb7bf9332e5172f140c97f6360383310900d1abd50bfc20d1c054071f7cd"
+    },
+    {
+      "source_id": "doc-api-cache-data",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/1.66.0/develop/api-reference/caching-and-state/st.cache_data",
+      "characters": 9025,
+      "text_sha256": "9e5ed8cb20046fdaefbf01c4b0fa9e9ffbc0eeed8d6082b33867a89a83d706d7",
+      "raw_sha256": "762b12ceb2e4c8922aaec6b6835717ac329bd93088a02a5d8670980cce48a962"
+    },
+    {
+      "source_id": "doc-api-cache-resource",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/1.66.0/develop/api-reference/caching-and-state/st.cache_resource",
+      "characters": 11099,
+      "text_sha256": "c3e118007fafd43c914f8932ab3f06e2207372e3013f7eb120d431752c191d97",
+      "raw_sha256": "762b12ceb2e4c8922aaec6b6835717ac329bd93088a02a5d8670980cce48a962"
+    },
+    {
+      "source_id": "doc-api-file-uploader",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/1.66.0/develop/api-reference/widgets/st.file_uploader",
+      "characters": 9747,
+      "text_sha256": "f6cee9d1037a3d5e4faeb40c82d1db30edb1bc0586c2104207d7dadf672b2c6c",
+      "raw_sha256": "762b12ceb2e4c8922aaec6b6835717ac329bd93088a02a5d8670980cce48a962"
+    },
+    {
+      "source_id": "doc-api-form",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/1.66.0/develop/api-reference/execution-flow/st.form",
+      "characters": 4567,
+      "text_sha256": "f5d1f03e330f9d76b387389cb4182640067d5d5319d345bc0b9aecb1a5f74ae4",
+      "raw_sha256": "762b12ceb2e4c8922aaec6b6835717ac329bd93088a02a5d8670980cce48a962"
+    },
+    {
+      "source_id": "doc-api-rerun",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/1.66.0/develop/api-reference/execution-flow/st.rerun",
+      "characters": 2143,
+      "text_sha256": "3557ea7735fcf7734c299e9b24d26476872f5fab2bbf2d0b03e140b619016fe8",
+      "raw_sha256": "762b12ceb2e4c8922aaec6b6835717ac329bd93088a02a5d8670980cce48a962"
+    },
+    {
+      "source_id": "doc-api-session-state",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+      "characters": 7980,
+      "text_sha256": "a54af965446499aacdd582f61d7324581e0369680a036a55d884943962537f0e",
+      "raw_sha256": "81bf1fc22b4e27403ab7e0d6be8377a6ace4767502cb9d972fd7411a90d8e4b9"
+    },
+    {
+      "source_id": "doc-apptest-examples",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/app-testing/examples",
+      "characters": 5401,
+      "text_sha256": "dfecbecac69473f6b860c1d7741d1d29c780a8d257f072d88c6ca71baa6a1a69",
+      "raw_sha256": "e7f3adf508e737af5c6d04470447e21ee659d986e03b9cac3fca0bbbacfecef6"
+    },
+    {
+      "source_id": "doc-apptest-start",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/app-testing/get-started",
+      "characters": 13497,
+      "text_sha256": "3f52d40b7f5f25f8bdc7fd36e6d82453db247cb38eaf5d51bd15e37a36fa2588",
+      "raw_sha256": "6c8ff30def9b652358fced6ce1b2e9233de89269c3ff8e3b46733d0a342c2371"
+    },
+    {
+      "source_id": "doc-architecture",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/architecture",
+      "characters": 5319,
+      "text_sha256": "fd112d92dbad1cfc49d2e83cb7e03ec9304ddac0e75d7aedb8359c42b94bbbdc",
+      "raw_sha256": "11bc2182fe6ba8f62180120fd9b80e16047fe0a2299f9d16ea9207f794f32e40"
+    },
+    {
+      "source_id": "doc-button-behavior",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/design/buttons",
+      "characters": 15401,
+      "text_sha256": "68d63139520fc77f2b1aeff25832d107ab15a18b6b53fac40d2e2a9c513ee348",
+      "raw_sha256": "15d45aab42a8c2fe018090e970942d6fb7bbf4aceaccf69b05e3f14d2e5fc23e"
+    },
+    {
+      "source_id": "doc-caching",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/caching",
+      "characters": 49115,
+      "text_sha256": "81d390e8ade4b0713bf062b32beb04ce1cf9f2db0fdaaf5e8fffecb720dbc383",
+      "raw_sha256": "036fd0e0c96fceb968fb1ca6c5c2d73371783a872404fa3ddbd545f6109d9f74"
+    },
+    {
+      "source_id": "doc-community-app-dependencies",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies",
+      "characters": 5587,
+      "text_sha256": "94608f20f88e96cd06c08f02af2db84b55dc7105e171de6df85bd84ad5984fe6",
+      "raw_sha256": "100c81b53a3953cae8faaca2f15e38853fc1c9a66440a1e7b850c298b39497bd"
+    },
+    {
+      "source_id": "doc-community-deploy",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy",
+      "characters": 4247,
+      "text_sha256": "c34b1cd9fbb29bd2cdd0bd443cd280ccd8eda2a0b80f424afa7573b9bc356d7c",
+      "raw_sha256": "2468f77a993bfc23b45994eb58220b2f8e73a871ef5612609637a1c8a86e194d"
+    },
+    {
+      "source_id": "doc-community-file-organization",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/file-organization",
+      "characters": 3881,
+      "text_sha256": "29c3d7ba07f8d33c3c701b6d48064f8e9ec68d1296762a3256600aef81fc1241",
+      "raw_sha256": "404ff34df3a8dddd68b9485e783fa73f025ef96c67be36bc9a5d9fd1945f4433"
+    },
+    {
+      "source_id": "doc-community-limitations",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/deploy/streamlit-community-cloud/status",
+      "characters": 5002,
+      "text_sha256": "8c0b4208bee23048a428aefc69a605744f2a374f3f330cb05e5719944af5abc7",
+      "raw_sha256": "1fd607368ef66e70f85b61f1df910bfd3cecc44eb92c9c17c0d51c13799b68c1"
+    },
+    {
+      "source_id": "doc-community-secrets",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/secrets-management",
+      "characters": 1997,
+      "text_sha256": "5220d144dde7ca6f6eb7f37f86f419733733f95ad8943536aa5ea57dfbe887f4",
+      "raw_sha256": "9bcaee69701c1ac17d1c80dc564a97567e7d2c18d00a4608ca1002ede797f4bc"
+    },
+    {
+      "source_id": "doc-config-options",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/configuration/options",
+      "characters": 2930,
+      "text_sha256": "66ea56688c4027d19d57654432c9b99deadb83fce21cf03702876dcc81278464",
+      "raw_sha256": "c716d976c4f87d9bcf0cae16215c2e1546a5905b43e453fbda28b93f05ef1648"
+    },
+    {
+      "source_id": "doc-deployment-dependencies",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/deploy/concepts/dependencies",
+      "characters": 3840,
+      "text_sha256": "6b651eca9008cc756a3cd021ecb96562f53fd9ada4cbc0745cf1de829c0e97d1",
+      "raw_sha256": "c0d7907c6d3aab4c1b6a0b22d68525511c6b2cf9f889e27e62dcaa1c070f8ab0"
+    },
+    {
+      "source_id": "doc-docker",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/deploy/tutorials/docker",
+      "characters": 11447,
+      "text_sha256": "85849c4335ff2a9e3858f841ae792e0e738e157bccae8e9252b964556c56ae92",
+      "raw_sha256": "16f8b818b3df7e140d0abd770e0d84cfc06bae4d88f608d1dc2d453d2cb01deb"
+    },
+    {
+      "source_id": "doc-forms",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/forms",
+      "characters": 8782,
+      "text_sha256": "b2ebf64f84f393ced7df8ea099b475852a9c5cb877c8a491ab67d50b2143c952",
+      "raw_sha256": "b9a551e99eabf739a177572a9d2f697b84d8352fcc28d81098e0c3a4e426be16"
+    },
+    {
+      "source_id": "doc-fragments",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/fragments",
+      "characters": 14601,
+      "text_sha256": "cf04bb556ad8fcfa6e21e6dc6f1d8260e2ffafd25cdffa9ae119cf3580bc9242",
+      "raw_sha256": "4263c20f23625cecb6e706da9d7482ef7713e60a2eaf71d86ee8cb41b83585cc"
+    },
+    {
+      "source_id": "doc-install-command-line",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/get-started/installation/command-line",
+      "characters": 4467,
+      "text_sha256": "1551964aa66e52a7ed8ca942057f2080969daf4be4074f3ee497bb72b655af01",
+      "raw_sha256": "c2f9f3c2b4cfaa9ae9a4202e83bc55c2d901d2f41c5861a428a6927239b6d4c7"
+    },
+    {
+      "source_id": "doc-install-requirements",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/get-started/installation",
+      "characters": 2743,
+      "text_sha256": "a20bfa832ca60fd661e9b4db3934942aa4394877261c7d3a14cdf121838859e4",
+      "raw_sha256": "5ca2b786c8036590a04ef7d7ea766c6453cb308c40527d3f08e36557655c1fd2"
+    },
+    {
+      "source_id": "doc-multipage-widgets",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/multipage-apps/widgets",
+      "characters": 4140,
+      "text_sha256": "975816285788084b62914e4ae0fa31801231bbb962e890646695882d9e94f4fa",
+      "raw_sha256": "d31f671a90c90d4a3132bb02fed843a58cdffa8fd85af8644f6dfdd27e081f00"
+    },
+    {
+      "source_id": "doc-multithreading",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/design/multithreading",
+      "characters": 7778,
+      "text_sha256": "24bad73c80ee1d9c198d7ff4c9712403429050b39290398030c5fb8d0add19f1",
+      "raw_sha256": "d08a2f81968308421c62d391619fbdfca31c0dfdd353a106d1696ef9723d3bbd"
+    },
+    {
+      "source_id": "doc-resource-limits",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/knowledge-base/deploy/resource-limits",
+      "characters": 1726,
+      "text_sha256": "bdb0eda56e591ca6533eb88bb0f6145cf5233670f0f51fe997a716f84b9274fe",
+      "raw_sha256": "e27cecd5733316917665cb37abf527a12d6fa9c0d416c8a5965b9829fc06fd59"
+    },
+    {
+      "source_id": "doc-run-app",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/run-your-app",
+      "characters": 1380,
+      "text_sha256": "1c472bec4d2d32ffe86a8e687d71d111b27a70bd925b258523f26d13eef7450c",
+      "raw_sha256": "d1aabd2a150a5200b9435e856f0c9a7695e7d37d4df2c0c115d5307605722c04"
+    },
+    {
+      "source_id": "doc-secrets-management",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/connections/secrets-management",
+      "characters": 4700,
+      "text_sha256": "afbfe1e7f9bdb7b9e7cbaba0fbec38460d8a48de5b38563f790e57b15813fb58",
+      "raw_sha256": "8f82763d5ca897f2f5fddad91133a20d6b95e59ed341c74dba12d8a7d52f17e9"
+    },
+    {
+      "source_id": "doc-security-reminders",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/connections/security-reminders",
+      "characters": 1803,
+      "text_sha256": "fd442bcf4225c0686c5f5e5be53fd550d82a7683b58e41cc07a661e576145fcb",
+      "raw_sha256": "325411a66fd052b36123494c435fed15a894af547bc2e6fd2928802cc3696cc4"
+    },
+    {
+      "source_id": "doc-serializable-session-state",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/knowledge-base/using-streamlit/serializable-session-state",
+      "characters": 2058,
+      "text_sha256": "9b5edb0375b8b04afce1139f11cfb4f81f03a8a71fcabbc98f91f1ba8712cbdc",
+      "raw_sha256": "8b5707084b5c5595dfd6c8d333ad5fc9c3033f4a591ec4744652e931ff5152b7"
+    },
+    {
+      "source_id": "doc-session-state",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/session-state",
+      "characters": 11795,
+      "text_sha256": "9e124c9d1109622b54ece03483bfe348ed9ec37f5feb09bfe01e0c13b1a223b4",
+      "raw_sha256": "8b004b429ff29ae446df72171e7f9adb0cc625715295d40c4d072fdcf1a86655"
+    },
+    {
+      "source_id": "doc-static-files",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/configuration/serving-static-files",
+      "characters": 2198,
+      "text_sha256": "8d727800fc623c0a568d23ae61811fc5ee473e0192d4b10b4f284fa9a8b07296",
+      "raw_sha256": "e222e335d5a62cbf447a3cbf7999b1c621b0826dcb1cec1c3f5c985d552eff74"
+    },
+    {
+      "source_id": "doc-upgrade-streamlit",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/knowledge-base/using-streamlit/how-upgrade-latest-version-streamlit",
+      "characters": 1842,
+      "text_sha256": "cf67fd575167458a5264f5c65c3af0e34b317e8e751bb7edb85d29b7c1563d22",
+      "raw_sha256": "3c35748c02eb735d866bc90decac71424c4e481c93a7ed59d00509547323957f"
+    },
+    {
+      "source_id": "doc-upload-filename",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/knowledge-base/using-streamlit/retrieve-filename-uploaded",
+      "characters": 928,
+      "text_sha256": "ea83ce5681013219e400c8bd50e3d9b48e1f6a9992d6febbcae05e6298dd4aac",
+      "raw_sha256": "2f8bc222a0048f718b7ac0521b653b51bbd418fce7779f2ce8cebacf83b7c8b3"
+    },
+    {
+      "source_id": "doc-upload-limit",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/knowledge-base/deploy/increase-file-uploader-limit-streamlit-cloud",
+      "characters": 1885,
+      "text_sha256": "d98064cd5a305fcc22dffc1bf0a052929f994b035ea5bb6d0935a79f06de00c7",
+      "raw_sha256": "02dddd2dc5655c237219e098b265c46fb8148497a64c8803027f0f4813dfda41"
+    },
+    {
+      "source_id": "doc-upload-storage",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/knowledge-base/using-streamlit/where-file-uploader-store-when-deleted",
+      "characters": 1119,
+      "text_sha256": "bf65b0770c16046c13cd8f092447569ddfff6ccbfbb656f7d0b9f93a3778ee4d",
+      "raw_sha256": "9237e8694550e0012890d58922f26fe2ab41505d7c54d1fbbac20ca8d3674fcd"
+    },
+    {
+      "source_id": "doc-widget-behavior",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/widget-behavior",
+      "characters": 22739,
+      "text_sha256": "eb66e875125935058286995f4786f3f7203916c7d7a7cb4f1155f2e2faa29d95",
+      "raw_sha256": "9a3ee98f51adb3fa6d6a533534f17e84c502b983e13a211fdc118769ff273d59"
+    },
+    {
+      "source_id": "doc-widget-state-faq",
+      "kind": "documentation",
+      "url": "https://docs.streamlit.io/knowledge-base/using-streamlit/widget-updating-session-state",
+      "characters": 2165,
+      "text_sha256": "47e27f4510c77db96cdc178bf91ad4d9d7dcbd43474bf866160d8e2b087320bb",
+      "raw_sha256": "d7d2a6eb5ea23e2a6a4ff20ab77db5a8a235c40f05a963f3732ec633cd3dc6c3"
+    },
+    {
+      "source_id": "issue-10615",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/10615",
+      "characters": 2456,
+      "text_sha256": "1f46db4adb7decbb994669342de5c3ff3d1ae4ce9f39448f524dd93dca00baa3",
+      "raw_sha256": "9f16feb5ef53eb960013eb945fa5d6da46cdc070d1aaf43ce95ce5f4889523c0"
+    },
+    {
+      "source_id": "issue-11115",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/11115",
+      "characters": 2135,
+      "text_sha256": "0a7540ce6612f749b5de486827e2d5cd083c754423b40286f446f11f2af8491f",
+      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+    },
+    {
+      "source_id": "issue-11396",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/11396",
+      "characters": 1804,
+      "text_sha256": "e15482d2b7f0c4b54ddd078769a5d1778cd8adccb2f87d4617239786f2dd1b57",
+      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+    },
+    {
+      "source_id": "issue-11528",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/11528",
+      "characters": 1679,
+      "text_sha256": "22eb7f45a24038ef5d155c7530baf9ed89bd1f3b8639f72659a7c6b0c13123f4",
+      "raw_sha256": "9f16feb5ef53eb960013eb945fa5d6da46cdc070d1aaf43ce95ce5f4889523c0"
+    },
+    {
+      "source_id": "issue-12146",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/12146",
+      "characters": 2286,
+      "text_sha256": "f10ef157fc67d73007f30ff6ab981c0af436f32f869c68fe83a71625c65d3128",
+      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+    },
+    {
+      "source_id": "issue-12607",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/12607",
+      "characters": 5151,
+      "text_sha256": "9d0c259782ddf38276f7bb03787b0be046311b68e5085b0a1c1bd899c0a3d3f6",
+      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+    },
+    {
+      "source_id": "issue-12800",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/12800",
+      "characters": 4523,
+      "text_sha256": "0451aacab1e0d7cb6fd8de6091fd2b096f0bf9b662a98263dc4208f1f7813c10",
+      "raw_sha256": "979a5814577593de8fd64d5b9e350e82ef764244ee2d0e3490f865160b5e7c46"
+    },
+    {
+      "source_id": "issue-12911",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/12911",
+      "characters": 899,
+      "text_sha256": "481a4366a1909e0989a37910d6d6f8ca387342da8c6186bf92fa78eaca65439e",
+      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+    },
+    {
+      "source_id": "issue-13627",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/13627",
+      "characters": 2041,
+      "text_sha256": "223d5c94734f7e97f16287bbb16a19699914b73a0f5d16efcb90ff78f1cb72c4",
+      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+    },
+    {
+      "source_id": "issue-16341",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/16341",
+      "characters": 1919,
+      "text_sha256": "8ded8f59a555f65b5beb9e46f3201af02c638dd3e9947fcb01950f1c5a3cff3c",
+      "raw_sha256": "979a5814577593de8fd64d5b9e350e82ef764244ee2d0e3490f865160b5e7c46"
+    },
+    {
+      "source_id": "issue-16388",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/16388",
+      "characters": 2219,
+      "text_sha256": "682ee03911ab7c6aad6b1575085e992a6022e4f6688f224752652e64d15a5dbb",
+      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+    },
+    {
+      "source_id": "issue-17011",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/17011",
+      "characters": 1959,
+      "text_sha256": "cebb9cca45e901b5c1013929c91338bca5cba5da6a81695a0a394863aee7d16c",
+      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+    },
+    {
+      "source_id": "issue-17031",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/17031",
+      "characters": 3526,
+      "text_sha256": "65fa72bc13a521d6f0efc8eba2226675d7e766c13d1cedf089be82aa4f412c51",
+      "raw_sha256": "979a5814577593de8fd64d5b9e350e82ef764244ee2d0e3490f865160b5e7c46"
+    },
+    {
+      "source_id": "issue-17119",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/17119",
+      "characters": 3295,
+      "text_sha256": "f1acad40c42d5dd8b89938c0753045d73d3db3364dfe5ed40d25c0f581d9c450",
+      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+    },
+    {
+      "source_id": "issue-17175",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/17175",
+      "characters": 2321,
+      "text_sha256": "2ef2ee055639652c1b6947bb736d5259265d2b8a2ebb8f98c3ce73aa36332bf0",
+      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+    },
+    {
+      "source_id": "issue-17210",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/17210",
+      "characters": 4475,
+      "text_sha256": "627ef0f9ffe5919704b21af6bad24c27106df781248334c1a7168395031f1385",
+      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+    },
+    {
+      "source_id": "issue-17215",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/17215",
+      "characters": 7116,
+      "text_sha256": "be7e97b88fb22303e0255bcbc2fcef3e7d0b64ef211f33e552c7e2f3ad9dddee",
+      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+    },
+    {
+      "source_id": "issue-4164",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/4164",
+      "characters": 3016,
+      "text_sha256": "97e034ce5a01881b0ee1f4c1b6937dee82a88999bc585593534417a6f5f74257",
+      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+    },
+    {
+      "source_id": "issue-4664",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/4664",
+      "characters": 966,
+      "text_sha256": "9ca38c083d03dec00c08f3c78e9205d1943af0d6adbd4f36fd567a5a8411f0d4",
+      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+    },
+    {
+      "source_id": "issue-5336",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/5336",
+      "characters": 1251,
+      "text_sha256": "0d1c3ed305877a5735a81c3ad721a839062996b54be08eb9e72f19babc71d18a",
+      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+    },
+    {
+      "source_id": "issue-6920",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/6920",
+      "characters": 1326,
+      "text_sha256": "096dd0d30c2168894d101d896a0918f2b57a950cf26566571c28ca113fddee51",
+      "raw_sha256": "9f16feb5ef53eb960013eb945fa5d6da46cdc070d1aaf43ce95ce5f4889523c0"
+    },
+    {
+      "source_id": "issue-7079",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/7079",
+      "characters": 2759,
+      "text_sha256": "73258ac6f1650ef0b062d0b9d04d3587ccb38db97826bb992418b05e3bff7660",
+      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+    },
+    {
+      "source_id": "issue-7216",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/7216",
+      "characters": 2347,
+      "text_sha256": "aa278ca136c9efb07b71a4af2b136b50d2f3395524a078e414f3fd068bbfbdba",
+      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+    },
+    {
+      "source_id": "issue-8534",
+      "kind": "issue",
+      "url": "https://github.com/streamlit/streamlit/issues/8534",
+      "characters": 1824,
+      "text_sha256": "89976014901def357f63e66ed3bcaa384f376267531a96a3a6cd2ea2a6fde267",
+      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+    },
+    {
+      "source_id": "release-notes-2026",
+      "kind": "release",
+      "url": "https://docs.streamlit.io/develop/quick-reference/release-notes/2026",
+      "characters": 30762,
+      "text_sha256": "e1c73445ed6233b44362bbf884f26ef226e90c7bad001cdfcee98f6ffe359a66",
+      "raw_sha256": "e784dcf3373e88b9b4bb062737cf9a26b4ad061633e03188566b559bb2649967"
+    }
+  ],
+  "licenses": [
+    {
+      "file": "ATTRIBUTION.md",
+      "sha256": "4fc9796ede0975d9967f4c7b0062ee22240584fb7384c3339fdf4d8d644854af"
+    },
+    {
+      "file": "docs-LICENSE.txt",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "file": "streamlit-LICENSE.txt",
+      "sha256": "c95bae1d1ce0235ecccd3560b772ec1efb97f348a79f0fbe0a634f0c2ccefe2c"
+    },
+    {
+      "file": "streamlit-NOTICES.txt",
+      "sha256": "01249c3fa050d1a2450513b610d2520c7b91739b370d50fcd2567019b9afdc15"
+    }
+  ]
+}

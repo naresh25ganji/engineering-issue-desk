@@ -1,0 +1,838 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-18T01:48:55.976165+00:00",
+  "review_kind": "AI review; no human review performed",
+  "reviewer": {
+    "identity": "Codex AI sub-agent",
+    "model_identifier": "Not exposed to this reviewer",
+    "independence": "Separate AI reviewer from the Nebius generation calls; reviewer previously authored the diagnostic questions, so this is not a blinded or held-out study.",
+    "human_review": false
+  },
+  "source_report_file": "/Users/nareshganji/repos/engineering-issue-desk/evaluation/nebius-results/raw-report.json",
+  "source_report_sha256": "f3c779f3e8f8f0e1ca22965e3e2c05a457122e4f8882d6504784235bac852ebb",
+  "corpus_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "dataset_sha256": "2cf023de47117bcd7fc02b45219937803185ed9493faaa51705960b8b79883aa",
+  "generator_identity": {
+    "requested_models": [
+      "Qwen/Qwen3-30B-A3B-Instruct-2507"
+    ],
+    "returned_models": [
+      "Qwen/Qwen3-30B-A3B-Instruct-2507"
+    ],
+    "endpoints": [
+      "https://api.tokenfactory.nebius.com/v1/chat/completions"
+    ],
+    "source": "Observed per-call metadata; no configured identity is substituted for an unreported provider response."
+  },
+  "method": [
+    "Read each accepted generated answer, its selected exact support quotes, the retrieved full passages, and expected_answer_checks. No provider calls or environment-file reads were made.",
+    "Faithfulness rates support in the full retrieved evidence, including qualification of public reports. Citation entailment and each claim boolean assess the selected support quotes, not mere URL or quote existence.",
+    "A compound claim is fully supported only when all substantive clauses follow from its selected quotes. A reasonable immediate inference is allowed; an omitted clause or source qualification is a gap.",
+    "Answer relevance rates whether the question is addressed and useful distinctions are covered. It is separate from factual grounding.",
+    "Only generated_claims are counted in the supported-claim fraction; the application-added version/scope disclaimer is not counted as an LLM claim.",
+    "The untouched manual_review fields in the source report remain unscored. AI annotations must be installed separately from human/manual review."
+  ],
+  "rubric_version": "assignment-ordinal-0-2-v1",
+  "claim_index_base": 0,
+  "ai_review_summary": {
+    "review_kind": "AI review; not a human assessment",
+    "reviewer": "Codex AI sub-agent (separate from the Nebius generator; no human review)",
+    "reviewed_generated_answers": 13,
+    "ai_reviewed_claims": 33,
+    "ai_supported_claims": 23,
+    "ai_unsupported_or_partially_supported_claims": 10,
+    "ai_supported_claim_fraction": 0.696969696969697,
+    "faithfulness_0_to_2": 1.6153846153846154,
+    "answer_relevance_0_to_2": 1.8461538461538463,
+    "citation_entailment_0_to_2": 1.4615384615384615,
+    "note": "AI judgments on 13 accepted answers and 33 claims from a small public diagnostic set. The claim-support fraction is an AI judgment, not accuracy. Ordinal means are not converted into percentages. One rejected synthesis and six non-model boundary responses are excluded. No human assessment or held-out generalization claim is made."
+  },
+  "annotations": [
+    {
+      "question_id": "D01",
+      "mode": "hybrid",
+      "answer_sha256": "cfb0c61a1cacf9c652c23e4accefa2ff83a605bfce966ef4bf1c0756996b9125",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 2,
+      "notes": "Both questions are answered. Selected spans support per-session persistence and connection-tied lifetime; isolation is a reasonable direct inference together with the per-user explanation.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "To preserve a counter across Streamlit reruns, use Session State by storing the counter value in st.session_state, which maintains the value between script reruns for each user session.",
+          "statement_sha256": "eb794c5704c03249e6268b388cd8b013e847f277955b0d91bc2897ee0ab1e961",
+          "citation_ids": [
+            "S1",
+            "S3"
+          ],
+          "selected_support_sha256": "811666fa0c9838b06788dec2b213d0301642b2a9d828b18bf5833f46c9095a77",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "Session State is not shared between user sessions; each browser tab or user connection has its own isolated session state that is reset when the tab is reloaded or the WebSocket connection is lost.",
+          "statement_sha256": "1918e6b4005fa838aaaaf94b03cdddb4e10f0995a66e38605b9e47b4030bf676",
+          "citation_ids": [
+            "S5"
+          ],
+          "selected_support_sha256": "ad7f1f29a80000496acce706098a64bbf92e0dabd8cc831a8da8372c8394dc20",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Describe state per user session across script reruns; do not claim global cross-user sharing.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Do not claim to inspect the user's current session or environment.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D02",
+      "mode": "hybrid",
+      "answer_sha256": "baa8b6e1701b0bfb2f1fbae4acbda7de99cbdc197b6e62b7b364ce90d2431ec9",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 1,
+      "notes": "Batching, keyboard submission, and submit-button constraints are grounded in retrieved material. One keyboard-submission condition is not established by that claim's selected quotes.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "Placing widgets inside a form prevents immediate script reruns when their values change, instead batching updates until the form is submitted.",
+          "statement_sha256": "a48c21ddfa8a237b0dd43c13fc313d6f5362f06947ec2aa4c86a56b868a415e0",
+          "citation_ids": [
+            "S1",
+            "S2"
+          ],
+          "selected_support_sha256": "bc74a584e198ad8ba5efadd733f7d58c119d392cf3a6e674687c5f5c25a8f480",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "A form can be submitted by pressing Enter in `st.number_input` or `st.text_input`, or Ctrl+Enter/Cmd+Enter in `st.text_area`, provided `enter_to_submit` is enabled.",
+          "statement_sha256": "414af93cf7be2fdce7bc036fba05b52815e6f5d08624fd65a88ad386eab4c0f7",
+          "citation_ids": [
+            "S1",
+            "S5"
+          ],
+          "selected_support_sha256": "77d79d73347edd9276a8f989d9d96472924a223f889f4906c0260544496a2150",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The selected S1/S5 quotes establish keyboard submission but do not establish the enter_to_submit condition. That option appears elsewhere in the retrieved API material."
+        },
+        {
+          "claim_index": 2,
+          "statement": "The only widget within a form that can have a callback is `st.form_submit_button`, and forms must contain at least one such button to be functional.",
+          "statement_sha256": "a520054624897475d1a94342a349d58c498809c52b8a496dc0b42110d8715a65",
+          "citation_ids": [
+            "S4"
+          ],
+          "selected_support_sha256": "87e4d958e6e356bee1bbcdb893ecbf7a2ac42653e49b8627c2f5b59eefe33e7f",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain batching changes until form submission.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Distinguish a submitted form from an ordinary widget-triggered rerun.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D03",
+      "mode": "hybrid",
+      "answer_sha256": "7d4b2ccc9dd05dccc073f83f4988012c533308468bedbdcc4b9a0cce4152d02d",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 1,
+      "notes": "The core data/resource distinction is useful. The copy-safety assertion overstates the evidence, and the expected thread-safety qualification for shared resources is missing.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "Use st.cache_data for dataframes because they are serializable and typically represent computed results that can be safely copied across function calls.",
+          "statement_sha256": "db2c82aa850b562eb24cc077792375702bf0ea70ccbea0af449d051ed6dbfe2e",
+          "citation_ids": [
+            "S1",
+            "S2"
+          ],
+          "selected_support_sha256": "17c626a62f2a563c0fa1e1c4ca0abd6b36827a5c49726f70e5d45e759f29531b",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "Use st.cache_resource for database connections because they are unserializable global resources that should be shared across app reruns without duplication and are not safe to copy.",
+          "statement_sha256": "e5d17b5970cbfa94723921793b5ed3858050d5ed7a6eebc86550cb6152041667",
+          "citation_ids": [
+            "S1",
+            "S2"
+          ],
+          "selected_support_sha256": "0f079497a4556cfd643bb6f0cb381c3418b9a966a017b1690cc72e1a9401d9ce",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The selected spans omit the unserializable explanation. Full retrieved S2 supplies it, but neither selected spans nor full S2 establishes that database connections are inherently not safe to copy; the source says they are shared without copying or duplication."
+        },
+        {
+          "claim_index": 2,
+          "statement": "st.cache_data returns copies of data, making it safe from mutations and race conditions, while st.cache_resource allows in-place mutations of shared resources like database connections.",
+          "statement_sha256": "27c39a648fbc5f37dadf16d9e5c2d803565fb17af3bc793e3a6b32fe2d6de793",
+          "citation_ids": [
+            "S2",
+            "S6"
+          ],
+          "selected_support_sha256": "917bc2aaff6930ddffc367680c8b8644bfe1a849cafea6f5ed2f2f113dc92e0d",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Distinguish serializable data with copies from shared cached resources.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Mention thread-safety where shared resources are relevant.",
+          "result": "not_met",
+          "notes": "No thread-safety qualification is given for resources shared across sessions."
+        }
+      ]
+    },
+    {
+      "question_id": "D04",
+      "mode": "hybrid",
+      "answer_sha256": "7b41e55c9e9d60acca85f7f4bb5e5350518b4c1dbe4f121144532f587a195382",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 1,
+      "notes": "Key and bound behavior is mostly supported. The no-key clause is absent from selected spans, and an issue report is promoted to unqualified framework behavior without establishing version evolution.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "A widget's identity is primarily determined by its key if provided; without a key, identity depends on parameters like label, options, and min/max values. Changing these parameters can reset the widget, even with a key, if they affect the widget's state validity, such as min_value or max_value in st.slider.",
+          "statement_sha256": "0c9058cae0097307ee9ac83f8ee18472b2921b242355225dde650e33df59113e",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "4a57c2bb9aae724c9c19a0dcd0d76cc53fbc5d5321550160977d158e028114bb",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The without-a-key identity rule is in the full S1 passage but is not included in either selected support span for this compound claim."
+        },
+        {
+          "claim_index": 1,
+          "statement": "Changing min_value or max_value on st.slider resets the widget even when a key is provided, because these values constrain valid input and can invalidate the current state, while changing default values does not reset a keyed widget.",
+          "statement_sha256": "0c4e06958259b3dc5c014777d14d2f2df9a5228aa02b3dabf72d31bf58f99f69",
+          "citation_ids": [
+            "S2"
+          ],
+          "selected_support_sha256": "39c29c0553b80cb7f39ac4f016ada4344da858dd87a98ef1d6066c2a304db6f0",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 2,
+          "statement": "Version-specific behavior must be checked because some widgets, like st.multiselect, are sensitive to option order when no key is used, and changes in parameters like type or accept_multiple_files in st.file_uploader reset the widget even with a key.",
+          "statement_sha256": "bd44a7a2287eb059dd9d4c8d149f5ba6426a653cf9c5b945b662bf8249d02972",
+          "citation_ids": [
+            "S3",
+            "S5"
+          ],
+          "selected_support_sha256": "e613a846c91debd71fe08e061187b5282a3b9f823a09189c1d05b9f1a6f5a192",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "S3 is an unverified public issue analysis, yet the statement presents its multiselect behavior as framework fact. The selected widget examples do not establish a version-history explanation."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Check the documented version-specific identity rules rather than assuming every label change resets a keyed widget.",
+          "result": "partial",
+          "notes": "The keyed-widget explanation is useful, but the claimed version rationale is not established and the issue example lacks attribution."
+        },
+        {
+          "check": "Ground any explanation of changing bounds and key behavior in the retrieved passage.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D05",
+      "mode": "hybrid",
+      "answer_sha256": "9bdcf7c36474cb22e29076d41d6fc844d5face5e67aa21bfb33c3f720de04a5f",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 2,
+      "notes": "Configuration methods, Community Cloud placement, and default/per-widget limits are supported. No claim promises that upload configuration removes hosting memory constraints.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "To increase the maximum file size accepted by st.file_uploader, configure the server.maxUploadSize option in a config.toml file, either globally or per-project, or use environment variables or command-line flags.",
+          "statement_sha256": "c631f7b3dd7dac2a0123090a357ff3f3856ce2d6c0d60d7a4b0ad8c9aa29f176",
+          "citation_ids": [
+            "S3"
+          ],
+          "selected_support_sha256": "d679acc7601f79718a095b9ac9010e573b1c3077f282462c2cd0c5893df65a38",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "For apps deployed to Streamlit Community Cloud, the recommended method is to upload a .streamlit/config.toml file with the server.maxUploadSize setting to the app's GitHub repository.",
+          "statement_sha256": "6d5e8fe26283120d16d8b419306a3bfcc52922c3d73e759c52b5f5812d751103",
+          "citation_ids": [
+            "S4"
+          ],
+          "selected_support_sha256": "4fbf0f6d00cead416234b140528f6bccc18f4829a7e51a84591293cb0f1ebabb",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 2,
+          "statement": "The default maximum file size for st.file_uploader is 200 MB, which can be overridden by setting max_upload_size in the st.file_uploader function or by configuring server.maxUploadSize.",
+          "statement_sha256": "28a8f484d75faa5c216cf229cf89275d6e696f63aa9c606fe873614d7ec97643",
+          "citation_ids": [
+            "S1",
+            "S2"
+          ],
+          "selected_support_sha256": "35368bf8493226d53347cf280a64f4ba2bcf31fc71051042268032ee7acba2a9",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Identify server.maxUploadSize and the documented configuration context.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Do not guarantee that changing upload limits removes hosting memory limits.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D06",
+      "mode": "hybrid",
+      "answer_sha256": "5e2544b2469fcac7c7d9a109caf7b8ae02d16baa68da9a3978d2ef3f8ffaeeb6",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 1,
+      "notes": "RAM storage and documented retention conditions are addressed. A reporter exception lacks its issue citation, and mandatory caching overstates the source's optional suggestion.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "st.file_uploader stores uploaded files in RAM, not on disk, and the data is retained in memory until the Streamlit app re-runs from top to bottom, which occurs on each widget interaction.",
+          "statement_sha256": "dbb83572ac0e43cfd7c90814d7424e02dbf4cd7896d95fe192b40d922433a13c",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "7d27ef498b0d8a7a4a71dc8c1de002256362d716dc386621357869635ee0b70c",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "The file data in RAM are removed when the user uploads another file, clears the file uploader, or closes the browser tab, though one issue report indicates that memory may not be freed immediately in some cases.",
+          "statement_sha256": "8f70317fc9eda65c6f1a75d2a62144e47524b1f7d7a5b400ba34f6dd10a58b69",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "e1dd8092b0b2b529db4c9e9a3f32829beb527fc66954b517d3a0f1b0597010e8",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The statement adds an issue-report exception but selects only documentation S1. Retrieved issue S2 supports the reported exception, but it is not a selected citation for this claim."
+        },
+        {
+          "claim_index": 2,
+          "statement": "If the uploaded file needs to persist across app re-runs, it must be explicitly cached using Streamlit's caching mechanism.",
+          "statement_sha256": "51057df0cdcf92c0fce90ce0ea324f7079498234e0be426de109b52f03efd685",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "4dd5580b2a55e361f789ae21e6613c5ceb8f118aab03f47f0122113fcca7f05a",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The source offers caching as something one can do, not the only required persistence method. The selected span also ends before the caching suggestion."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Distinguish in-memory buffers from saved files on disk.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "State deletion/retention conditions only when the retrieved passage supports them.",
+          "result": "partial",
+          "notes": "Documented deletion conditions are present; an uncited issue exception and mandatory-cache wording add support gaps."
+        }
+      ]
+    },
+    {
+      "question_id": "D07",
+      "mode": "hybrid",
+      "answer_sha256": "f4016136cc9978ed74f4551dc2750c9e7b468ad7eec15de80176f1c9178f2934",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 2,
+      "notes": "Local exclusion from Git, deployment secrets entry, and later settings updates are supported by the selected documentation spans. No actual secret value is exposed or invented.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "To configure secrets for a Community Cloud app without committing secrets.toml to Git, store the secrets locally in a .streamlit/secrets.toml file and never commit it to the repository. Instead, paste the contents of this file into the \"Secrets\" field in the \"Advanced settings\" dialog when deploying to Streamlit Community Cloud.",
+          "statement_sha256": "ec0bdfa25a23a6e21d3c20c3fd9bea8f27ef470c71563496e1469e726b4f03ba",
+          "citation_ids": [
+            "S1",
+            "S3"
+          ],
+          "selected_support_sha256": "ef86069a944222bd3edd6e3d861b3a2e51efa674b264737f279de75797771a71",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "The .streamlit/secrets.toml file should be added to the project's .gitignore to prevent accidental commits, and secrets can be updated at any time through the app's settings in the Streamlit workspace.",
+          "statement_sha256": "0cd8bb56ce30d1e29ea129dc5a866d921e0c8f5a6db9827a82eae5eee73ed872",
+          "citation_ids": [
+            "S1",
+            "S4"
+          ],
+          "selected_support_sha256": "b9b9a7cdf880240dbd4dc75a0b5ae25d6f5fee272de3301440ac6836ec53e01e",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Keep secrets out of Git and use the documented deployment configuration.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Do not reveal or invent an actual secret value.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D08",
+      "mode": "hybrid",
+      "answer_sha256": "e6eaa3d435023fda5bd06f36aa798d758012912601a245e6bddee36f3f2b3a0b",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 1,
+      "notes": "Dependency declaration, default Streamlit installation, and file search order are present in retrieved material. The selected priority span omits part of the location-precedence claim.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "Dependencies for a Streamlit Community Cloud app should be declared in a dependency file such as `requirements.txt`, which is based on `pip` and is the most common method.",
+          "statement_sha256": "4ff62f150593203b7f5ec99d9437fc05dc75089705cfd28726f2495de50ab668",
+          "citation_ids": [
+            "S1",
+            "S3"
+          ],
+          "selected_support_sha256": "a64df93cfbc4d2bfdabf6c39d89005e01d14fe4b77148de106c67a325c056260",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "Community Cloud automatically installs Streamlit and its dependencies, so it does not need to be included in the dependency file unless a specific version is required.",
+          "statement_sha256": "eba3ad8e6d4ce1d9beb12f4d7926ff4d21d4e4f29af52a24576ad689c1e75490",
+          "citation_ids": [
+            "S1",
+            "S5"
+          ],
+          "selected_support_sha256": "1b9e61ba3c131d10a261c7d4d7a82154acf3004bc00209a3f780668fdca83c23",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 2,
+          "statement": "If multiple dependency files are present, Community Cloud uses the first one it finds in the entrypoint file's directory, prioritizing files in the order: `uv.lock`, `Pipfile`, `environment.yml`, `requirements.txt`, and `pyproject.toml`.",
+          "statement_sha256": "97a46c0207dcf6309b1b9dcb559050e41bee86beafd82f7ba0b4e17a00a6c255",
+          "citation_ids": [
+            "S2"
+          ],
+          "selected_support_sha256": "c61609a97eddb857c1028953f3645b5f010376ff2074cfe5d96bfd72ebedf448",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The selected S2 span supports the filename priority list but omits the entrypoint-directory-before-repository-root rule asserted by this compound statement; that rule exists in full S2."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain dependency declaration using the retrieved deployment documentation.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Do not diagnose the exact missing dependency without the user's logs or files.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D09",
+      "mode": "hybrid",
+      "answer_sha256": "93f8b713d611030c00b2f21506b06830dadaf3e63206f39bf424c107b1a63715",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 1,
+      "notes": "Fragment and app reruns are distinguished. The final scheduling statement completes a sentence that is truncated in both the selected quotes and the retrieved chunk.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "Fragments in Streamlit allow rerunning only a portion of the app instead of the full script, improving efficiency and performance for larger applications.",
+          "statement_sha256": "77a487f0b92e25d090e94c13fe42989e25a2a2d6d10b8d6226f3726c55c42331",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "012f8f723880a018eb71baa343a881fb0472bb9ca5e026d8e40173c35a956fb8",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "Using st.rerun(scope=\"fragment\") within a fragment restricts the rerun to that specific fragment, provided it is called during a fragment rerun and not during a full-app rerun.",
+          "statement_sha256": "2be60a3308143c391a4f3922e193dc567b6d39461b38b020c1c0979e899bdabe",
+          "citation_ids": [
+            "S4"
+          ],
+          "selected_support_sha256": "8ec9acf60e61326170eaf7b1212e3cdc0366f37c3293b2ba70fa17a69678ec30",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 2,
+          "statement": "When a fragment is rerun with a key, only the targeted fragment reruns, and other widgets changed in the same interaction have their values applied to session state but do not render until the next run.",
+          "statement_sha256": "15b177020d112f0f48c5d8934e4b98afa224638c5a11fd62771a1972296c6d33",
+          "citation_ids": [
+            "S4"
+          ],
+          "selected_support_sha256": "618d289c07b00008d26ea44ec9c1ca681fdf9e9720fcca91776a6d279684af42",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The selected spans and full retrieved S4 terminate at \"until the\". The added completion \"next run\" is not present in the supplied evidence."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Describe fragment-scoped versus full-script reruns.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Avoid claiming every side effect outside a fragment is automatically cleared.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D10",
+      "mode": "hybrid",
+      "answer_sha256": "b6e35b4ae285a15c965e5aa5c1ecc463c2ce874366092f50e5ef496c24905ff5",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 1,
+      "notes": "The transient-button explanation addresses the question. The persistent-result advice cites a conditional-body example rather than a callback, and the fragment aside adds an unsupported state-preservation qualification.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "st.button returns True only on the script rerun triggered by its click and immediately reverts to False on the subsequent rerun, causing any nested elements to disappear after the user's next action.",
+          "statement_sha256": "612c160926b61640b1711bf750a1e77f9468ec19a1a703715590e3fb3bcd21d3",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "1cd59ff5cbaeee026cad62ca9b3ab68c9c98e64cb4b427e993de87d1e3746ce2",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "To maintain a persistent result after a button click, store the result in st.session_state within the button's callback, ensuring the value persists across script reruns.",
+          "statement_sha256": "b52557a736697198f02deb05596270e5aa48555c5756b7513d650a610ea4ce88",
+          "citation_ids": [
+            "S2"
+          ],
+          "selected_support_sha256": "e37786003666b7fa2767b0acf0107c98c5b7b479aa163f83f24fa77b5f170dc4",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "Selected S2 is an if st.button body, not a callback. It supports storing results in Session State but does not support the callback-specific explanation."
+        },
+        {
+          "claim_index": 2,
+          "statement": "Using st.rerun with a fragment key in a button's on_click callback allows rerunning only the specified fragment, preserving the state of other widgets while updating targeted components.",
+          "statement_sha256": "b28e8952939e8b14d79bb404b99b9f61e7fb50bfe7a0a960b075cb66ca834f42",
+          "citation_ids": [
+            "S5"
+          ],
+          "selected_support_sha256": "8f2f524fcf255fb7b802918d2018a0438c910ba4e0544918de987b777a62c62f",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The selected spans establish named-fragment reruns in a callback context but do not establish the broad other-widget state-preservation clause; the same material notes a possible escalation to a full-app rerun."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain transient button state versus separately persisted Session State.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Do not suggest assigning a button's own state through an unsupported Session State operation.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "D11",
+      "mode": "hybrid",
+      "answer_sha256": "e25f4ceb7084f176b631aa48edb42cbe12ab0da57ac1852092d72f18fec4e3ff",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 2,
+      "notes": "Serialization enforcement, the example failure, and untrusted-pickle execution risk are supported. Serialization is not presented as a security guarantee.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "The runner.enforceSerializableSessionState configuration option restricts Streamlit's Session State to only allow objects that are pickle-serializable, meaning calling pickle.dumps(obj) must not raise a PicklingError. When enabled, attempting to store unserializable data, such as a lambda function, results in an exception.",
+          "statement_sha256": "b0b67bc8bb2c7054c9366f6a06dd3ea8343d769f7f2e38cde6677cbf99c974e7",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "ba979f27748c9fe686af0352a21044a379de45c35bb68c0e9c26cc21da356527",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "Using the pickle module for serialization poses a security risk because maliciously crafted pickle data can execute arbitrary code during unpickling, so only trusted data should be loaded when this option is enabled.",
+          "statement_sha256": "8edaab74de9d998c0382d45d0042c89786fdb55fb3c2cf3e0e1b217e6227b2cf",
+          "citation_ids": [
+            "S1",
+            "S3"
+          ],
+          "selected_support_sha256": "0559bebf93967a927619e72af1e32d394c57b77fadc3f5baeb1222be0d421dee",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Describe enforcing serializable Session State.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Mention the untrusted-pickle risk when supported; do not imply serialization itself is a security guarantee.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "I01",
+      "mode": "hybrid",
+      "answer_sha256": "08ef1dce48d1fdc83d4d50e2bec96a7a50dfecab69d99cd72b178ca41c868fa9",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 2,
+      "notes": "The symptom is attributed to a public report and its selected environment span records 1.33.0. Similarity is not presented as a confirmed duplicate or fix.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "There is a user report describing st.file_uploader hanging and producing a network-related error when uploading more than 980 files, consistent with the issue described in the query.",
+          "statement_sha256": "3862ced051c6640b15ff15b60c397caadfdf03f228eeb7d6723f71cf80ea90c2",
+          "citation_ids": [
+            "S1",
+            "S2"
+          ],
+          "selected_support_sha256": "b8f30839a86985bd22cf4f5923797039eefffb80be7f26deb3685218a3412be9",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Attribute the symptom and version to the public reporter.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Do not call it a confirmed duplicate, current limit, or verified fix.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "I02",
+      "mode": "hybrid",
+      "answer_sha256": "8c66323667abf53e1815b8df7e971afc9bab0f0bdb205dcd998f1d18f483847a",
+      "generation_mode": "extracted_evidence_rejected_answer",
+      "review_status": "not_model_generated",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Excluded from generated-answer quality averages: safe rejection displayed extracted evidence."
+    },
+    {
+      "question_id": "I03",
+      "mode": "hybrid",
+      "answer_sha256": "2a8dafd8cc42db3d9f6701a628ebcf6f4bcfe251a43e1616529b3c945c025b15",
+      "generation_mode": "cited_model_synthesis",
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 2,
+      "notes": "Both statements explicitly describe the public report and its error text. Suggested alternatives are attributed to that report, with no invented fix version.",
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "statement": "There is an issue report describing st.cache_data raising UnserializableReturnValueError when returning a custom class after upgrading to version 1.44.0, with the error indicating that pickle cannot serialize the return value of type __main__.Example.",
+          "statement_sha256": "4a25a69c215c9418a47971abf222dfd571503f078ecbb775d85e60755e5c0f16",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "bc4bbdc0c55d2ce7e3e10b46e7c450d36d321b67031b0b489ccdb1fca083dac9",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        },
+        {
+          "claim_index": 1,
+          "statement": "The issue report attributes the error to st.cache_data attempting to serialize the return value using pickle, and suggests converting the return value to a pickle-serializable type or using st.cache_resource for unserializable objects.",
+          "statement_sha256": "493e1bf16dc862f9ddffdf60d6d351d3eee51afe67c8de5898e7a9aebf995c0c",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "f63f35d682a6de6efe218caefd30dbdab8c57adfa2c6f78c9eb2e272682dd0bf",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quotes support this statement by direct statement or a reasonable immediate inference."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Identify the reported custom-class serialization regression and reported upgrade context.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        },
+        {
+          "check": "Do not infer a fix version from closed issue state.",
+          "result": "met",
+          "notes": "Addressed without inventing private environment details or a confirmed diagnosis/fix."
+        }
+      ]
+    },
+    {
+      "question_id": "N01",
+      "mode": "hybrid",
+      "answer_sha256": "3220fffa1591ecdc862afeb74f6a4ecc20377892ac89ff4185e067d1e7be06f1",
+      "generation_mode": "extracted_evidence",
+      "review_status": "not_model_generated",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Excluded from generated-answer quality averages: guard or missing-details response; no provider call."
+    },
+    {
+      "question_id": "N02",
+      "mode": "hybrid",
+      "answer_sha256": "7cfad1efe368c245b7370d546e86260135ded259c610add1a662fb666df02d46",
+      "generation_mode": "extracted_evidence",
+      "review_status": "not_model_generated",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Excluded from generated-answer quality averages: guard or missing-details response; no provider call."
+    },
+    {
+      "question_id": "N03",
+      "mode": "hybrid",
+      "answer_sha256": "b7869ccad13854de7f859748f3f1fdaf5304f6780623ca3d3a8ecb4ce74a07ec",
+      "generation_mode": "extracted_evidence",
+      "review_status": "not_model_generated",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Excluded from generated-answer quality averages: guard or missing-details response; no provider call."
+    },
+    {
+      "question_id": "N04",
+      "mode": "hybrid",
+      "answer_sha256": "180e304e196cc629b52be5af0a261c69dafa697ddb63819756e561c1c3ea6b05",
+      "generation_mode": "extracted_evidence",
+      "review_status": "not_model_generated",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Excluded from generated-answer quality averages: guard or missing-details response; no provider call."
+    },
+    {
+      "question_id": "A01",
+      "mode": "hybrid",
+      "answer_sha256": "b7869ccad13854de7f859748f3f1fdaf5304f6780623ca3d3a8ecb4ce74a07ec",
+      "generation_mode": "extracted_evidence",
+      "review_status": "not_model_generated",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Excluded from generated-answer quality averages: guard or missing-details response; no provider call."
+    },
+    {
+      "question_id": "A02",
+      "mode": "hybrid",
+      "answer_sha256": "b7869ccad13854de7f859748f3f1fdaf5304f6780623ca3d3a8ecb4ce74a07ec",
+      "generation_mode": "extracted_evidence",
+      "review_status": "not_model_generated",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Excluded from generated-answer quality averages: guard or missing-details response; no provider call."
+    }
+  ]
+}

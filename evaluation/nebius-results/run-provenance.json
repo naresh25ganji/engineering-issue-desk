@@ -1,0 +1,11 @@
+{
+  "raw_report_sha256": "f3c779f3e8f8f0e1ca22965e3e2c05a457122e4f8882d6504784235bac852ebb",
+  "generation_source_sha256": "308b620adf023506e65313592ce262a129f66e67311554609e156a8d24779458",
+  "observed_protocols": [
+    "quote_ids_v2"
+  ],
+  "observed_system_prompt_sha256": [
+    "31714240417f3b07f61881b41e5e713be898b0fa41c3d0c09d61d57b819b5c8e"
+  ],
+  "note": "Source snapshot and observed request metadata for this frozen live run. No credentials or human quality assessment are included."
+}

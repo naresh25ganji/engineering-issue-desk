@@ -1,0 +1,438 @@
+{
+  "model": "Qwen/Qwen3-Embedding-8B",
+  "dimensions": 1024,
+  "chunks": 688,
+  "fingerprint": "a68d2982afabe1db249cf5341a07df61654d8d58ed68fb0edc6e7b5992dea7a1",
+  "index_origin": "computed",
+  "api_calls": 23,
+  "usage": {
+    "prompt_tokens": 113064,
+    "completion_tokens": 0,
+    "total_tokens": 113064
+  },
+  "elapsed_ms": 54286,
+  "returned_source_ids": [
+    "doc-api-cache-data",
+    "doc-api-cache-data",
+    "doc-api-cache-resource",
+    "doc-caching",
+    "doc-caching",
+    "doc-api-cache-resource"
+  ],
+  "call_metadata": [
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5251,
+        "completion_tokens": 0,
+        "total_tokens": 5251
+      },
+      "latency_ms": 1839.723,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 3987,
+        "completion_tokens": 0,
+        "total_tokens": 3987
+      },
+      "latency_ms": 2089.426,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 4575,
+        "completion_tokens": 0,
+        "total_tokens": 4575
+      },
+      "latency_ms": 1856.088,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 3596,
+        "completion_tokens": 0,
+        "total_tokens": 3596
+      },
+      "latency_ms": 1603.588,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5359,
+        "completion_tokens": 0,
+        "total_tokens": 5359
+      },
+      "latency_ms": 2920.491,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5426,
+        "completion_tokens": 0,
+        "total_tokens": 5426
+      },
+      "latency_ms": 2873.703,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 6176,
+        "completion_tokens": 0,
+        "total_tokens": 6176
+      },
+      "latency_ms": 4392.875,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 7544,
+        "completion_tokens": 0,
+        "total_tokens": 7544
+      },
+      "latency_ms": 2027.88,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5374,
+        "completion_tokens": 0,
+        "total_tokens": 5374
+      },
+      "latency_ms": 2388.324,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 6082,
+        "completion_tokens": 0,
+        "total_tokens": 6082
+      },
+      "latency_ms": 4049.884,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5783,
+        "completion_tokens": 0,
+        "total_tokens": 5783
+      },
+      "latency_ms": 1887.853,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5333,
+        "completion_tokens": 0,
+        "total_tokens": 5333
+      },
+      "latency_ms": 2658.373,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5593,
+        "completion_tokens": 0,
+        "total_tokens": 5593
+      },
+      "latency_ms": 3103.778,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5429,
+        "completion_tokens": 0,
+        "total_tokens": 5429
+      },
+      "latency_ms": 1766.768,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 4123,
+        "completion_tokens": 0,
+        "total_tokens": 4123
+      },
+      "latency_ms": 2880.65,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 3064,
+        "completion_tokens": 0,
+        "total_tokens": 3064
+      },
+      "latency_ms": 1774.51,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 4293,
+        "completion_tokens": 0,
+        "total_tokens": 4293
+      },
+      "latency_ms": 2454.648,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 3275,
+        "completion_tokens": 0,
+        "total_tokens": 3275
+      },
+      "latency_ms": 4068.184,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 4563,
+        "completion_tokens": 0,
+        "total_tokens": 4563
+      },
+      "latency_ms": 1729.536,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 5607,
+        "completion_tokens": 0,
+        "total_tokens": 5607
+      },
+      "latency_ms": 1714.261,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 32,
+      "usage": {
+        "prompt_tokens": 4525,
+        "completion_tokens": 0,
+        "total_tokens": 4525
+      },
+      "latency_ms": 1737.249,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "documents",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 16,
+      "usage": {
+        "prompt_tokens": 8088,
+        "completion_tokens": 0,
+        "total_tokens": 8088
+      },
+      "latency_ms": 1780.158,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    },
+    {
+      "stage": "embedding",
+      "kind": "query",
+      "attempted": true,
+      "status": "success",
+      "requested_model": "Qwen/Qwen3-Embedding-8B",
+      "returned_model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": 1024,
+      "input_count": 1,
+      "usage": {
+        "prompt_tokens": 18,
+        "completion_tokens": 0,
+        "total_tokens": 18
+      },
+      "latency_ms": 611.504,
+      "endpoint": "https://api.tokenfactory.nebius.com/v1/embeddings",
+      "http_status": 200
+    }
+  ]
+}

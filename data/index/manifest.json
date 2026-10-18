@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "model": "BAAI/bge-small-en-v1.5",
+  "dimensions": 384,
+  "chunk_count": 645,
+  "corpus_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "index_fingerprint": "c0ac112df3154a26ce89ca8ec636a9f5bc12b29b9bef2eaab89bf290a65b7e4d",
+  "file": "vectors-c0ac112df3154a26ce89ca8ec636a9f5bc12b29b9bef2eaab89bf290a65b7e4d.npz",
+  "sha256": "7c4a527ed4173db713aa3bffa08951287f3e2939134b5b00d270e36c8c461637",
+  "purpose": "Precomputed document vectors for the bundled source snapshot; query model is downloaded separately. Stale or invalid indexes are ignored."
+}

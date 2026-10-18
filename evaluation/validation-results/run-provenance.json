@@ -1,0 +1,13 @@
+{
+  "code_frozen_at": "2026-10-18T19:55:55.269757+00:00",
+  "dataset_sha256": "1beedd20ab48292707fe659d25bf9c51b41150aee2493e44166b557d17793b2f",
+  "code_sha256": {
+    "app.py": "9df05741eb4d742e000a7e066304a6bda637361fabfd3ac290cf151a38f7274c",
+    "triage_desk/core.py": "9952ee6a70ad021fbc2f590f4cf49e3562f14483680a97ae0730a02634019081",
+    "triage_desk/generation.py": "038cb53f6571cc4d042b4563b289c2c28d7fd13b432861bcbdd72d3aa4871269",
+    "triage_desk/embeddings.py": "15762ea6e9c693fbc1bbecbcb46c2296a7e5c5ebdbcfc5cdc4dea1850e65bdd0",
+    "triage_desk/freshness.py": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+    "evaluation/run.py": "2ca3de81241b92eda5a92e24b0fb239d349f4db9c1db09ebbc80a05303a626de"
+  },
+  "note": "Validation questions independently AI-authored and frozen before implementation completion; generator implementer did not inspect them. First execution is prospective. This is not a blinded external human benchmark."
+}

@@ -1,0 +1,11 @@
+{
+  "iteration": "Initial Nebius JSON-with-copied-quotes protocol",
+  "automatic_observation": "14 requests,10 accepted cited answers,4 strict support-quote rejections;6 boundary cases made no model request.",
+  "ai_review_observations": [
+    "Some accepted claims added background details not supported by the selected citation.",
+    "A version stated in a question was promoted to a source fact without appearing in retrieved passages.",
+    "An issue-reported serialization error was described as a cause."
+  ],
+  "next_protocol": "Select application-defined quote IDs mapped to literal source spans; require every claim detail to follow those spans, with user questions treated as requests rather than evidence.",
+  "review_kind": "Codex AI inspection, not human validation"
+}

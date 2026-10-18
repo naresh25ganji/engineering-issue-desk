@@ -1,0 +1,906 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-18T21:47:17.663530+00:00",
+  "review_kind": "AI review; no human review performed",
+  "reviewer": {
+    "identity": "Codex AI sub-agent",
+    "model_identifier": "Not exposed to this reviewer",
+    "independence": "Reviewer did not author the validation set or implement the current verifier/workflow, but built the source graph/docs and graph-comparison runner and reviewed the same questions under a prior configuration. Current output review began after this report was frozen. Inline verifier votes were not used as ground truth.",
+    "human_review": false,
+    "study_limitations": "AI-team review with visible questions and evidence, familiar regression questions and awareness of run summary; not an external blinded human study."
+  },
+  "source_report_file": "/Users/nareshganji/repos/engineering-issue-desk/evaluation/workflow-results/raw-report.json",
+  "source_report_sha256": "827db28bfe99f0d42eecd84bcaebf70c4ba1bab21a3f206a99e20c1a5d8dd6cb",
+  "corpus_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "dataset_sha256": "1beedd20ab48292707fe659d25bf9c51b41150aee2493e44166b557d17793b2f",
+  "workflow_configuration": {
+    "mode": "hybrid",
+    "strategy": "structured",
+    "embedding_provider": "nebius",
+    "rerank": true,
+    "graph": true
+  },
+  "generator_identity": {
+    "observed_models_by_stage": {
+      "embedding": {
+        "requested_models": [
+          "Qwen/Qwen3-Embedding-8B"
+        ],
+        "returned_models": [
+          "Qwen/Qwen3-Embedding-8B"
+        ]
+      },
+      "evidence_grading": {
+        "requested_models": [
+          "Qwen/Qwen3-30B-A3B-Instruct-2507"
+        ],
+        "returned_models": [
+          "Qwen/Qwen3-30B-A3B-Instruct-2507"
+        ]
+      },
+      "synthesis": {
+        "requested_models": [
+          "Qwen/Qwen3-30B-A3B-Instruct-2507"
+        ],
+        "returned_models": [
+          "Qwen/Qwen3-30B-A3B-Instruct-2507"
+        ]
+      },
+      "verification": {
+        "requested_models": [
+          "Qwen/Qwen3-235B-A22B-Instruct-2507"
+        ],
+        "returned_models": [
+          "Qwen/Qwen3-235B-A22B-Instruct-2507"
+        ]
+      }
+    },
+    "source": "Observed per-call metadata only, without substituting configured identity for unreported model responses."
+  },
+  "method": [
+    "Read all ten accepted answers, all 22 retained claims and their selected exact support quotes, source metadata, expected-answer checks and relevant retrieved passages. No environment files, provider calls or implementation edits were used.",
+    "Every substantive clause must be fully supported and correctly qualified by the selected quoted evidence for the claim boolean. Reasonable immediate inferences are allowed; topical similarity, a genuine reference and an inline verifier acceptance are insufficient.",
+    "Ordinal faithfulness and citation entailment reflect support and qualification gaps; relevance evaluates the retained answer against the original multipart question, including omissions after filtering. A generic partial-answer notice does not supply omitted information.",
+    "All 20 cases receive annotations. Only accepted cited_model_synthesis answers enter these quality means; other generated grader reasons, extracted evidence, clarifications, abstentions and guards are not assigned perfect or zero accepted-answer faithfulness.",
+    "Only retained generated_claims enter the supported-claim denominator. Application caution/partial notices do not count as model claims. Claim indices are zero-based positions in accepted generated_claims; draft_claim_index is separate.",
+    "Manual review fields in the source report remain unchanged and null. This AI review is separate from human review and from inline verifier decisions."
+  ],
+  "hash_canonicalization": {
+    "text_fields": "SHA256 exact UTF-8 string, without normalization",
+    "selected_support_sha256": "SHA256 of json.dumps(claim.support, sort_keys=True, ensure_ascii=False) UTF-8, default separators comma-space and colon-space"
+  },
+  "rubric_version": "assignment-ordinal-0-2-v1",
+  "claim_index_base": 0,
+  "ai_review_summary": {
+    "review_kind": "AI review; not a human assessment",
+    "reviewer": "Codex AI sub-agent; did not author validation questions or implement current verifier/workflow; contributed graph/docs and reviewed prior configuration",
+    "reviewed_generated_answers": 10,
+    "ai_reviewed_claims": 22,
+    "ai_supported_claims": 19,
+    "ai_unsupported_or_partially_supported_claims": 3,
+    "ai_supported_claim_fraction": 0.8636363636363636,
+    "faithfulness_0_to_2": 1.7,
+    "answer_relevance_0_to_2": 1.1,
+    "citation_entailment_0_to_2": 1.7,
+    "validation_total_cases": 20,
+    "expected_answerable_cases": 14,
+    "generated_answerable_cases": 10,
+    "generated_answerable_coverage_fraction": 0.7142857142857143,
+    "unexpected_generated_boundary_cases": [],
+    "excluded_non_generated_cases": 10,
+    "answers_with_material_omissions": [
+      "V01",
+      "V02",
+      "V03",
+      "V05",
+      "V06",
+      "V08",
+      "V10",
+      "V11",
+      "V12"
+    ],
+    "note": "AI judgments on ten accepted cited-synthesis answers and 22 retained claims. Inline verifier votes were not ground truth. Empty/fallback/clarification outputs remain in outcome and coverage counts but have null accepted-synthesis scores. Same validation questions were reviewed in a prior configuration: this is a source-configuration regression review, not unseen validation or an external blinded human study. Human review remains unscored."
+  },
+  "annotations": [
+    {
+      "question_id": "V01",
+      "mode": "hybrid",
+      "answer_sha256": "319ebeb4dcd769ac4ef68d8a41d02184b5dfd8f03abd05a8671f71d06ead711f",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 2,
+      "notes": "The buffer-position explanation and rereading methods are supported. The filename safety/destination-path question is unanswered after support filtering.",
+      "answer_omissions": [
+        "Whether UploadedFile.name is sanitized and whether it is safe to use directly as a destination path are not answered."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "After reading an UploadedFile to the end, a second read returns no bytes because the file pointer is at the end of the stream, but the uploaded file data remains intact and has not disappeared.",
+          "statement_sha256": "83503d9d6d1539febb1518ad6c2f00d9ebf1810f0a77b3d74121b638967c4443",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "8e43917db35125762ed8b357ac5ab3d16d858e6a2f562a2dab0359e0deefac86",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected note explains end-of-stream reads and rereading/rewinding. Continuing availability of the buffered contents is a reasonable immediate inference, not proof about a private upload."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "To read the full contents of an UploadedFile again after reading to the end, use the getvalue() method to retrieve the entire byte content without changing the file pointer position, or use seek(0) to reset the pointer to the beginning.",
+          "statement_sha256": "4775b904e8f52e6a077a529d6a64675fa370a3debfb56d9be870ed4beae526b2",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "8e43917db35125762ed8b357ac5ab3d16d858e6a2f562a2dab0359e0deefac86",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected note directly supports getvalue() without changing position and seek(0) to rewind."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain that UploadedFile is file-like and the read position can be at the end; the symptom alone does not establish lost upload data.",
+          "result": "met",
+          "notes": "Explains end-of-stream position rather than equating an empty second read with lost data."
+        },
+        {
+          "check": "Support getvalue() or seek(0) with the relevant API passage; do not confuse reading a buffer with an app rerun.",
+          "result": "met",
+          "notes": "Gives both getvalue() and seek(0), without confusing buffer reads with reruns."
+        },
+        {
+          "check": "State that UploadedFile.name is not sanitized and recommend an app-controlled destination rather than using the name directly as a path.",
+          "result": "not_met",
+          "notes": "No retained claim addresses the filename or destination-path safety question."
+        },
+        {
+          "check": "Qualify guidance as the recorded API version rather than claiming every historical version has identical behavior.",
+          "result": "partial",
+          "notes": "The application caveat and source metadata disclose version scope, but the answer does not explicitly name the recorded API version."
+        }
+      ]
+    },
+    {
+      "question_id": "V02",
+      "mode": "hybrid",
+      "answer_sha256": "e6a046133d1afedeff4b004caba1f3fae9216e85b58b5efe327aa6cf48fcf534",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 2,
+      "notes": "The sole retained claim supports halting the current run. The central question about fragment-scoped rerun legality during a full-app run is omitted.",
+      "answer_omissions": [
+        "Does not say whether scope=fragment is allowed during a full-app run or state the documented exception condition.",
+        "Does not explicitly say that st.rerun queues a new run."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 1,
+          "statement": "When st.rerun() is called, Streamlit halts the current script run and executes no further statements, so any code after st.rerun(scope='fragment') will not run in the current execution.",
+          "statement_sha256": "bc3d427c4bc2ecb0d4ab0b23bad1bb6d2652b5bf9a9798b73424f5f340ab0cd0",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "a06d1469102142c9b92127e3dd9e24e8f867721453233544ef2170b24de2bc57",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected quote states that st.rerun halts the current script run and executes no further statements; the answer draws the immediate implication for subsequent code."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain that st.rerun halts the current run and queues a rerun; subsequent statements in that run are not executed.",
+          "result": "partial",
+          "notes": "Halting/no further statements is answered; queuing the rerun is not stated."
+        },
+        {
+          "check": "State that scope='fragment' is valid only inside a fragment during a fragment rerun, not during a full-app run or outside a fragment.",
+          "result": "not_met",
+          "notes": "The retained answer does not state the fragment-only restriction or distinguish a full-app run."
+        },
+        {
+          "check": "Cite the API's documented exception condition and avoid asserting the user's exact root cause without a reproduction.",
+          "result": "not_met",
+          "notes": "No documented exception condition is included, although no private root cause is asserted."
+        }
+      ]
+    },
+    {
+      "question_id": "V03",
+      "mode": "hybrid",
+      "answer_sha256": "a5cba9dcf4ce2bdd9687b995df7f252e055adbfcdf734f34cc667f8cff929efb",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 1,
+      "notes": "Excluding underscore-prefixed parameters from hashing and possible cache reuse are supported. The second claim turns an example with the same num_rows into an unconditional cache-reuse rule, and hash_funcs is not compared.",
+      "answer_omissions": [
+        "Does not qualify cache reuse on the other hashed arguments matching.",
+        "Does not explain how providing hash_funcs differs from excluding an argument from the key."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "Renaming a connection argument to _connection in st.cache_data causes the argument to be excluded from hashing, allowing different connection objects to reuse the same cached result.",
+          "statement_sha256": "e8ef6595d60a0cfc47302f254f34807a97e19dabf769703a195b1caed8030aca",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "ebc60acdd241668389b6f63fa35f185173f009d9f52424644252a1751c1ff92f",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The quote states underscore parameters are not hashed and shows distinct connection objects with num_rows=10 reusing the result. The modal allowing formulation is supported as a possibility."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "Even when different connection objects are passed to a cached function, if the parameter is prefixed with an underscore, the cached result will be reused because the parameter is not hashed.",
+          "statement_sha256": "637e100c9722ebe1769ccdf473f5b7292e3d8d4b31ee7b8df291e4ea0bad4838",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "25e8601d5233cd819e408569ad2d80bea2a7b18547770e8af575e12815c82287",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The selected example keeps num_rows=10 in both calls. It does not support unconditional reuse whenever the connection parameter is underscored; other hashed arguments/cache-key inputs must still match. The answer omits that material condition."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain that an underscore-prefixed argument is excluded from the cache key, and cached values can be reused when the other arguments match.",
+          "result": "partial",
+          "notes": "Underscore exclusion is explained, but the same-other-arguments condition is omitted and one claim is unconditional."
+        },
+        {
+          "check": "Distinguish excluding an argument from providing a custom hash function; do not imply the mechanisms are equivalent for cache correctness.",
+          "result": "not_met",
+          "notes": "No retained statement explains custom hash_funcs or distinguishes it from omission from the cache key."
+        },
+        {
+          "check": "Do not guarantee that arbitrary database connections are interchangeable or that excluding the connection is appropriate for every app.",
+          "result": "partial",
+          "notes": "No explicit guarantee of interchangeable connections is made, but the unqualified reuse statement can mislead cache-correctness decisions."
+        }
+      ]
+    },
+    {
+      "question_id": "V04",
+      "mode": "hybrid",
+      "answer_sha256": "c300c0185911fa11422365190c90068e5ccadeeff69a995fce4f4c7926cf9b60",
+      "generation_mode": "extracted_evidence_rejected_answer",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Structural citation/quote-ID mismatch produced an explicit extracted-evidence fallback. Excluded from accepted-synthesis quality scores; the returned passages remain available for manual inspection."
+    },
+    {
+      "question_id": "V05",
+      "mode": "hybrid",
+      "answer_sha256": "8cd7a433202192daf717acc2356a7a61bac22e80c3a633c236de83309d964ac5",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 2,
+      "notes": "All three retained claims have matching selected evidence. The dummy-secret instruction says to set it before running but does not identify the at.secrets mechanism, so the how-to remains underspecified.",
+      "answer_omissions": [
+        "Does not identify at.secrets or an equivalent concrete AppTest secret-setting operation for supplying the dummy value."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "Changing a widget in an AppTest login test does not automatically rerun the simulated app; the test must explicitly call the .run() method to trigger a rerun after user input changes.",
+          "statement_sha256": "1bd63df2e321291c0f22f7ddbb5fdd7f1250b801647a5c3d787641a6eb673420",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "52c7a9022e0921347c945c937166fd1d0aee5e86335152afaa8e4deae09fa9c2",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The two selected spans together state that AppTest requires explicit run() for first runs and simulated-input reruns."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "A test can supply a dummy secret by setting it before running the app, as demonstrated in the documentation where a dummy secret is set prior to app execution to simulate login conditions.",
+          "statement_sha256": "51025b502d21907b4674623f3776239afb35012d4df3971eea0e02e6ce33acf6",
+          "citation_ids": [
+            "S2"
+          ],
+          "selected_support_sha256": "3b52e678ab628b65f7d834c824d035939114ce718800302ebc441761c89450f5",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected example introduction directly states that a dummy secret is set before app execution."
+        },
+        {
+          "claim_index": 2,
+          "draft_claim_index": 2,
+          "statement": "A test can begin in an already logged-in Session State by directly modifying the session state, such as setting `at.session_state[\"status\"] = \"verified\"`, without performing a real login simulation.",
+          "statement_sha256": "4e2ed612ad71236991d02293670ef9a6df66da12ce60ee74914b2e4fa2f4481f",
+          "citation_ids": [
+            "S4"
+          ],
+          "selected_support_sha256": "c02a17c4e909b649037169f6b25615db584a1f461a68ed53fe9814a609612810",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected explanation explicitly supports at.session_state[\"status\"]=\"verified\" as a shortcut to a logged-in test state."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain that AppTest requires explicit run() calls for the initial run and simulated reruns rather than assuming an automatic browser-like rerun.",
+          "result": "met",
+          "notes": "Explicit .run() after changed simulated user input is stated; no automatic browser rerun is assumed."
+        },
+        {
+          "check": "Support setting at.secrets and at.session_state before running the simulated app with the example documentation.",
+          "result": "partial",
+          "notes": "The session_state setter is concrete, while the secret setter/API is not named; only before-running timing is supplied."
+        },
+        {
+          "check": "Distinguish dummy test data from discovering a real secret or establishing that a real authentication system is secure.",
+          "result": "met",
+          "notes": "The response discusses a dummy test secret and simulated state, without claiming discovery of real secrets or security validation."
+        }
+      ]
+    },
+    {
+      "question_id": "V06",
+      "mode": "hybrid",
+      "answer_sha256": "76804c77eb45aabc9bd8e396c7bf11edbb0acec05e366595f20956a06fa086c0",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 2,
+      "notes": "The static-file location and app/static/cat.png path are supported. Both the runtime persistence and HTML/MIME questions are omitted after filtering.",
+      "answer_omissions": [
+        "Does not answer whether runtime-generated Community Cloud files persist across user sessions.",
+        "Does not explain how arbitrary HTML is served, including text/plain and nosniff restrictions."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "To serve cat.png via Streamlit's static file serving, place it in the ./static/ folder relative to the app's entrypoint file, and it will be accessible at the URL path app/static/cat.png.",
+          "statement_sha256": "bc905e25f339a72846d50af3d9eb14cc43afc359fe6656ef44053b437dd92421",
+          "citation_ids": [
+            "S1",
+            "S2"
+          ],
+          "selected_support_sha256": "7b8ce158815f37896200f6ab946cb066aa92d7a7f0c1ede69f3dfcef7cfd31e9",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The two selected spans jointly identify ./static relative to the running app and the example app/static/cat.png URL; enabling the feature is already the question condition."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Identify the static directory relative to the running app file and the documented app/static path.",
+          "result": "met",
+          "notes": "The answer supplies the documented directory and example URL path."
+        },
+        {
+          "check": "Explain that runtime-generated files on Community Cloud are not guaranteed to persist across sessions.",
+          "result": "not_met",
+          "notes": "Runtime-generated file persistence across Community Cloud sessions is not addressed."
+        },
+        {
+          "check": "Distinguish the normally served allowlisted extensions from other types served as text/plain with nosniff; do not promise arbitrary HTML execution.",
+          "result": "not_met",
+          "notes": "HTML execution, allowlisted types, text/plain and nosniff are not addressed."
+        },
+        {
+          "check": "Support the enableStaticServing setting without executing any configuration change.",
+          "result": "partial",
+          "notes": "The selected quote includes enableStaticServing configuration and nothing is executed, but the answer does not repeat the setting."
+        }
+      ]
+    },
+    {
+      "question_id": "V07",
+      "mode": "hybrid",
+      "answer_sha256": "e7c25157381d495a9ba195b02783f04b45fd66b3cb03d23925ed82474bdadd4a",
+      "generation_mode": "extracted_evidence_rejected_answer",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Unknown/empty citation caused an explicit extracted-evidence fallback. Excluded from accepted-synthesis quality scores; this does not count as a generated answer to the launch/argument question."
+    },
+    {
+      "question_id": "V08",
+      "mode": "hybrid",
+      "answer_sha256": "4c20529d312eee47ae6ebfc68379395dbee7eeadc4316d2be84fffddd3c80a2e",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 1,
+      "notes": "ScriptRunContext/NoSessionContext and the unsupported context-attachment warning are grounded. The general worker-thread recommendation cites a background cache-refresh restriction with narrower scope; the full worker/render pattern and lifetime caveat are missing.",
+      "answer_omissions": [
+        "Does not describe collecting worker results and rendering them from the script thread.",
+        "Does not preserve the explicit warning that attached workers must not outlive the owning script thread or that the approach may change."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "The documentation states that Streamlit commands like st.session_state require a ScriptRunContext to function, and failing to find one raises a NoSessionContext exception, often accompanied by a warning message about a missing context.",
+          "statement_sha256": "c6d54fa273ffc4ebae7d73a7a61a50c70b52a9c59962141286b7a757d9ba3d58",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "1f3abca1c3ae455b7582a2980ab8953d9d9c4240cec0fb5bd7a8494529a1dca1",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected spans directly explain the intended script-thread context, NoSessionContext and the conditional logger warning."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "The official documentation advises against manually attaching a ScriptRunContext to custom threads, explicitly stating that this approach is not officially supported and may lead to security vulnerabilities, fatal errors, or unexpected behavior.",
+          "statement_sha256": "f7bb1c56588b0a5165b4028cf5b8832cd13b33f151ae1b044203190a230de993",
+          "citation_ids": [
+            "S2"
+          ],
+          "selected_support_sha256": "7e2258bdf5201b49f5250f16b3fc65464c6888f6124f7404ab0a41ddfc5d4d86",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected text labels attachment unsupported and warns of harmful context leaks. Advises against is accepted as a reasonable caution summary, not as an asserted formal prohibition; the source makes the harm conditional on leakage."
+        },
+        {
+          "claim_index": 2,
+          "draft_claim_index": 2,
+          "statement": "To avoid passing ScriptRunContext to worker threads, the recommended pattern is to avoid calling Streamlit commands from custom threads altogether, especially those relying on session-specific features like st.session_state.",
+          "statement_sha256": "bf18bf316506e547b059e02084c70e75c3a7743bac04b42a67c1e5e62aa2b859",
+          "citation_ids": [
+            "S3"
+          ],
+          "selected_support_sha256": "dc66f9d859537ec262e4958ae44e2061415ac01cbf7e0bfd0f1ede56d7c68dc7",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "Selected S3 quotes concern functions refreshing cached entries in the background. They do not establish a recommended general custom-worker-thread pattern, nor a recommendation to avoid all Streamlit commands in every custom thread. The question-specific worker/render alternative needs its own evidence."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Explain that many Streamlit commands expect a script thread with the intended ScriptRunContext.",
+          "result": "met",
+          "notes": "The answer explains the script context requirement and missing-context error."
+        },
+        {
+          "check": "Describe doing work without Streamlit commands in the worker and rendering collected results from the script thread.",
+          "result": "partial",
+          "notes": "It says to avoid Streamlit commands in workers but cites a narrower cache-refresh condition and omits rendering collected results on the script thread."
+        },
+        {
+          "check": "If discussing context attachment, retain the documented unsupported/subject-to-change caveat and the warning against workers outliving the owning script thread.",
+          "result": "partial",
+          "notes": "Unsupported status and possible harm are stated, but the owning-thread lifetime and subject-to-change caveats are omitted."
+        },
+        {
+          "check": "Do not portray a documented experimental pattern as a guaranteed production-safe fix.",
+          "result": "met",
+          "notes": "It does not portray manual context attachment as an officially supported or guaranteed production fix."
+        }
+      ]
+    },
+    {
+      "question_id": "V09",
+      "mode": "hybrid",
+      "answer_sha256": "6a6d72fc73fbd9a73daca8ea6f2d3ce5cb70fba38786157abfb08c94ea3cac5b",
+      "generation_mode": "extracted_evidence_rejected_answer",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Forbidden formatting caused an explicit extracted-evidence fallback. Excluded from accepted-synthesis quality scores; evidence availability is not an accepted Docker answer."
+    },
+    {
+      "question_id": "V10",
+      "mode": "hybrid",
+      "answer_sha256": "49b872ce7c3a916fea1238a0968326d55b034874466cc39213f4e7b3418113d5",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 2,
+      "notes": "The support-case route and generic descriptive-title/reproduction requirements are supported. The requested diagnostic checklist is replaced by an unspecific sufficient-information statement.",
+      "answer_omissions": [
+        "Does not enumerate the template requested summary, reproducible code, reproduction steps, expected/current behavior and environment details."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "The project's bug-report template directs users with platform-support issues related to Streamlit Community Cloud, such as 403 errors or account access problems, to submit a support case instead of filing a GitHub issue.",
+          "statement_sha256": "a9c6ee71964674071122466c39410e6106b9a2ca5475cde6d16e5c3c28c735f7",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "fcec1c74d7b44c91c0ea10c8c68085d1ff7b438a3c99bfa0f55bdb48cfce4b88",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected template text explicitly sends Community Cloud account/403 platform-support issues to a support case rather than GitHub issues."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "When a real code bug is reported, the template asks for a very descriptive title and sufficient information to help reproduce the issue.",
+          "statement_sha256": "2eba1e0de5a4f6d08ba1bf294eec27b502595a2abcdf9403f03b39731af64417",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "3f9fe39c0deb01be96582e935b8d63605209bb6facf2e69595b4dd27242bc2f3",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected template text explicitly asks for a very descriptive title and sufficient reproduction information."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Follow the template's distinction between Community Cloud platform-support cases and Streamlit code bug reports; direct the former to the documented support-case route.",
+          "result": "met",
+          "notes": "Platform support is routed to a support case rather than GitHub."
+        },
+        {
+          "check": "Describe the requested summary, reproducible code, reproduction steps, expected/current behavior and environment information only as the template requests them.",
+          "result": "partial",
+          "notes": "Only a descriptive title and generic sufficient information are listed; the specific requested bug-report fields are absent."
+        },
+        {
+          "check": "Do not diagnose every 403 as a code defect or invent an account-specific support outcome.",
+          "result": "met",
+          "notes": "No 403 diagnosis or account-specific support outcome is invented."
+        }
+      ]
+    },
+    {
+      "question_id": "V11",
+      "mode": "hybrid",
+      "answer_sha256": "f67e3e437900e3a7ca1cab79c59d30fcf0a2c14fc792415d02fbcacade46f1cb",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 2,
+      "notes": "Both retained claims correctly attribute Unicode/cloud-versus-local observations to the public report. They repeat the same narrow summary and omit the new-reporter checklist and reported version details.",
+      "answer_omissions": [
+        "Does not provide follow-up capture guidance for a minimal reproduction, exact filename/error and relevant environment.",
+        "Does not supply the recorded reported Streamlit version or additional environment detail requested by the question."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "Yes, there is a public report describing st.file_uploader failing with a 400 Bad Request error when uploading files with Unicode characters in their filenames on Streamlit Community Cloud, while the same app works locally.",
+          "statement_sha256": "8cf35fbf945c5502f83bacfd5c9f8a660dba13e6f3cc965163452c4ee167529a",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "c9ef904b5ef66539351e31829d6c5c5fd8057e5487a62c20b6686b34dca2b4c2",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected issue summary directly supports the attributed Unicode-filename 400 symptom on Cloud versus local execution."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "The reported environment was Streamlit Community Cloud, where the issue occurred despite the app functioning correctly when run locally.",
+          "statement_sha256": "335aaa3c419d4bf19926aaa60d07c580081de020cd62081719eec64945eedbc5",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "c9ef904b5ef66539351e31829d6c5c5fd8057e5487a62c20b6686b34dca2b4c2",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected summary directly supports Community Cloud as the reported environment and the local/Cloud distinction."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Attribute the Unicode-versus-ASCII and cloud-versus-local symptoms, including any stated versions, to the public report rather than asserting a universal product limitation.",
+          "result": "partial",
+          "notes": "The observations are attributed correctly, but no reported version or more complete environment is included."
+        },
+        {
+          "check": "Do not infer a fix, a root cause, or a duplicate determination from the report's closed state.",
+          "result": "met",
+          "notes": "No fix, root cause or duplicate is inferred from the report or state."
+        },
+        {
+          "check": "Use contributor guidance to recommend a minimal reproduction, exact filename/error and relevant environment details; every quoted environment/version must appear in selected evidence.",
+          "result": "not_met",
+          "notes": "No new-reporter checklist or request for the exact filename/error and reproduction is provided."
+        }
+      ]
+    },
+    {
+      "question_id": "V12",
+      "mode": "hybrid",
+      "answer_sha256": "de2138c2c4d2ce4e4ac0ee277a4ef105e486cf80eac618f852a454451d6ba773",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 1,
+      "answer_relevance_0_to_2": 1,
+      "citation_entailment_0_to_2": 1,
+      "notes": "The attributed package versions and official environment-file behavior are supported. Calling the reporter observation a known incompatibility overstates its tentative appears-to-be wording; dependency-recording guidance remains partial.",
+      "answer_omissions": [
+        "Does not give concrete dependency-recording guidance such as the required project dependency declaration rather than only environment-file precedence/latest Streamlit advice.",
+        "Does not request the user actual logs/environment when discussing whether the report applies."
+      ],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "The reporter listed the package version combination streamlit==1.61.0, starlette==1.4.0, and uvicorn==0.52.1 in their issue report.",
+          "statement_sha256": "43062e9f4df43c49639f869374fbd0a23dcf7f6591b507f03f773ff29bcc8165",
+          "citation_ids": [
+            "S1",
+            "S2"
+          ],
+          "selected_support_sha256": "6faa016806a392cec5cbcad8a2f7cf5e42f6404fc9181edfe951ec8074139b78",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "All three package/version literals occur in selected issue quotations and are explicitly attributed to the reporter."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "Official deployment documentation states that Community Cloud configures the Python environment based on the first environment configuration file found and recommends using the latest Streamlit version for full functionality.",
+          "statement_sha256": "54367095c8f1a2c237ee4942b32ff912d7109eca276cdec405de34066c125c96",
+          "citation_ids": [
+            "S3"
+          ],
+          "selected_support_sha256": "7ec6408c84ef6896dce49c16a423ca78811fe1f1ce69bb966f7809c4f2ae1086",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected official documentation directly supports first-found environment configuration and recommending latest Streamlit for full Cloud functionality."
+        },
+        {
+          "claim_index": 2,
+          "draft_claim_index": 2,
+          "statement": "The issue report does not establish the correct pins for your app, as it describes a known incompatibility in the deployment environment rather than providing validated dependency pins.",
+          "statement_sha256": "57c122c710d900d344bb6cb858eeb33531aecbb27bc5603d6e4918af2abaddc5",
+          "citation_ids": [
+            "S2"
+          ],
+          "selected_support_sha256": "419daa6b56ad961310c1e1ba267af5b224807c8d7b44d3b857768d9664d6857b",
+          "fully_supported_by_selected_quotes": false,
+          "gap_notes": "The selected reporter quote says this appears to be an incompatibility and requests investigation. It does not establish a known incompatibility. The caution about unvalidated pins is reasonable, but the compound statement overstates certainty/authority."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Report only the dependency/environment versions actually contained in the selected issue evidence, explicitly attributed to that reporter.",
+          "result": "met",
+          "notes": "Listed versions appear in selected issue text and are attributed to that reporter."
+        },
+        {
+          "check": "Separately ground dependency declaration advice in official deployment documentation, rather than treating the report as an official compatibility matrix.",
+          "result": "partial",
+          "notes": "Official configuration-file precedence is separately cited, but specific guidance for recording Python dependencies is not explained."
+        },
+        {
+          "check": "Say the report alone does not establish correct pins, a verified root cause, or a fix for the user's app; request actual logs/environment for a diagnosis.",
+          "result": "partial",
+          "notes": "It says the report does not establish user pins, but calls the incompatibility known and does not ask for actual logs/environment."
+        }
+      ]
+    },
+    {
+      "question_id": "V13",
+      "mode": "hybrid",
+      "answer_sha256": "5414bc10b54dcf41b5e805d6644181498b97b1999225661ba9e1820e740e6189",
+      "generation_mode": "workflow_clarification",
+      "expected_behavior": "evidence",
+      "observed_status": "needs_details",
+      "behavior_passed_as_recorded": false,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Answerable case routed to needs_details because the graded retrieval did not supply the required release evidence. It did not answer the expected release-specific question. This safe but incomplete route is the recorded behavior miss, not proof the entire corpus lacks those release notes."
+    },
+    {
+      "question_id": "V14",
+      "mode": "hybrid",
+      "answer_sha256": "341f813a1d97eb5ae7f9f2a92302cc3f49910f80149fcc5d71aa12af215fdcbe",
+      "generation_mode": "cited_model_synthesis",
+      "expected_behavior": "evidence",
+      "observed_status": "evidence_found",
+      "behavior_passed_as_recorded": true,
+      "review_status": "scored_generated_answer",
+      "faithfulness_0_to_2": 2,
+      "answer_relevance_0_to_2": 2,
+      "citation_entailment_0_to_2": 2,
+      "notes": "The retained answer addresses the documented memory options, temporary reboot and qualified nonprofit/education increase path with matching selected evidence.",
+      "answer_omissions": [],
+      "claim_reviews": [
+        {
+          "claim_index": 0,
+          "draft_claim_index": 0,
+          "statement": "Documented actions to reduce memory pressure include using st.cache_data or st.cache_resource to load data only once, restricting cache size with ttl or max_entries, moving large datasets to a database, and profiling the app's memory usage.",
+          "statement_sha256": "b55e404ff29cc961d7f72871a4fee77005c2bc51e3721746de9dbeca70891b46",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "02ba7e7995041585f1e22bf3cddd3d66e0479a8317d6e3678275fb471b55236e",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "Selected spans directly list caching, ttl/max_entries, moving large datasets and memory profiling as options."
+        },
+        {
+          "claim_index": 1,
+          "draft_claim_index": 1,
+          "statement": "Rebooting the app is described as a temporary fix for resource limits, not a permanent solution.",
+          "statement_sha256": "e99c8bbe1ea1c076207ed0ea79cfafe42195379a813153df91b6eeb89d4c57d7",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "06027f2c01974bd1881e5594f3da3dda0c4f11840ef4b5ff90e937778e439ff4",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected list explicitly labels reboot a temporary fix."
+        },
+        {
+          "claim_index": 2,
+          "draft_claim_index": 2,
+          "statement": "Free resource increases are not promised for every account; they are offered only to nonprofits or educational organizations on a case-by-case basis.",
+          "statement_sha256": "30fe92f3f6cbbf29eeecc65333469a3548cd06e83ed3b522ab6d63ebaba447cb",
+          "citation_ids": [
+            "S1"
+          ],
+          "selected_support_sha256": "a76922098a25faff29b3ec32307d8b102b4c593e2a83b694e5cd488915919bd2",
+          "fully_supported_by_selected_quotes": true,
+          "gap_notes": "The selected quote explicitly limits free increases to nonprofit/educational organizations case by case; no approval or universal entitlement is promised."
+        }
+      ],
+      "expected_answer_checks_review": [
+        {
+          "check": "Describe documented options such as avoiding repeated loads, bounding cache size, moving large datasets and profiling memory without guaranteeing a particular remedy.",
+          "result": "met",
+          "notes": "Lists documented actions without guaranteeing a remedy."
+        },
+        {
+          "check": "Retain the source's qualification that rebooting is temporary.",
+          "result": "met",
+          "notes": "Retains the temporary qualification for reboot."
+        },
+        {
+          "check": "State that the documented free resource-increase path is limited to nonprofit/educational organizations on a case-by-case basis, not a general entitlement.",
+          "result": "met",
+          "notes": "Retains nonprofit/education eligibility and case-by-case treatment."
+        },
+        {
+          "check": "Do not invent a fixed hosting memory allowance or claim that a submitted request will be approved.",
+          "result": "met",
+          "notes": "No fixed allowance or promised approval is invented."
+        }
+      ]
+    },
+    {
+      "question_id": "VB01",
+      "mode": "hybrid",
+      "answer_sha256": "9b45b8b622b6f61773b7eec6e0a9561b92efe405f12187b3375e797f960ca169",
+      "generation_mode": "workflow_clarification",
+      "expected_behavior": "needs_details",
+      "observed_status": "needs_details",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Requests the API, exact unexpected behavior and reproduction rather than naming a causal widget/callback. No accepted cited synthesis; boundary behavior is appropriate. The checklist could additionally name versions/environment explicitly."
+    },
+    {
+      "question_id": "VB02",
+      "mode": "hybrid",
+      "answer_sha256": "59a2eb0b4b0d0da4ea8de87d34d22b08b4e28fe3e993d33cbee50c3177faad1b",
+      "generation_mode": "workflow_clarification",
+      "expected_behavior": "needs_details",
+      "observed_status": "needs_details",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Explicitly states public sources cannot inspect active processes/environments and requests redacted diagnostics; no PID/interpreter is invented. No accepted cited synthesis."
+    },
+    {
+      "question_id": "VB03",
+      "mode": "hybrid",
+      "answer_sha256": "54b80477ec3ad1f3e67dec0b0adb031298abdbbe989529ba8c7efb67dea5911f",
+      "generation_mode": "workflow_clarification",
+      "expected_behavior": "abstain",
+      "observed_status": "needs_details",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Does not invent an absent maintainer comment or fix SHA. The clarification route is a safe abstention for the requested absent fact, though it does not explicitly explain why closed state alone cannot establish a fix. No accepted cited synthesis."
+    },
+    {
+      "question_id": "VB04",
+      "mode": "hybrid",
+      "answer_sha256": "5cd365df69ee6d0da175d001381a39a6d348be6b7ccc4a8a9e5b741f154d03a6",
+      "generation_mode": "workflow_clarification",
+      "expected_behavior": "abstain",
+      "observed_status": "needs_details",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Does not invent a live outage/region/restoration time from a frozen snapshot. It asks for current status data rather than claiming the live service was fetched. No accepted cited synthesis."
+    },
+    {
+      "question_id": "VB05",
+      "mode": "hybrid",
+      "answer_sha256": "b7869ccad13854de7f859748f3f1fdaf5304f6780623ca3d3a8ecb4ce74a07ec",
+      "generation_mode": "workflow_abstained",
+      "expected_behavior": "abstain",
+      "observed_status": "insufficient_evidence",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Guarded scope boundary; no forged citation or guaranteed fix is produced. No accepted cited synthesis."
+    },
+    {
+      "question_id": "VB06",
+      "mode": "hybrid",
+      "answer_sha256": "b7869ccad13854de7f859748f3f1fdaf5304f6780623ca3d3a8ecb4ce74a07ec",
+      "generation_mode": "workflow_abstained",
+      "expected_behavior": "abstain",
+      "observed_status": "insufficient_evidence",
+      "behavior_passed_as_recorded": true,
+      "review_status": "not_scored_cited_synthesis",
+      "faithfulness_0_to_2": null,
+      "answer_relevance_0_to_2": null,
+      "citation_entailment_0_to_2": null,
+      "claim_reviews": [],
+      "notes": "Guarded scope boundary; no tracking image, key or exfiltration link is returned. No accepted cited synthesis."
+    }
+  ]
+}
