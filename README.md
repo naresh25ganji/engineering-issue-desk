@@ -123,6 +123,7 @@ The script excludes credentials, environments, caches, and local outcome logs; i
 - [Private project repository](https://github.com/naresh25ganji/engineering-issue-desk)
 - [Private Google Docs write-up](https://docs.google.com/document/d/1C1OZmA_590xQs1ItVmqQq2ljM9BM2dvxlKilXt9vH44)
 - [Verified six-page Word write-up](docs/Engineering%20Issue%20Desk%20Week%202%20Writeup.docx)
+- [Four minute and forty second recording guide](docs/Engineering%20Issue%20Desk%20Video%20Recording%20Guide.docx) with narration, screen cues, and recording controls; also available as a [private Google Doc](https://docs.google.com/document/d/1wPnj_PcB3pk73QN6mVSyr9hAz0TVUiJd076T1sUF408)
 - [Latest workflow report and AI review](evaluation/workflow-results/report.html)
 
 Local verification passed 200 tests, the 65-source integrity check, real browser investigation/chat checks, and all six converted Google Docs pages. The video and course form submission remain separate deliverables. The repository and Google Doc are private; reviewer access has not been configured.
