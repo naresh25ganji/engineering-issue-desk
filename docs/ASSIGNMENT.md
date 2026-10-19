@@ -53,6 +53,8 @@ LangGraph now controls the investigation branches, and LangChain Core carries te
 
 ## Architecture
 
+The standalone [SVG diagram](architecture.svg) and [PNG copy](architecture.png) provide a presentation view of ingestion, query-time branches, and nested answer checks. Open either file separately for the demo; the text diagram below remains a compact repository reference.
+
 ```text
 Official docs + selected GitHub issue snapshots
             │ normalize, provenance, pinned/datable snapshot
@@ -100,7 +102,7 @@ Search finds candidates; analysis applies a conservative relevance check and han
 
 Graph inspection starts from exact known API/version seeds or an explicitly selected node and traverses at most two hops in either direction while preserving edge orientation. Views enforce a node budget and disclose truncation. Graph search has no LLM/fuzzy/semantic fallback. Augmentation considers up to 100 known source IDs, filters the chosen source kinds, and adds at most four sources within an eight-chunk final budget; it can append existing source chunks but never invent a source. Shared API mentions and a closed state do not establish causality, duplicate issues, affected-release ranges, compatibility, or fixes. The separate six-distinct-source comparison in `evaluation/graph-comparison-results/` found exact-graph Hit@6 of 5/14 original and 3/14 validation evidence cases, versus 14/14 for hybrid on both sets. Exact-seed graph retrieval has low recall on these questions and remains an optional explorer/augmentation path.
 
-The workflow supports reference resolution from at most the last three **user** requests, each bounded to 1,000 characters and within the query budget. Prior assistant answers never become source evidence, and every turn retrieves current snapshot evidence again. This is short explicit context without a persistent checkpoint or cross-session memory. The Streamlit follow-up chat interface is being integrated; UI availability and behavior still require the final app smoke check. Handoffs create a reviewable checklist/draft and never promise that a maintainer was contacted or an issue was posted.
+The workflow supports reference resolution from at most the last three **user** requests, each bounded to 1,000 characters and within the query budget. Prior assistant answers never become source evidence, and every eligible turn retrieves current snapshot evidence again. This is short explicit context without a persistent checkpoint or cross-session memory. The Streamlit follow-up chat interface is implemented and passed automated and real-browser checks. Handoffs create a reviewable checklist/draft and never promise that a maintainer was contacted or an issue was posted.
 
 ## Source provenance, freshness, and version limits
 

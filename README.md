@@ -4,6 +4,8 @@ Investigate Streamlit behavior and prepare a reviewable issue draft from a bound
 
 This independent course project does not establish a private application's root cause, prove a duplicate, promise a fix, inspect a developer's machine, execute pasted commands, or post issues.
 
+For the demo walkthrough, open the standalone [architecture diagram](docs/architecture.svg) or its [PNG copy](docs/architecture.png). Read top to bottom: knowledge-base preparation, the LangGraph investigation workflow, and the generated-answer checks inside Analyze. Both files work offline.
+
 ## Run locally
 
 Use Python 3.12 and [uv](https://docs.astral.sh/uv/):

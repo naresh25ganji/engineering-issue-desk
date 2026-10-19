@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title description">
+<title id="title">Engineering Issue Desk architecture</title>
+<desc id="description">Three sections show corpus ingestion, the six-node LangGraph investigation workflow, and generated-answer checks inside Analyze. A NetworkX source-fact graph branches directly from source records. Missing diagnostics or insufficient evidence route to a human handoff. Generation is optional and AI checks do not guarantee correctness.</desc>
+<defs>
+  <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8" fill="#45665f"/></marker>
+  <marker id="feed" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8" fill="#447d9b"/></marker>
+  <marker id="branch" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8" fill="#a36a1f"/></marker>
+  <style>
+    text{font-family:Arial,Helvetica,sans-serif;fill:#17342f}
+    .eyebrow{font-size:17px;font-weight:700;letter-spacing:2px;fill:#53776b}
+    .title{font-size:43px;font-weight:700;letter-spacing:-1.3px}
+    .subtitle{font-size:22px;fill:#536963}
+    .section{font-size:18px;font-weight:700;letter-spacing:1.2px;fill:#44695d}
+    .card-title{font-size:23px;font-weight:700}
+    .body{font-size:20px;fill:#4b625c}
+    .small{font-size:18px;fill:#526962}
+    .node-title{font-size:23px;font-weight:700}
+    .node-body{font-size:18px;fill:#4b625c}
+    .light{fill:#f2faf5}
+    .light-body{fill:#dcece3}
+    .connector{fill:none;stroke:#45665f;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .data-feed{fill:none;stroke:#447d9b;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#feed)}
+    .alternate{fill:none;stroke:#a36a1f;stroke-width:2.1;stroke-dasharray:7 6;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#branch)}
+  </style>
+</defs>
+<rect width="1600" height="1080" fill="#f6f8f5"/>
+<text x="64" y="35" class="eyebrow">WEEK 2 / DEMO ARCHITECTURE</text>
+<text x="64" y="85" class="title">Engineering Issue Desk</text>
+<text x="64" y="121" class="subtitle">Public-source evidence → a cited explanation or a reviewable handoff</text>
+<rect x="1160" y="49" width="376" height="35" rx="17" fill="#e8eee7"/>
+<text x="1348" y="72" text-anchor="middle" class="small">Dashed arrows = alternate paths</text>
+<rect x="40" y="144" width="1520" height="280" rx="18" fill="#eaf0e9"/>
+<text x="64" y="179" class="section">1 / BUILD THE KNOWLEDGE BASE</text>
+<text x="1536" y="179" class="small" text-anchor="end">Manual snapshot refresh • source authority and version scope retained</text>
+<rect x="40" y="464" width="1520" height="314" rx="18" fill="#ffffff" stroke="#dce5dd"/>
+<text x="64" y="494" class="section">2 / LANGGRAPH WORKFLOW</text>
+<text x="1536" y="494" class="small" text-anchor="end">Question + version + bounded USER follow-ups • one retrieval per eligible request</text>
+<rect x="40" y="812" width="1520" height="214" rx="18" fill="#edf1f7"/>
+<text x="64" y="842" class="section">3 / INSIDE ANALYZE: GENERATED-ANSWER BRANCH</text>
+<text x="1536" y="842" class="small" text-anchor="end">Nested steps, not additional LangGraph nodes</text>
+
+<path d="M408,254 H440" class="connector"/>
+<path d="M784,254 H816" class="connector"/>
+<path d="M1160,254 H1192" class="connector"/>
+<path d="M236,310 V334" class="connector"/>
+<path d="M1536,254 H1549 V440 H424 V514" class="data-feed"/>
+<path d="M396,398 V514" class="alternate"/>
+<path d="M288,589 H312" class="connector"/>
+<path d="M536,589 H560" class="connector"/>
+<path d="M784,589 H808" class="connector"/>
+<path d="M1032,589 H1056" class="connector"/>
+<path d="M1280,589 H1304" class="connector"/>
+<path d="M176,664 V720 H1168 V664" class="alternate"/>
+<path d="M672,664 V720 H1168 V664" class="alternate"/>
+<path d="M408,919 H440" class="connector"/>
+<path d="M784,919 H816" class="connector"/>
+<path d="M1160,919 H1192" class="connector"/>
+<rect x="64" y="198" width="344" height="112" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="84" y="233" class="card-title">65 public source records</text>
+<text x="84" y="263" class="body">38 docs + 24 issue reports</text>
+<text x="84" y="289" class="body">2 contribution + 1 release</text>
+<rect x="440" y="198" width="344" height="112" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="460" y="233" class="card-title">Clean + preserve context</text>
+<text x="460" y="263" class="body">URL, source kind, snapshot</text>
+<text x="460" y="289" class="body">Commit + version scope</text>
+<rect x="816" y="198" width="344" height="112" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="836" y="233" class="card-title">Split source passages</text>
+<text x="836" y="263" class="body">Structured: 688 (default)</text>
+<text x="836" y="289" class="body">Fixed windows: 378</text>
+<rect x="1192" y="198" width="344" height="112" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="1212" y="233" class="card-title">Build search indexes</text>
+<text x="1212" y="263" class="body">BM25 + normalized vectors</text>
+<text x="1212" y="289" class="body">Local .npz files, fingerprinted</text>
+<rect x="64" y="334" width="684" height="64" rx="10" fill="#fff9ed" stroke="#d9bc88"/>
+<text x="84" y="359" class="body">NetworkX source-fact graph (optional)</text>
+<text x="84" y="385" class="small">Built directly from sources • literal APIs / reported versions</text>
+<rect x="816" y="334" width="720" height="64" rx="10" fill="#f5f9fc" stroke="#b9cddd"/>
+<text x="836" y="359" class="body">Embeddings for both documents and queries</text>
+<text x="836" y="385" class="small">Local BGE 384D (default) or Nebius Qwen 1024D</text>
+<rect x="64" y="514" width="224" height="150" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="84" y="549" class="node-title">Prepare</text>
+<text x="84" y="579" class="node-body">Resolve follow-ups</text>
+<text x="84" y="605" class="node-body">Route / guard request</text>
+<text x="84" y="631" class="node-body">Ask for local details</text>
+<rect x="312" y="514" width="224" height="150" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="332" y="549" class="node-title">Retrieve</text>
+<text x="332" y="579" class="node-body">BM25 + dense / RRF</text>
+<text x="332" y="605" class="node-body">Optional: FlashRank</text>
+<text x="332" y="631" class="node-body">Optional: source graph</text>
+<rect x="560" y="514" width="224" height="150" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="580" y="549" class="node-title">Grade</text>
+<text x="580" y="579" class="node-body">AI directness check*</text>
+<text x="580" y="605" class="node-body">Select useful passages</text>
+<text x="580" y="631" class="node-body">Or clarify / abstain</text>
+<rect x="808" y="514" width="224" height="150" rx="12" fill="#eaf5ed" stroke="#63947c" stroke-width="1.3"/>
+<text x="828" y="549" class="node-title">Analyze</text>
+<text x="828" y="579" class="node-body">Check literal evidence</text>
+<text x="828" y="605" class="node-body">Extract OR generate</text>
+<text x="828" y="631" class="node-body">Generated path below</text>
+<rect x="1056" y="514" width="224" height="150" rx="12" fill="#fff" stroke="#c9d6cc" stroke-width="1.3"/>
+<text x="1076" y="549" class="node-title">Handoff</text>
+<text x="1076" y="579" class="node-body">Review answer / gaps</text>
+<text x="1076" y="605" class="node-body">Prepare an issue draft</text>
+<text x="1076" y="631" class="node-body">Human review if needed</text>
+<rect x="1304" y="514" width="224" height="150" rx="12" fill="#173c32" stroke="#173c32" stroke-width="1.3"/>
+<text x="1324" y="549" class="node-title light">Finish</text>
+<text x="1324" y="579" class="node-body light-body">Return to the app</text>
+<text x="1324" y="605" class="node-body light-body">Sources + stage trace</text>
+<text x="1324" y="631" class="node-body light-body">Usage + downloads</text>
+<text x="212" y="702" class="small">Missing diagnostics / unsupported request</text>
+<text x="698" y="702" class="small">No evidence / negative or failed grade</text>
+<text x="64" y="754" class="small">* Generation OFF: grading is unscored; ranked passages remain available for inspection.</text>
+<text x="1536" y="754" class="small" text-anchor="end">Handoff prepares a draft; nothing is posted.</text>
+<rect x="64" y="864" width="344" height="110" rx="12" fill="#fff" stroke="#c5d0e0" stroke-width="1.3"/>
+<text x="84" y="899" class="card-title">Draft cited claims</text>
+<text x="84" y="929" class="body">Nebius synthesis model</text>
+<text x="84" y="955" class="body">Select source + quote IDs</text>
+<rect x="440" y="864" width="344" height="110" rx="12" fill="#fff" stroke="#c5d0e0" stroke-width="1.3"/>
+<text x="460" y="899" class="card-title">Validate references</text>
+<text x="460" y="929" class="body">IDs, spans, numbers, structure</text>
+<text x="460" y="955" class="body">Valid, nonempty claims only</text>
+<rect x="816" y="864" width="344" height="110" rx="12" fill="#fff" stroke="#c5d0e0" stroke-width="1.3"/>
+<text x="836" y="899" class="card-title">Audit claim support</text>
+<text x="836" y="929" class="body">Separate Nebius verifier</text>
+<text x="836" y="955" class="body">Check selected quotes only</text>
+<rect x="1192" y="864" width="344" height="110" rx="12" fill="#fff" stroke="#c5d0e0" stroke-width="1.3"/>
+<text x="1212" y="899" class="card-title">Return safely</text>
+<text x="1212" y="929" class="body">Cited / labeled partial answer</text>
+<text x="1212" y="955" class="body">Or evidence + explicit reason</text>
+<text x="64" y="1007" class="small">Generation OFF → extracted passages. Failed validation / audit or provider call → evidence. Partial / fallback → human review.</text>
+<text x="64" y="1055" class="small">AI checks can make mistakes. Citations are not proof of correctness. No automatic retry or repair loop.</text>
+<text x="1536" y="1055" class="small" text-anchor="end">Evidence • provenance • explicit limits</text>
+</svg>
