@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1580" viewBox="0 0 1800 1580" role="img" aria-labelledby="title desc">
+<title id="title">Engineering Issue Desk system architecture</title>
+<desc id="desc">The engineer uses Streamlit or the CLI. A local service coordinates a checkpointed Deep Agents investigator, bounded read tools, immutable evidence and an independent support reviewer before human review. Fireworks, Keenable and GitHub are external providers. Local databases preserve cases, sources, events and graph state. Repository context is explicitly opt in and never executes code.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#365f54"/></marker>
+  <style>
+    text{font-family:Arial,Helvetica,sans-serif;fill:#142b2b} .title{font-size:34px;font-weight:700}.subtitle{font-size:20px}.section{font-size:25px;font-weight:700}.head{font-size:24px;font-weight:700}.body{font-size:21px}.small{font-size:18px}.box{fill:#fff;stroke:#819b91;stroke-width:1.6}.boundary{fill:#f2f7f4;stroke:#51736a;stroke-width:2}.external{fill:#f8faf9;stroke:#9aaba5;stroke-width:2;stroke-dasharray:9 6}.flow{fill:none;stroke:#365f54;stroke-width:2.4;marker-end:url(#arrow)}
+  </style>
+</defs>
+<rect width="1800" height="1580" fill="#fff"/>
+<text x="40" y="55" class="title">Engineering Issue Desk system architecture</text>
+<text x="40" y="91" class="subtitle">Local control and durable evidence with bounded provider reads   •   October 23 2026</text>
+
+<rect x="40" y="125" width="570" height="140" rx="10" class="box"/>
+<text x="65" y="162" class="head">Engineer through Streamlit or CLI</text>
+<text x="65" y="198" class="body">Issue, version, optional supplied code</text>
+<text x="65" y="232" class="body">Repository context requires explicit opt in</text>
+<rect x="650" y="125" width="450" height="140" rx="10" class="box"/>
+<text x="675" y="162" class="head">Existing retrieval workspace</text>
+<text x="675" y="198" class="body">Original RAG graph and experiments</text>
+<text x="675" y="232" class="body">Project guide: static docs and diagrams</text>
+<rect x="1140" y="125" width="620" height="140" rx="10" class="box"/>
+<text x="1165" y="162" class="head">Human review and local report</text>
+<text x="1165" y="198" class="body">Inspect sources → approve, reject, or revise</text>
+<text x="1165" y="232" class="body">No GitHub publishing or automatic approval</text>
+
+<rect x="40" y="325" width="1160" height="835" rx="12" class="boundary"/>
+<text x="65" y="363" class="section">Local application control boundary</text>
+<rect x="75" y="390" width="1085" height="140" rx="8" class="box"/>
+<text x="100" y="425" class="head">InvestigationService and outer LangGraph</text>
+<text x="100" y="462" class="body">Validate intake → acquire process lock → claim case → restore cumulative budget</text>
+<text x="100" y="498" class="body">Investigate and validate → evidence review → human interrupt → finish or revise</text>
+
+<rect x="75" y="575" width="655" height="245" rx="8" class="box"/>
+<text x="100" y="612" class="head">Deep Agents investigation harness</text>
+<text x="100" y="650" class="body">Orchestrator plans and chooses tools</text>
+<text x="100" y="686" class="body">Documentation and issues • correctness and security</text>
+<text x="100" y="722" class="body">Tests and reproduction specialists</text>
+<text x="100" y="758" class="body">Shared case registry and budget across every role</text>
+<text x="100" y="794" class="small">Virtual StateBackend scratch files; no working host shell</text>
+
+<rect x="775" y="575" width="385" height="245" rx="8" class="box"/>
+<text x="800" y="612" class="head">Evidence registry</text>
+<text x="800" y="650" class="body">Immutable literal snapshots</text>
+<text x="800" y="686" class="body">Case IDs and source hashes</text>
+<text x="800" y="722" class="body">Deterministic quote IDs</text>
+<text x="800" y="758" class="body">Schema and span validation</text>
+<text x="800" y="794" class="small">Citation integrity is not entailment</text>
+
+<rect x="75" y="870" width="655" height="240" rx="8" class="box"/>
+<text x="100" y="907" class="head">Bounded static read tools</text>
+<text x="100" y="945" class="body">Snapshot search • Keenable search and page fetch</text>
+<text x="100" y="981" class="body">Public Streamlit issue and immutable PR patch reads</text>
+<text x="100" y="1017" class="body">Opt-in repository list, literal search, and excerpt read</text>
+<text x="100" y="1053" class="small">Repository scope: app.py and triage_desk Python files only</text>
+<text x="100" y="1085" class="small">Repository inventory/search give leads; reads save evidence</text>
+
+<rect x="775" y="870" width="385" height="240" rx="8" class="box"/>
+<text x="800" y="907" class="head">Independent evidence review</text>
+<text x="800" y="945" class="body">Selected claims and quotes only</text>
+<text x="800" y="981" class="body">Indexed support verdicts</text>
+<text x="800" y="1017" class="body">Can remove, never add or approve</text>
+<text x="800" y="1053" class="small">Strict coverage and safe failure codes</text>
+<text x="800" y="1085" class="small">AI judgment can still retain false claims</text>
+
+<rect x="1250" y="325" width="510" height="835" rx="12" class="external"/>
+<text x="1275" y="363" class="section">External provider boundary</text>
+<rect x="1285" y="390" width="440" height="195" rx="8" class="box"/>
+<text x="1310" y="427" class="head">Fireworks</text>
+<text x="1310" y="465" class="body">Tool-calling investigator and specialists</text>
+<text x="1310" y="501" class="body">Separate evidence support review call</text>
+<text x="1310" y="537" class="small">Receives issue, selected code, quotes,</text>
+<text x="1310" y="564" class="small">and model-facing tool results</text>
+<rect x="1285" y="630" width="440" height="180" rx="8" class="box"/>
+<text x="1310" y="667" class="head">Keenable</text>
+<text x="1310" y="705" class="body">Approved public search and page fetch</text>
+<text x="1310" y="741" class="small">Receives query or requested page URL</text>
+<text x="1310" y="777" class="small">Search snippets remain discovery evidence</text>
+<rect x="1285" y="855" width="440" height="180" rx="8" class="box"/>
+<text x="1310" y="892" class="head">GitHub public API</text>
+<text x="1310" y="930" class="body">Fixed streamlit/streamlit repository</text>
+<text x="1310" y="966" class="small">Issue body and bounded comments</text>
+<text x="1310" y="1002" class="small">PR comparison pinned to base and head SHA</text>
+<rect x="1285" y="1070" width="440" height="65" rx="8" class="box"/>
+<text x="1310" y="1109" class="small">LangSmith opt-in traces may retain content</text>
+
+<path d="M325 265 V298 H1120 V385" class="flow"/>
+<text x="343" y="289" class="small">Explicit request</text>
+<path d="M1140 390 V285 H1450 V270" class="flow"/>
+<text x="1180" y="311" class="small">Saved report and review</text>
+<path d="M405 530 V570" class="flow"/>
+<path d="M730 695 H770" class="flow"/>
+<path d="M405 820 V865" class="flow"/>
+<path d="M730 988 H750 V778 H770" class="flow"/>
+<path d="M1160 460 H1180 V990 H1165" class="flow"/>
+<path d="M1200 489 H1280" class="flow"/>
+<path d="M1200 720 H1280" class="flow"/>
+<path d="M1200 945 H1280" class="flow"/>
+
+<rect x="40" y="1230" width="1720" height="245" rx="12" class="boundary"/>
+<text x="65" y="1268" class="section">Local persistence and reproducible inputs</text>
+<rect x="75" y="1290" width="530" height="155" rx="8" class="box"/>
+<text x="100" y="1327" class="head">cases.sqlite</text>
+<text x="100" y="1365" class="body">Case, consent flag, current report, review notes</text>
+<text x="100" y="1401" class="body">Immutable evidence and ordered audit events</text>
+<text x="100" y="1430" class="small">Short connections • WAL • per-case advisory process lock</text>
+<rect x="645" y="1290" width="530" height="155" rx="8" class="box"/>
+<text x="670" y="1327" class="head">checkpoints.sqlite</text>
+<text x="670" y="1365" class="body">Outer workflow and human-review interrupt</text>
+<text x="670" y="1401" class="body">Inner revision and repair conversations</text>
+<text x="670" y="1430" class="small">Pending work resumes without resetting the case budget</text>
+<rect x="1215" y="1290" width="510" height="155" rx="8" class="box"/>
+<text x="1240" y="1327" class="head">Versioned source corpus</text>
+<text x="1240" y="1365" class="body">65 records with pins, dates, hashes, and licenses</text>
+<text x="1240" y="1401" class="body">Evaluation fixtures and frozen result reports</text>
+<text x="1240" y="1430" class="small">Historical observations are never rewritten by a new run</text>
+<path d="M340 1110 V1225" class="flow"/>
+<path d="M970 1110 V1225" class="flow"/>
+<text x="360" y="1206" class="small">Register sources and events</text>
+<text x="990" y="1206" class="small">Checkpoint graph state</text>
+
+<text x="40" y="1516" class="small">Shared case limits: 18 model calls • 28 tool calls • 64,000 reported-token threshold • 2 revisions • 2 repairs</text>
+<text x="40" y="1548" class="small">180-second active-invocation check before dispatch • no semantic memory across cases • no code execution or external publishing</text>
+</svg>

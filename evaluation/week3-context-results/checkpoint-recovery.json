@@ -1,0 +1,36 @@
+{
+  "verification_kind": "live_saved_checkpoint_retry",
+  "case_id": "abc63196-bfa2-43d2-b89f-fed2e18eef1a",
+  "original_observation": "Frozen W3-02 failed before the diagnostics update; historical report remains unchanged.",
+  "before_status": "failed",
+  "after_status": "awaiting_review",
+  "new_accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1582,
+      "output_tokens": 1134,
+      "total_tokens": 2716
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "new_model_roles": [
+    "evidence_reviewer"
+  ],
+  "repeated_investigator_calls": 0,
+  "report_approved": false,
+  "quality_review_status": "completed",
+  "human_quality": "unscored"
+}

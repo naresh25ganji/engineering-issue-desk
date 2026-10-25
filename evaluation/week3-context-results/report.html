@@ -1,0 +1,617 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Week 3 investigation evaluation</title>
+<style>body{font:16px system-ui;max-width:1100px;margin:40px auto;padding:0 24px;line-height:1.5;color:#172033}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f8;padding:18px;border-radius:8px}article{border-top:1px solid #ccd3df;margin-top:32px}h1,h2{line-height:1.2}a{color:#1458ab}</style>
+<h1>Week 3 Deep Investigation evaluation</h1>
+<p>Mode: live. Human quality fields are unscored.</p>
+<h2>Observed handoffs and accounting</h2><pre>{
+  &quot;scheduled_cases&quot;: 3,
+  &quot;attempted_cases&quot;: 3,
+  &quot;completed_handoffs&quot;: 3,
+  &quot;failed_cases&quot;: 0,
+  &quot;not_run_cases&quot;: 0,
+  &quot;handoff_rate&quot;: 1.0,
+  &quot;handoff_denominator&quot;: &quot;All scheduled selected cases, including errors. This measures saved review handoff completion, not answer accuracy.&quot;,
+  &quot;human_accuracy&quot;: null,
+  &quot;human_citation_entailment&quot;: null,
+  &quot;citation_integrity_passed_cases&quot;: 3,
+  &quot;ai_rejected_findings&quot;: 1,
+  &quot;ai_rejected_next_steps&quot;: 2,
+  &quot;model_calls&quot;: 12,
+  &quot;tool_calls&quot;: 6,
+  &quot;unfinished_call_records&quot;: 0,
+  &quot;model_calls_by_role&quot;: {
+    &quot;investigator&quot;: 9,
+    &quot;evidence_reviewer&quot;: 3
+  },
+  &quot;tool_calls_by_name&quot;: {
+    &quot;read_case_evidence&quot;: 2,
+    &quot;list_repository_files&quot;: 1,
+    &quot;read_repository_file&quot;: 3
+  },
+  &quot;errors_by_role_or_tool&quot;: {
+    &quot;read_repository_file&quot;: 1
+  },
+  &quot;reported_token_usage&quot;: {
+    &quot;input_tokens&quot;: 61598,
+    &quot;output_tokens&quot;: 8448,
+    &quot;total_tokens&quot;: 70046
+  },
+  &quot;model_calls_missing_usage_by_field&quot;: {
+    &quot;input_tokens&quot;: 0,
+    &quot;output_tokens&quot;: 0,
+    &quot;total_tokens&quot;: 0
+  },
+  &quot;reported_tokens&quot;: 70046,
+  &quot;accounting_unknown_error_rows&quot;: 0,
+  &quot;usage_complete&quot;: true
+}</pre>
+<h2>Measurement limits</h2><ul>
+<li>No report is approved, rejected, posted, or executed by this evaluation. Saved awaiting_review status establishes a handoff only.</li>
+<li>Automatic citation checks establish literal registered quotes, not claim entailment or factual accuracy.</li>
+<li>Independent AI review is model judgment with the reported reviewer identity; it is not independent human validation.</li>
+<li>Human quality fields remain null until an actual human evaluates the cases. No accuracy, faithfulness, or entailment rate is inferred.</li>
+<li>Accounting uses observed dispatch/result events. Missing token usage and unobserved failed-call accounting remain explicit.</li>
+<li>Only generated reports and bounded source provenance are exported; full source bodies, raw tool history, environment values, and provider error bodies are excluded.</li>
+<li>Configured credential values and common token patterns are redacted before export. Integrity is checked against original local evidence before redaction.</li>
+</ul>
+<article><h2>W3-01 · awaiting_review</h2>
+<p>Statically review the supplied reviews.py for outcome-label correctness and concurrency assumptions. Use local documentation only if relevant. Return at most two supported findings, with exact registered quotes, and focused proposed checks. Distinguish threading.Lock from cross-process guarantees, and user-reported resolution labels from automated quality scores. Ask for missing deployment details and pause for human review. Do not run code or claim a reproduced race.</p>
+<h3>Code sample provenance</h3><pre>{
+  &quot;path&quot;: &quot;triage_desk/reviews.py&quot;,
+  &quot;start_line&quot;: 1,
+  &quot;end_line&quot;: 41,
+  &quot;file_sha256&quot;: &quot;d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea&quot;,
+  &quot;excerpt_sha256&quot;: &quot;d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea&quot;,
+  &quot;excerpt_characters&quot;: 1812,
+  &quot;context_characters&quot;: 1946
+}</pre>
+<h3>Generated report</h3><pre>{
+  &quot;findings&quot;: [
+    {
+      &quot;statement&quot;: &quot;The module validates outcome labels against a fixed set (resolved, needs_followup, human_handoff) and explicitly documents that the resolution ratio is derived from user‑reported labels, not from any automated quality scoring.&quot;,
+      &quot;category&quot;: &quot;correctness&quot;,
+      &quot;severity&quot;: &quot;low&quot;,
+      &quot;support&quot;: [
+        {
+          &quot;evidence_id&quot;: &quot;ev_421c2b42ff38ebf1390f15d1b48ad984&quot;,
+          &quot;quote_id&quot;: &quot;ev_421c2b42ff38ebf1390f15d1b48ad984:q1&quot;,
+          &quot;quote&quot;: &quot;Supplied repository file: triage_desk/reviews.py:1-41\nFile SHA-256: d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea\n\n\&quot;\&quot;\&quot;Local user outcome labels, storing no report text, answers or credentials.\&quot;\&quot;\&quot;\nfrom __future__ import annotations\n\nfrom datetime import datetime, timezone\nimport json\nfrom pathlib import Path\nimport re\nimport threading\n\nOUTCOMES = {&#x27;resolved&#x27;, &#x27;needs_followup&#x27;, &#x27;human_handoff&#x27;}\n_LOCK = threading.Lock()\n\n\ndef save_outcome(path: Path, run_id: str, outcome: str, *, first_contact: bool = True) -&gt; None:\n    if not re.fullmatch(r&#x27;[a-f0-9]{32}&#x27;, run_id) or outcome not in OUTCOMES:\n        raise ValueError(&#x27;Choose a valid run and outcome&#x27;)\n    record = {&#x27;run_id&#x27;: run_id, &#x27;outcome&#x27;: outcome, &#x27;first_contact&#x27;: bool(first_contact),\n              &#x27;reviewed_at&#x27;: datetime.now(timezone.utc).isoformat()}\n    path = Path(path)\n    with _LOCK:\n        path.parent.mkdir(parents=True, exist_ok=True)\n        with path.open(&#x27;a&#x27;, encoding=&#x27;utf-8&#x27;) as stream:&quot;
+        },
+        {
+          &quot;evidence_id&quot;: &quot;ev_421c2b42ff38ebf1390f15d1b48ad984&quot;,
+          &quot;quote_id&quot;: &quot;ev_421c2b42ff38ebf1390f15d1b48ad984:q3&quot;,
+          &quot;quote&quot;: &quot;,\n            &#x27;user_reported_resolved_first_contacts&#x27;: resolved,\n            &#x27;user_reported_first_contact_resolution&#x27;: resolved / len(first) if first else None,\n            &#x27;note&#x27;: &#x27;User outcome labels on reviewed first contacts only; not an automated quality score or a claim about unreviewed users.&#x27;}\n&quot;
+        }
+      ]
+    }
+  ],
+  &quot;missing_information&quot;: [
+    &quot;Deployment configuration: Are multiple processes (e.g., gunicorn workers, Celery workers) expected to call save_outcome concurrently? Clarify the runtime environment to determine if cross‑process locking is required.&quot;
+  ],
+  &quot;next_steps&quot;: [
+    &quot;Create a test that spawns multiple processes writing to the same outcome file simultaneously and verifies that the file contains a complete set of JSON lines without truncation or interleaving.&quot;
+  ],
+  &quot;quality_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quote 0 shows OUTCOMES set and validation; Quote 1 notes resolution ratio from user labels, not automated score.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Quote only shows threading.Lock usage; does not evidence cross‑process safety limitation or interleaving risk.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Remedy assumes cross‑process issue not proven and cites APIs not present in quotes.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Test is a diagnostic grounded in observed use of threading.Lock and file appends; does not claim success.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 1,
+    &quot;removed_findings&quot;: 1,
+    &quot;removed_next_steps&quot;: 1,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;
+  }
+}</pre>
+<h3>Source provenance</h3><ul>
+<li>User supplied reproduction code<pre>{
+  &quot;evidence_id&quot;: &quot;ev_421c2b42ff38ebf1390f15d1b48ad984&quot;,
+  &quot;title&quot;: &quot;User supplied reproduction code&quot;,
+  &quot;url&quot;: &quot;&quot;,
+  &quot;kind&quot;: &quot;code&quot;,
+  &quot;origin&quot;: &quot;user_code&quot;,
+  &quot;evidence_type&quot;: &quot;&quot;,
+  &quot;filename&quot;: &quot;&quot;,
+  &quot;fetched_at&quot;: &quot;2026-10-24T04:25:24.865900+00:00&quot;,
+  &quot;snapshot_at&quot;: &quot;&quot;,
+  &quot;version_scope&quot;: &quot;&quot;,
+  &quot;commit_sha&quot;: &quot;&quot;,
+  &quot;sha256&quot;: &quot;dfaf1f9d1bc39f6ac116b1be6c4848470fd61915f738c3bfb4c5f51230db3162&quot;,
+  &quot;published_at&quot;: &quot;&quot;,
+  &quot;acquired_at&quot;: &quot;&quot;
+}</pre></li>
+</ul><h3>Observed accounting and checks</h3><pre>{
+  &quot;elapsed_ms&quot;: 14132.395,
+  &quot;handoff_observed&quot;: true,
+  &quot;persisted_case_observed&quot;: true,
+  &quot;automatic_citation_integrity&quot;: {
+    &quot;status&quot;: &quot;passed&quot;,
+    &quot;checked_supports&quot;: 2,
+    &quot;failed_supports&quot;: 0,
+    &quot;meaning&quot;: &quot;Exact quote/source integrity only; not entailment, accuracy, or human validation.&quot;
+  },
+  &quot;accounting&quot;: {
+    &quot;model_calls&quot;: 3,
+    &quot;tool_calls&quot;: 1,
+    &quot;model_calls_by_role&quot;: {
+      &quot;investigator&quot;: 2,
+      &quot;evidence_reviewer&quot;: 1
+    },
+    &quot;tool_calls_by_name&quot;: {
+      &quot;read_case_evidence&quot;: 1
+    },
+    &quot;errors_by_role_or_tool&quot;: {},
+    &quot;unfinished_call_records&quot;: 0,
+    &quot;reported_token_usage&quot;: {
+      &quot;input_tokens&quot;: 11972,
+      &quot;output_tokens&quot;: 2581,
+      &quot;total_tokens&quot;: 14553
+    },
+    &quot;model_calls_missing_usage_by_field&quot;: {
+      &quot;input_tokens&quot;: 0,
+      &quot;output_tokens&quot;: 0,
+      &quot;total_tokens&quot;: 0
+    },
+    &quot;usage_complete&quot;: true,
+    &quot;note&quot;: &quot;Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred.&quot;
+  },
+  &quot;independent_ai_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quote 0 shows OUTCOMES set and validation; Quote 1 notes resolution ratio from user labels, not automated score.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Quote only shows threading.Lock usage; does not evidence cross‑process safety limitation or interleaving risk.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Remedy assumes cross‑process issue not proven and cites APIs not present in quotes.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Test is a diagnostic grounded in observed use of threading.Lock and file appends; does not claim success.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 1,
+    &quot;removed_findings&quot;: 1,
+    &quot;removed_next_steps&quot;: 1,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;
+  },
+  &quot;human_review&quot;: {
+    &quot;accuracy&quot;: null,
+    &quot;relevance&quot;: null,
+    &quot;citation_entailment&quot;: null,
+    &quot;notes&quot;: null
+  },
+  &quot;error&quot;: null
+}</pre></article>
+<article><h2>W3-02 · awaiting_review</h2>
+<p>Statically review the supplied freshness.py timestamp validation and freshness disclosure. Return at most two supported findings using exact registered quotes. Explain what current and stale establish, how missing/future/naive timestamps are treated, and propose focused boundary tests. Use local documentation if useful; avoid unnecessary web searches. Do not claim that a recent fetch verifies upstream facts or that tests were executed. Pause for human review.</p>
+<h3>Code sample provenance</h3><pre>{
+  &quot;path&quot;: &quot;triage_desk/freshness.py&quot;,
+  &quot;start_line&quot;: 1,
+  &quot;end_line&quot;: 30,
+  &quot;file_sha256&quot;: &quot;48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91&quot;,
+  &quot;excerpt_sha256&quot;: &quot;48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91&quot;,
+  &quot;excerpt_characters&quot;: 1629,
+  &quot;context_characters&quot;: 1765
+}</pre>
+<h3>Generated report</h3><pre>{
+  &quot;findings&quot;: [
+    {
+      &quot;statement&quot;: &quot;The function returns status &#x27;current&#x27; only when every source provides a timezone‑aware snapshot earlier than the current time and the oldest snapshot is younger than the configured max_age_days; otherwise it returns &#x27;stale&#x27; if the age meets or exceeds the limit, and &#x27;unknown&#x27; whenever any timestamp is missing or invalid.&quot;,
+      &quot;category&quot;: &quot;correctness&quot;,
+      &quot;severity&quot;: &quot;low&quot;,
+      &quot;support&quot;: [
+        {
+          &quot;evidence_id&quot;: &quot;ev_1218528cb3bf405e703c3c989ec782e9&quot;,
+          &quot;quote_id&quot;: &quot;ev_1218528cb3bf405e703c3c989ec782e9:q2&quot;,
+          &quot;quote&quot;: &quot;atetime.fromisoformat(str(source.get(&#x27;snapshot_at&#x27;, &#x27;&#x27;)).replace(&#x27;Z&#x27;, &#x27;+00:00&#x27;))\n            if snapshot.tzinfo is None or snapshot &gt; now:\n                raise ValueError(&#x27;Invalid snapshot time&#x27;)\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n    oldest = min(snapshots) if snapshots else None\n    age_days = (now - oldest).total_seconds() / 86400 if oldest else None\n    status = &#x27;unknown&#x27; if missing or not oldest else &#x27;stale&#x27; if age_days &gt;= max_age_days else &#x27;current&#x27;\n    return {&#x27;status&#x27;: status, &#x27;oldest_snapshot_at&#x27;: oldest.isoformat() if oldest else None,\n            &#x27;age_days&#x27;: round(age_days, 2) if age_days is not None else None,\n            &#x27;max_age_days&#x27;: max_age_days, &#x27;missing_or_invalid_timestamps&#x27;: missing,\n            &#x27;refresh_mode&#x27;: &#x27;manual&#x27;,\n            &#x27;note&#x27;: &#x27;Snapshot age measures fetch time, not whether an upstream claim or version is still correct.&#x27;}\n&quot;
+        }
+      ]
+    },
+    {
+      &quot;statement&quot;: &quot;Missing, future, or naive timestamps are treated as invalid: a snapshot without tzinfo or later than the current time raises a ValueError, which is caught and counted in the &#x27;missing&#x27; counter, causing the overall status to become &#x27;unknown&#x27;.&quot;,
+      &quot;category&quot;: &quot;correctness&quot;,
+      &quot;severity&quot;: &quot;low&quot;,
+      &quot;support&quot;: [
+        {
+          &quot;evidence_id&quot;: &quot;ev_1218528cb3bf405e703c3c989ec782e9&quot;,
+          &quot;quote_id&quot;: &quot;ev_1218528cb3bf405e703c3c989ec782e9:q1&quot;,
+          &quot;quote&quot;: &quot;Supplied repository file: triage_desk/freshness.py:1-30\nFile SHA-256: 48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91\n\n\&quot;\&quot;\&quot;Snapshot-age disclosure; a recent fetch does not verify upstream facts.\&quot;\&quot;\&quot;\nfrom __future__ import annotations\n\nfrom datetime import datetime, timezone\n\n\ndef corpus_freshness(sources: list[dict], *, now: datetime | None = None, max_age_days: int = 7) -&gt; dict:\n    if not isinstance(max_age_days, int) or isinstance(max_age_days, bool) or max_age_days &lt; 1:\n        raise ValueError(&#x27;Maximum snapshot age must be a positive number of days&#x27;)\n    now = now or datetime.now(timezone.utc)\n    if now.tzinfo is None:\n        raise ValueError(&#x27;Snapshot age requires a timezone-aware current time&#x27;)\n    snapshots = []\n    missing = 0\n    for source in sources:\n        try:\n            snapshot = datetime.fromisoformat(str(source.get(&#x27;snapshot_at&#x27;, &#x27;&#x27;)).replace(&#x27;Z&#x27;, &#x27;+00:00&#x27;))\n            if snapshot.tzinfo is None or snapshot &gt; now:\n                raise&quot;
+        },
+        {
+          &quot;evidence_id&quot;: &quot;ev_1218528cb3bf405e703c3c989ec782e9&quot;,
+          &quot;quote_id&quot;: &quot;ev_1218528cb3bf405e703c3c989ec782e9:q2&quot;,
+          &quot;quote&quot;: &quot;atetime.fromisoformat(str(source.get(&#x27;snapshot_at&#x27;, &#x27;&#x27;)).replace(&#x27;Z&#x27;, &#x27;+00:00&#x27;))\n            if snapshot.tzinfo is None or snapshot &gt; now:\n                raise ValueError(&#x27;Invalid snapshot time&#x27;)\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n    oldest = min(snapshots) if snapshots else None\n    age_days = (now - oldest).total_seconds() / 86400 if oldest else None\n    status = &#x27;unknown&#x27; if missing or not oldest else &#x27;stale&#x27; if age_days &gt;= max_age_days else &#x27;current&#x27;\n    return {&#x27;status&#x27;: status, &#x27;oldest_snapshot_at&#x27;: oldest.isoformat() if oldest else None,\n            &#x27;age_days&#x27;: round(age_days, 2) if age_days is not None else None,\n            &#x27;max_age_days&#x27;: max_age_days, &#x27;missing_or_invalid_timestamps&#x27;: missing,\n            &#x27;refresh_mode&#x27;: &#x27;manual&#x27;,\n            &#x27;note&#x27;: &#x27;Snapshot age measures fetch time, not whether an upstream claim or version is still correct.&#x27;}\n&quot;
+        }
+      ]
+    }
+  ],
+  &quot;missing_information&quot;: [
+    &quot;Exact expected schema of each source dict beyond the &#x27;snapshot_at&#x27; key (e.g., required fields, optional metadata).&quot;,
+    &quot;Behavior when max_age_days is provided as a non‑int truthy value (e.g., a float) – the function only checks for int type, but documentation of intended usage is absent.&quot;
+  ],
+  &quot;next_steps&quot;: [
+    &quot;Create boundary tests that supply sources with a snapshot exactly at max_age_days old, just below, and just above the limit to verify &#x27;current&#x27; vs &#x27;stale&#x27; classification.&quot;,
+    &quot;Add test cases for sources lacking &#x27;snapshot_at&#x27;, containing a naive ISO string (no timezone), and containing a future timestamp to confirm they trigger the &#x27;unknown&#x27; status via the missing/invalid counter.&quot;
+  ],
+  &quot;quality_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quote 0 shows the status logic exactly as described, matching the claim.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quote 0 shows naive/future timestamps raise ValueError, counted as missing, leading to unknown.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Code compares age_days to max_age_days, so boundary tests directly verify current vs stale.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Code treats missing/naive/future timestamps as missing, causing unknown; tests can confirm this behavior.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 2,
+    &quot;removed_findings&quot;: 0,
+    &quot;removed_next_steps&quot;: 0,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;
+  }
+}</pre>
+<h3>Source provenance</h3><ul>
+<li>User supplied reproduction code<pre>{
+  &quot;evidence_id&quot;: &quot;ev_1218528cb3bf405e703c3c989ec782e9&quot;,
+  &quot;title&quot;: &quot;User supplied reproduction code&quot;,
+  &quot;url&quot;: &quot;&quot;,
+  &quot;kind&quot;: &quot;code&quot;,
+  &quot;origin&quot;: &quot;user_code&quot;,
+  &quot;evidence_type&quot;: &quot;&quot;,
+  &quot;filename&quot;: &quot;&quot;,
+  &quot;fetched_at&quot;: &quot;2026-10-24T04:25:38.991848+00:00&quot;,
+  &quot;snapshot_at&quot;: &quot;&quot;,
+  &quot;version_scope&quot;: &quot;&quot;,
+  &quot;commit_sha&quot;: &quot;&quot;,
+  &quot;sha256&quot;: &quot;83272d70c3374f164f9fa37d5f4432be196c21b13fdbcca64af7db30ab4759fd&quot;,
+  &quot;published_at&quot;: &quot;&quot;,
+  &quot;acquired_at&quot;: &quot;&quot;
+}</pre></li>
+</ul><h3>Observed accounting and checks</h3><pre>{
+  &quot;elapsed_ms&quot;: 11179.448,
+  &quot;handoff_observed&quot;: true,
+  &quot;persisted_case_observed&quot;: true,
+  &quot;automatic_citation_integrity&quot;: {
+    &quot;status&quot;: &quot;passed&quot;,
+    &quot;checked_supports&quot;: 3,
+    &quot;failed_supports&quot;: 0,
+    &quot;meaning&quot;: &quot;Exact quote/source integrity only; not entailment, accuracy, or human validation.&quot;
+  },
+  &quot;accounting&quot;: {
+    &quot;model_calls&quot;: 3,
+    &quot;tool_calls&quot;: 1,
+    &quot;model_calls_by_role&quot;: {
+      &quot;investigator&quot;: 2,
+      &quot;evidence_reviewer&quot;: 1
+    },
+    &quot;tool_calls_by_name&quot;: {
+      &quot;read_case_evidence&quot;: 1
+    },
+    &quot;errors_by_role_or_tool&quot;: {},
+    &quot;unfinished_call_records&quot;: 0,
+    &quot;reported_token_usage&quot;: {
+      &quot;input_tokens&quot;: 12056,
+      &quot;output_tokens&quot;: 2392,
+      &quot;total_tokens&quot;: 14448
+    },
+    &quot;model_calls_missing_usage_by_field&quot;: {
+      &quot;input_tokens&quot;: 0,
+      &quot;output_tokens&quot;: 0,
+      &quot;total_tokens&quot;: 0
+    },
+    &quot;usage_complete&quot;: true,
+    &quot;note&quot;: &quot;Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred.&quot;
+  },
+  &quot;independent_ai_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quote 0 shows the status logic exactly as described, matching the claim.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quote 0 shows naive/future timestamps raise ValueError, counted as missing, leading to unknown.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Code compares age_days to max_age_days, so boundary tests directly verify current vs stale.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Code treats missing/naive/future timestamps as missing, causing unknown; tests can confirm this behavior.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 2,
+    &quot;removed_findings&quot;: 0,
+    &quot;removed_next_steps&quot;: 0,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;
+  },
+  &quot;human_review&quot;: {
+    &quot;accuracy&quot;: null,
+    &quot;relevance&quot;: null,
+    &quot;citation_entailment&quot;: null,
+    &quot;notes&quot;: null
+  },
+  &quot;error&quot;: null
+}</pre></article>
+<article><h2>W3-03 · awaiting_review</h2>
+<p>Statically review the supplied hosted_embeddings.py for API-response validation, cache identity, and safe error handling. Return at most two supported findings with exact code quotes and focused proposed checks. Use local caching/security documentation only if needed. Distinguish inspected safeguards from verified runtime behavior; do not call an embeddings endpoint, reveal credentials, or claim benchmarks/tests ran. Pause for human review.</p>
+<h3>Code sample provenance</h3><pre>{
+  &quot;path&quot;: &quot;triage_desk/hosted_embeddings.py&quot;,
+  &quot;start_line&quot;: 1,
+  &quot;end_line&quot;: 218,
+  &quot;file_sha256&quot;: &quot;ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c&quot;,
+  &quot;excerpt_sha256&quot;: &quot;ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c&quot;,
+  &quot;excerpt_characters&quot;: 11687,
+  &quot;context_characters&quot;: 11832
+}</pre>
+<h3>Generated report</h3><pre>{
+  &quot;findings&quot;: [
+    {
+      &quot;statement&quot;: &quot;HostedDenseIndex._request validates the provider response thoroughly, checking HTTP status, response type, data length, embedding dimensions, numeric finiteness, and vector norms before normalising.&quot;,
+      &quot;category&quot;: &quot;correctness&quot;,
+      &quot;severity&quot;: &quot;medium&quot;,
+      &quot;support&quot;: [
+        {
+          &quot;evidence_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658&quot;,
+          &quot;quote_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658:q7&quot;,
+          &quot;quote&quot;: &quot;oint}\n        try:\n            key = self._runtime_key()\n            with httpx.Client(timeout=httpx.Timeout(45, connect=10), follow_redirects=False) as client:\n                metadata[\&quot;attempted\&quot;] = True\n                self.calls.append(metadata)\n                response = client.post(self.endpoint, headers={\&quot;Authorization\&quot;: f\&quot;Bearer {key}\&quot;},\n                                       json={\&quot;model\&quot;: self.model_name, \&quot;input\&quot;: texts, \&quot;dimensions\&quot;: self.dimensions})\n                status = response.status_code\n                metadata[\&quot;http_status\&quot;] = status\n                if not 200 &lt;= status &lt; 300:\n                    metadata[\&quot;status\&quot;] = \&quot;provider_http_error\&quot;\n                    raise EmbeddingUnavailable(f\&quot;Hosted embeddings returned HTTP {status}; no embedding results were accepted.\&quot;)\n                body = response.json()\n            if not isinstance(body, dict):\n                raise ValueError(\&quot;Expected an embedding response object\&quot;)\n            metadata[\&quot;returned_model\&quot;] =&quot;
+        },
+        {
+          &quot;evidence_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658&quot;,
+          &quot;quote_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658:q8&quot;,
+          &quot;quote&quot;: &quot;()\n            if not isinstance(body, dict):\n                raise ValueError(\&quot;Expected an embedding response object\&quot;)\n            metadata[\&quot;returned_model\&quot;] = _safe_model(body.get(\&quot;model\&quot;), key)\n            metadata[\&quot;usage\&quot;] = _usage_counts(body.get(\&quot;usage\&quot;))\n            data = body.get(\&quot;data\&quot;)\n            if not isinstance(data, list) or len(data) != len(texts):\n                raise ValueError(\&quot;Incomplete embedding response\&quot;)\n            ordered: list[list[float] | None] = [None] * len(texts)\n            for item in data:\n                if not isinstance(item, dict):\n                    raise ValueError(\&quot;Invalid embedding item\&quot;)\n                index, embedding = item.get(\&quot;index\&quot;), item.get(\&quot;embedding\&quot;)\n                if isinstance(index, bool) or not isinstance(index, int) or not 0 &lt;= index &lt; len(texts) or ordered[index] is not None:\n                    raise ValueError(\&quot;Missing, duplicate or out-of-range embedding index\&quot;)\n                if not isinstance(embedding, list) or&quot;
+        },
+        {
+          &quot;evidence_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658&quot;,
+          &quot;quote_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658:q9&quot;,
+          &quot;quote&quot;: &quot;x] is not None:\n                    raise ValueError(\&quot;Missing, duplicate or out-of-range embedding index\&quot;)\n                if not isinstance(embedding, list) or len(embedding) != self.dimensions:\n                    raise ValueError(\&quot;Unexpected embedding dimension\&quot;)\n                if any(isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(float(value)) for value in embedding):\n                    raise ValueError(\&quot;Invalid embedding values\&quot;)\n                ordered[index] = embedding\n            if any(value is None for value in ordered):\n                raise ValueError(\&quot;Missing embedding index\&quot;)\n            # Normalize using float64 norms to avoid overflow from otherwise\n            # finite large numbers. Only complete, finite float32 vectors leave\n            # this method; provider text is never interpolated into errors.\n            values = np.asarray(ordered, dtype=np.float64)\n            norms = np.linalg.norm(values, axis=1, keepdims=True)&quot;
+        },
+        {
+          &quot;evidence_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658&quot;,
+          &quot;quote_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658:q10&quot;,
+          &quot;quote&quot;: &quot; is never interpolated into errors.\n            values = np.asarray(ordered, dtype=np.float64)\n            norms = np.linalg.norm(values, axis=1, keepdims=True)\n            if not np.isfinite(norms).all() or (norms &lt;= 0).any():\n                raise ValueError(\&quot;Invalid embedding norms\&quot;)\n            result = (values / norms).astype(np.float32)\n            if result.shape != (len(texts), self.dimensions) or not np.isfinite(result).all():\n                raise ValueError(\&quot;Invalid normalized embedding matrix\&quot;)\n            result = self._normalise(result)\n            metadata[\&quot;status\&quot;] = \&quot;success\&quot;\n            return result\n        except EmbeddingUnavailable:\n            if metadata[\&quot;status\&quot;] == \&quot;not_attempted\&quot;:\n&quot;
+        }
+      ]
+    },
+    {
+      &quot;statement&quot;: &quot;HostedDenseIndex ties its vector cache identity to the endpoint, model, dimensions, and chunk fingerprint, and raises EmbeddingUnavailable if the endpoint changes; it also records request metadata and masks provider errors by raising generic EmbeddingUnavailable exceptions.&quot;,
+      &quot;category&quot;: &quot;security&quot;,
+      &quot;severity&quot;: &quot;medium&quot;,
+      &quot;support&quot;: [
+        {
+          &quot;evidence_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658&quot;,
+          &quot;quote_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658:q4&quot;,
+          &quot;quote&quot;: &quot;or(\&quot;Embedding model must be a nonempty provider model identifier\&quot;)\n        if isinstance(dimensions, bool) or not isinstance(dimensions, int) or dimensions &lt; 1:\n            raise ValueError(\&quot;Embedding dimensions must be a positive integer\&quot;)\n        super().__init__(chunks, cache_dir)\n        original_fingerprint = self.fingerprint\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable as exc:\n            raise EmbeddingUnavailable(\&quot;Hosted embeddings are not configured. Set the provider key/base using the existing runtime configuration; no local fallback was selected.\&quot;) from None\n        if not _safe_model(requested, key):\n            raise ValueError(\&quot;Embedding model identifier is invalid\&quot;)\n        self.model_name, self.dimensions = requested, dimensions\n        self.endpoint = _embedding_endpoint(base)\n        identity = {\&quot;format\&quot;: \&quot;hosted-embeddings-v1\&quot;, \&quot;endpoint\&quot;: self.endpoint,\n                    \&quot;model\&quot;: self.model_name, \&quot;dimensions\&quot;:&quot;
+        },
+        {
+          &quot;evidence_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658&quot;,
+          &quot;quote_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658:q5&quot;,
+          &quot;quote&quot;: &quot;ding_endpoint(base)\n        identity = {\&quot;format\&quot;: \&quot;hosted-embeddings-v1\&quot;, \&quot;endpoint\&quot;: self.endpoint,\n                    \&quot;model\&quot;: self.model_name, \&quot;dimensions\&quot;: self.dimensions,\n                    \&quot;chunk_fingerprint\&quot;: original_fingerprint}\n        self.fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()\n        self.index_path = self.cache_dir / f\&quot;vectors-{self.fingerprint}.npz\&quot;\n        self.prebuilt_path = None\n        self.calls: list[dict] = []\n        self._query_cache: OrderedDict[str, np.ndarray] = OrderedDict()\n        self._query_lock = threading.RLock()\n\n    def _runtime_key(self) -&gt; str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\&quot;Hosted embedding configuration is unavailable; no local fallback was selected.\&quot;) from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\&quot;Embedding endpoint changed after&quot;
+        },
+        {
+          &quot;evidence_id&quot;: &quot;ev_df067e6fae27da73d2dcd79f74a16598&quot;,
+          &quot;quote_id&quot;: &quot;ev_df067e6fae27da73d2dcd79f74a16598:q1&quot;,
+          &quot;quote&quot;: &quot;Repository snapshot: triage_desk/hosted_embeddings.py:152-218\nFile SHA-256: ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c\nExcerpt SHA-256: 2f1848630a0b11336a5036eb3eb036fe3a82541d6e8717dd0a02e1fe9bc9f127\n\n                metadata[\&quot;status\&quot;] = \&quot;configuration_error\&quot;\n            raise\n        except (httpx.HTTPError, OSError, ValueError, TypeError, KeyError, OverflowError) as exc:\n            metadata[\&quot;status\&quot;] = \&quot;provider_error\&quot; if isinstance(exc, (httpx.HTTPError, OSError)) else \&quot;invalid_response\&quot;\n            metadata[\&quot;failure_type\&quot;] = type(exc).__name__\n            raise EmbeddingUnavailable(f\&quot;Hosted embedding request failed ({type(exc).__name__}); no embedding results were accepted.\&quot;) from None\n        finally:\n            metadata[\&quot;latency_ms\&quot;] = round((time.perf_counter() - started) * 1000, 3)\n\n    def embed_documents(self, texts: Sequence[str]) -&gt; np.ndarray:\n        if isinstance(texts, (str, bytes)):\n            raise ValueError(\&quot;Embedding inputs must be a&quot;
+        }
+      ]
+    }
+  ],
+  &quot;missing_information&quot;: [
+    &quot;Runtime performance characteristics of the LRU query cache under high query volume are not observable from static analysis.&quot;
+  ],
+  &quot;next_steps&quot;: [
+    &quot;Document the fingerprint composition and cache invalidation policy for downstream developers.&quot;
+  ],
+  &quot;quality_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quotes 0‑3 demonstrate HTTP status, response type, length, dimension, finiteness, and norm checks before normalisation.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quotes 4‑6 show fingerprint includes endpoint, model, dimensions, chunk fingerprint, raise on endpoint change, and mask errors as EmbeddingUnavailable.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Quotes provide no evidence of retry logic or how metadata would be preserved across retries.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quotes 4‑5 expose fingerprint composition, justifying documentation of cache policy.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 2,
+    &quot;removed_findings&quot;: 0,
+    &quot;removed_next_steps&quot;: 1,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;
+  }
+}</pre>
+<h3>Source provenance</h3><ul>
+<li>User supplied reproduction code<pre>{
+  &quot;evidence_id&quot;: &quot;ev_41236179e7f44f90206016843598bea1&quot;,
+  &quot;title&quot;: &quot;User supplied reproduction code&quot;,
+  &quot;url&quot;: &quot;&quot;,
+  &quot;kind&quot;: &quot;code&quot;,
+  &quot;origin&quot;: &quot;user_code&quot;,
+  &quot;evidence_type&quot;: &quot;&quot;,
+  &quot;filename&quot;: &quot;&quot;,
+  &quot;fetched_at&quot;: &quot;2026-10-24T04:25:50.177080+00:00&quot;,
+  &quot;snapshot_at&quot;: &quot;&quot;,
+  &quot;version_scope&quot;: &quot;&quot;,
+  &quot;commit_sha&quot;: &quot;&quot;,
+  &quot;sha256&quot;: &quot;c4eddde3810a5ab7ca5774e76a74573639206d6eb3aa6bebe447d4bbdfac058a&quot;,
+  &quot;published_at&quot;: &quot;&quot;,
+  &quot;acquired_at&quot;: &quot;&quot;
+}</pre></li>
+<li>triage_desk/hosted_embeddings.py:1-151<pre>{
+  &quot;evidence_id&quot;: &quot;ev_90d70c664c3a61242777b7d90caca658&quot;,
+  &quot;title&quot;: &quot;triage_desk/hosted_embeddings.py:1-151&quot;,
+  &quot;url&quot;: &quot;&quot;,
+  &quot;kind&quot;: &quot;code&quot;,
+  &quot;origin&quot;: &quot;repository&quot;,
+  &quot;evidence_type&quot;: &quot;repository_excerpt&quot;,
+  &quot;filename&quot;: &quot;triage_desk/hosted_embeddings.py&quot;,
+  &quot;fetched_at&quot;: &quot;2026-10-24T04:25:52+00:00&quot;,
+  &quot;snapshot_at&quot;: &quot;2026-10-24T04:25:52+00:00&quot;,
+  &quot;version_scope&quot;: &quot;Local working-tree snapshot; lines 1-151 of 218; full-file SHA-256 ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c. Static inspection only; no tests or code were executed.&quot;,
+  &quot;commit_sha&quot;: &quot;&quot;,
+  &quot;sha256&quot;: &quot;64563c6a8cd57d85a0be9e4b1b9670c390e55cf776255f3ec136078fbf36a27a&quot;,
+  &quot;published_at&quot;: &quot;&quot;,
+  &quot;acquired_at&quot;: &quot;&quot;
+}</pre></li>
+<li>triage_desk/hosted_embeddings.py:152-218<pre>{
+  &quot;evidence_id&quot;: &quot;ev_df067e6fae27da73d2dcd79f74a16598&quot;,
+  &quot;title&quot;: &quot;triage_desk/hosted_embeddings.py:152-218&quot;,
+  &quot;url&quot;: &quot;&quot;,
+  &quot;kind&quot;: &quot;code&quot;,
+  &quot;origin&quot;: &quot;repository&quot;,
+  &quot;evidence_type&quot;: &quot;repository_excerpt&quot;,
+  &quot;filename&quot;: &quot;triage_desk/hosted_embeddings.py&quot;,
+  &quot;fetched_at&quot;: &quot;2026-10-24T04:25:53+00:00&quot;,
+  &quot;snapshot_at&quot;: &quot;2026-10-24T04:25:53+00:00&quot;,
+  &quot;version_scope&quot;: &quot;Local working-tree snapshot; lines 152-218 of 218; full-file SHA-256 ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c. Static inspection only; no tests or code were executed.&quot;,
+  &quot;commit_sha&quot;: &quot;&quot;,
+  &quot;sha256&quot;: &quot;0eba5efa8c113c77e7d86f3b4a9ded8053de388257d5d261c4c41a224e6dc0c6&quot;,
+  &quot;published_at&quot;: &quot;&quot;,
+  &quot;acquired_at&quot;: &quot;&quot;
+}</pre></li>
+</ul><h3>Observed accounting and checks</h3><pre>{
+  &quot;elapsed_ms&quot;: 17685.2,
+  &quot;handoff_observed&quot;: true,
+  &quot;persisted_case_observed&quot;: true,
+  &quot;automatic_citation_integrity&quot;: {
+    &quot;status&quot;: &quot;passed&quot;,
+    &quot;checked_supports&quot;: 7,
+    &quot;failed_supports&quot;: 0,
+    &quot;meaning&quot;: &quot;Exact quote/source integrity only; not entailment, accuracy, or human validation.&quot;
+  },
+  &quot;accounting&quot;: {
+    &quot;model_calls&quot;: 6,
+    &quot;tool_calls&quot;: 4,
+    &quot;model_calls_by_role&quot;: {
+      &quot;investigator&quot;: 5,
+      &quot;evidence_reviewer&quot;: 1
+    },
+    &quot;tool_calls_by_name&quot;: {
+      &quot;list_repository_files&quot;: 1,
+      &quot;read_repository_file&quot;: 3
+    },
+    &quot;errors_by_role_or_tool&quot;: {
+      &quot;read_repository_file&quot;: 1
+    },
+    &quot;unfinished_call_records&quot;: 0,
+    &quot;reported_token_usage&quot;: {
+      &quot;input_tokens&quot;: 37570,
+      &quot;output_tokens&quot;: 3475,
+      &quot;total_tokens&quot;: 41045
+    },
+    &quot;model_calls_missing_usage_by_field&quot;: {
+      &quot;input_tokens&quot;: 0,
+      &quot;output_tokens&quot;: 0,
+      &quot;total_tokens&quot;: 0
+    },
+    &quot;usage_complete&quot;: true,
+    &quot;note&quot;: &quot;Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred.&quot;
+  },
+  &quot;independent_ai_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quotes 0‑3 demonstrate HTTP status, response type, length, dimension, finiteness, and norm checks before normalisation.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quotes 4‑6 show fingerprint includes endpoint, model, dimensions, chunk fingerprint, raise on endpoint change, and mask errors as EmbeddingUnavailable.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Quotes provide no evidence of retry logic or how metadata would be preserved across retries.&quot;
+      },
+      {
+        &quot;index&quot;: 1,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Quotes 4‑5 expose fingerprint composition, justifying documentation of cache policy.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 2,
+    &quot;removed_findings&quot;: 0,
+    &quot;removed_next_steps&quot;: 1,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;
+  },
+  &quot;human_review&quot;: {
+    &quot;accuracy&quot;: null,
+    &quot;relevance&quot;: null,
+    &quot;citation_entailment&quot;: null,
+    &quot;notes&quot;: null
+  },
+  &quot;error&quot;: null
+}</pre></article>
+</html>

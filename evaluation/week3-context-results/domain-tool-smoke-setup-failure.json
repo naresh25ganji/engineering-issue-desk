@@ -1,0 +1,32 @@
+{
+  "verified_at_utc": "2026-10-24T04:32:36.122844+00:00",
+  "verification_kind": "direct_read_tool_smoke",
+  "model_calls": 0,
+  "public_pr_number_discovery_http_calls": 1,
+  "pr_number": 17631,
+  "tools": [
+    {
+      "tool": "search_knowledge_base",
+      "status": "error",
+      "evidence_count": 0
+    },
+    {
+      "tool": "fetch_web_page",
+      "status": "error",
+      "evidence_count": 0
+    },
+    {
+      "tool": "read_github_issue",
+      "status": "error",
+      "evidence_count": 0
+    },
+    {
+      "tool": "read_github_pr",
+      "status": "error",
+      "evidence_count": 0
+    }
+  ],
+  "search_web": "Verified separately by provider-probe.json; no repeated search in this smoke check.",
+  "note": "Direct validation calls are separate from the three-case live evaluation. Only bounded source provenance is exported; bodies, keys, raw errors, and temporary private case state are excluded.",
+  "setup_error": "The validation harness set max_tokens=0, so the common pre-dispatch budget check blocked every tool. These errors do not establish provider/tool failure; only the separate public PR-number discovery ran."
+}

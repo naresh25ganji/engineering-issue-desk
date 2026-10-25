@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#333"/></marker></defs>
+<rect width="1200" height="340" fill="white"/>
+<g fill="#f3f5f6" stroke="#999" stroke-width="1.5"><rect x="25" y="20" width="330" height="90" rx="8"/><rect x="435" y="20" width="330" height="90" rx="8"/><rect x="845" y="20" width="330" height="90" rx="8"/><rect x="435" y="220" width="330" height="90" rx="8"/><rect x="845" y="220" width="330" height="90" rx="8"/></g>
+<g fill="black" font-family="Arial,sans-serif" font-size="26" text-anchor="middle"><text x="190" y="58">Investigate</text><text x="190" y="89" font-size="20">Plan tools and specialists</text><text x="600" y="58">Validate citations</text><text x="600" y="89" font-size="20">Resolve saved quote IDs</text><text x="1010" y="58">Review evidence</text><text x="1010" y="89" font-size="20">Separate model support audit</text><text x="600" y="258">Human review</text><text x="600" y="289" font-size="20">Approve reject or revise</text><text x="1010" y="258">Finish</text><text x="1010" y="289" font-size="20">Save local decision</text></g>
+<g fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrow)"><path d="M355 65 H430"/><path d="M765 65 H840"/><path d="M1010 110 V160 H600 V215"/><path d="M765 265 H840"/><path d="M435 265 H190 V115"/></g>
+<g fill="black" font-family="Arial,sans-serif" font-size="20"><text x="210" y="220">Revision with feedback</text><text x="210" y="246">and the prior report</text></g>
+</svg>

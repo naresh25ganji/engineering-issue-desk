@@ -82,6 +82,79 @@ def report_summaries(value: dict, prefix: str = ''):
             yield from report_summaries(child, (prefix + ' / ' if prefix else '') + name)
 
 
+def render_evaluation_summary(document: dict):
+    """Display measured agent handoffs or the existing retrieval diagnostics."""
+    if document.get('report_kind') == 'deep_agent_workflow':
+        summary = document.get('summary', {})
+        st.markdown('**Deep Agents workflow run**')
+        st.caption('Saved human-review handoffs across all scheduled cases, including failures. Handoff completion does not measure answer accuracy.')
+        st.caption('Related application code option: ' + ('Enabled' if document.get('repository_context_enabled') else 'Not enabled'))
+        columns = st.columns(4)
+        columns[0].metric('Scheduled cases', summary.get('scheduled_cases', 0))
+        columns[1].metric('Saved handoffs', summary.get('completed_handoffs', 0))
+        columns[2].metric('Failed cases', summary.get('failed_cases', 0))
+        rate = summary.get('handoff_rate')
+        columns[3].metric('Handoff completion', f'{rate:.0%}' if rate is not None else 'Not run')
+        checks = st.columns(3)
+        checks[0].metric('Cases with exact citations', summary.get('citation_integrity_passed_cases', 0))
+        checks[1].metric('Findings removed by AI review', summary.get('ai_rejected_findings', 0))
+        checks[2].metric('Next steps removed by AI review', summary.get('ai_rejected_next_steps', 0))
+        calls = st.columns(3)
+        calls[0].metric('Model calls', summary.get('model_calls', 0))
+        calls[1].metric('Tool calls', summary.get('tool_calls', 0))
+        calls[2].metric('Reported tokens', summary.get('reported_tokens', 0))
+        usage_complete = summary.get('usage_complete')
+        if usage_complete is False:
+            st.caption('Token usage is incomplete. Displayed tokens include only reported counts; missing usage and cost are not estimated.')
+        elif usage_complete is True:
+            st.caption('Token totals sum reported model usage. Call counts reflect recorded dispatches; no cost is inferred.')
+        else:
+            st.caption('Validation-only inventory. No provider execution or quality score is recorded.')
+        st.info('Exact citation checks establish saved quotes and source identities. AI evidence review remains a model judgment. Human accuracy, relevance, and citation entailment are unscored.')
+        rows = []
+        for item in document.get('results', []):
+            integrity = item.get('automatic_citation_integrity', {})
+            review = item.get('independent_ai_review') or (item.get('report') or {}).get('quality_review') or {}
+            error = item.get('error') or {}
+            latency = item.get('elapsed_ms')
+            rows.append({
+                'Evaluation case': item.get('eval_id', item.get('id', '')),
+                'Saved case': item.get('case_id') or 'Not created',
+                'Status': item.get('status', 'unknown'),
+                'Human handoff': 'Saved' if item.get('handoff_observed') else 'Not observed' if item.get('attempted') else 'Not run',
+                'Citation integrity': integrity.get('status', 'not_applicable'),
+                'Supports checked': integrity.get('checked_supports', 0),
+                'Failed supports': integrity.get('failed_supports', 0),
+                'AI evidence review': review.get('status', 'Not recorded'),
+                'Related application code': 'Enabled' if item.get('repository_context') else 'Not enabled',
+                'Time': f'{latency / 1000:.1f} s' if latency is not None else 'Not run',
+                'Error': (error.get('type', 'Recorded error') + (': ' + error['code'] if error.get('code') else '')) if error else '',
+                'Human quality': 'Unscored',
+            })
+        if rows:
+            st.dataframe(rows, hide_index=True, width='stretch')
+        with st.expander('Agent call accounting'):
+            st.json({key: summary.get(key) for key in (
+                'model_calls_by_role', 'tool_calls_by_name', 'errors_by_role_or_tool',
+                'reported_token_usage', 'model_calls_missing_usage_by_field',
+                'unfinished_call_records', 'accounting_unknown_error_rows')}, expanded=True)
+        return
+
+    summary_rows = []
+    for mode, scores in report_summaries(document.get('summary', {})):
+        def percent(key, alias=''):
+            value = scores.get(key, scores.get(alias))
+            return f'{value * 100:.0f}%' if value is not None else 'Not scored'
+        latency = scores.get('retrieval_latency_p95_ms')
+        mrr = scores.get('mean_reciprocal_rank')
+        summary_rows.append({'Strategy': mode.title(), 'Expected source found': percent('hit_at_k', 'hit_at_6'), 'Gold source precision': percent('gold_source_precision_at_k', 'gold_source_precision_at_6'), 'First expected source (MRR)': f'{mrr:.2f}' if mrr is not None else 'Not scored', 'Behavior checks': percent('behavior_pass_rate'), 'Reference integrity': percent('reference_integrity_pass_rate'), 'Warm retrieval p95': f'{latency:.0f} ms' if latency is not None else 'Not scored'})
+    if summary_rows:
+        st.dataframe(summary_rows, hide_index=True, width='stretch')
+        unit = 'sources' if document.get('report_kind') == 'graph_source_retrieval_comparison' else 'chunks'
+        count = document.get('question_count', sum(item.get('total_cases', 0) for item in document.get('datasets', [])))
+        st.caption(f"{count} diagnostic questions · top {document.get('top_k', document.get('source_budget', 6))} {unit}. Source labels cover selected expected references. These scores do not measure model faithfulness.")
+
+
 @st.cache_resource(show_spinner=False)
 def engine(corpus_mtime: float):
     from triage_desk import TriageDesk
@@ -144,6 +217,7 @@ def main():
         st.markdown('<div class="sidebar-label">WORKSPACE</div><div class="workspace-repo">streamlit / streamlit</div>', unsafe_allow_html=True)
         st.divider()
         st.markdown('**Investigation settings**')
+        st.caption('These settings apply to Investigate and Chat. Deep Investigation has its own provider setup.')
         mode_label = st.selectbox('Search strategy', ['Hybrid', 'Semantic', 'Keyword'], help='Hybrid combines local semantic embeddings with BM25 keyword search. Keyword is the offline comparison baseline.')
         mode = mode_label.lower()
         kinds = st.multiselect('Evidence sources', ['documentation', 'issue', 'release', 'contributing'], default=['documentation', 'issue', 'release', 'contributing'], format_func=lambda s: {'documentation': 'Documentation', 'issue': 'Issue history', 'release': 'Release notes', 'contributing': 'Contribution guide'}[s])
@@ -188,8 +262,16 @@ def main():
     settings = {'mode': mode, 'kinds': kinds, 'generation': use_generation, 'guided': guided,
                 'strategy': 'structured' if strategy_label == 'Structured passages' else 'fixed',
                 'embedding_provider': embedding_provider, 'rerank': rerank, 'use_graph': use_graph}
-    investigate_tab, chat_tab, knowledge_tab, graph_tab, lab_tab, evaluation_tab = st.tabs(
-        ['Investigate', 'Chat', 'Knowledge base', 'Relationships', 'Retrieval lab', 'Evaluation'])
+    investigate_tab, deep_tab, chat_tab, knowledge_tab, graph_tab, lab_tab, evaluation_tab, guide_tab = st.tabs(
+        ['Investigate', 'Deep Investigation', 'Chat', 'Knowledge base', 'Relationships', 'Retrieval lab', 'Evaluation', 'Project guide'])
+
+    with guide_tab:
+        from triage_desk.project_guide import render_project_guide
+        render_project_guide(ROOT)
+
+    with deep_tab:
+        from triage_desk.agent_ui import render_deep_investigation
+        render_deep_investigation(ROOT, engine((ROOT / 'data' / 'sources.json').stat().st_mtime))
 
     with investigate_tab:
         left, right = st.columns([2.05, 1], gap='large')
@@ -361,8 +443,8 @@ def main():
             st.download_button('Download retrieval comparison', json.dumps(st.session_state.retrieval_comparison, indent=2), file_name='retrieval-comparison.json')
 
     with evaluation_tab:
-        st.subheader('Measure retrieval before trusting the answer')
-        st.caption('The benchmark compares the same questions across keyword, semantic, and hybrid search. Model-generated answers need an additional groundedness review.')
+        st.subheader('Evaluate evidence and investigation handoffs')
+        st.caption('Compare retrieval diagnostics and observed Deep Agents runs. Citation integrity, saved handoffs, and human answer-quality judgments are measured separately.')
         from triage_desk.reviews import outcome_summary
         reviews = outcome_summary(ROOT / '.cache' / 'user-outcomes.jsonl')
         if reviews['reviewed_runs']:
@@ -374,19 +456,7 @@ def main():
         if reports:
             path = st.selectbox('Evaluation report', reports, format_func=lambda p: str(p.relative_to(ROOT)))
             document = read_json(path, {})
-            summary_rows = []
-            for mode, scores in report_summaries(document.get('summary', {})):
-                def percent(key, alias=''):
-                    value = scores.get(key, scores.get(alias))
-                    return f'{value * 100:.0f}%' if value is not None else 'Not scored'
-                latency = scores.get('retrieval_latency_p95_ms')
-                mrr = scores.get('mean_reciprocal_rank')
-                summary_rows.append({'Strategy': mode.title(), 'Expected source found': percent('hit_at_k', 'hit_at_6'), 'Gold source precision': percent('gold_source_precision_at_k', 'gold_source_precision_at_6'), 'First expected source (MRR)': f'{mrr:.2f}' if mrr is not None else 'Not scored', 'Behavior checks': percent('behavior_pass_rate'), 'Reference integrity': percent('reference_integrity_pass_rate'), 'Warm retrieval p95': f'{latency:.0f} ms' if latency is not None else 'Not scored'})
-            if summary_rows:
-                st.dataframe(summary_rows, hide_index=True, width='stretch')
-                unit = 'sources' if document.get('report_kind') == 'graph_source_retrieval_comparison' else 'chunks'
-                count = document.get('question_count', sum(item.get('total_cases', 0) for item in document.get('datasets', [])))
-                st.caption(f"{count} diagnostic questions · top {document.get('top_k', document.get('source_budget', 6))} {unit}. Source labels cover selected expected references. These scores do not measure model faithfulness.")
+            render_evaluation_summary(document)
             if document.get('generation_requested'):
                 st.markdown('**Generated-answer run**')
                 st.json({mode: {key: value for key, value in scores.items() if key.startswith('generation_')} for mode, scores in document.get('summary', {}).items()}, expanded=True)
@@ -400,9 +470,9 @@ def main():
             if path.with_suffix('.html').exists():
                 st.download_button('Download readable evaluation report', path.with_suffix('.html').read_text(), file_name='evaluation-report.html', mime='text/html')
         else:
-            st.info('Run the fixed benchmark to create the evaluation report.')
-        st.code('uv run python -m evaluation.run', language='bash')
-        st.markdown('**Review dimensions:** expected source retrieval, citation validity, appropriate refusal, answer relevance, supported claims, and observed latency. Retrieval scores alone do not establish model faithfulness.')
+            st.info('Run a retrieval benchmark or Deep Investigation evaluation to create a report.')
+        st.code('uv run python -m evaluation.run\nuv run python -m evaluation.agent_workflow --live --output-dir evaluation/week3-results-new', language='bash')
+        st.markdown('**Review dimensions:** source retrieval, citation validity, supported claims, saved human handoffs, answer relevance, observed calls, and latency. Automatic checks and AI review leave human quality judgments unscored.')
 
 
 def render_result(result: dict):

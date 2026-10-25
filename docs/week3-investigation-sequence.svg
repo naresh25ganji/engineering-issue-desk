@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1720" viewBox="0 0 1900 1720" role="img" aria-labelledby="title desc">
+<title id="title">Engineering Issue Desk investigation and recovery sequence</title>
+<desc id="desc">An engineer starts a case, the service persists its authority and budget, the Deep Agent alternates model calls with bounded reads, and immutable evidence is checked. An independent model audit precedes the human interrupt. Approval or rejection uses local state only; revision and explicit retry preserve cumulative case limits.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#365f54"/></marker>
+  <style>
+    text{font-family:Arial,Helvetica,sans-serif;fill:#142b2b}.title{font-size:34px;font-weight:700}.subtitle{font-size:21px}.head{font-size:22px;font-weight:700}.body{font-size:20px}.small{font-size:18px}.participant{fill:#eaf3ed;stroke:#77978a;stroke-width:1.8}.life{stroke:#aebfb7;stroke-width:1.4;stroke-dasharray:7 7}.flow{fill:none;stroke:#365f54;stroke-width:2;marker-end:url(#arrow)}.return{fill:none;stroke:#365f54;stroke-width:1.8;stroke-dasharray:7 5;marker-end:url(#arrow)}.frame{fill:#f7faf8;stroke:#a0b6ab;stroke-width:1.5}.note{fill:#fff;stroke:#b5c5bc;stroke-width:1.3}
+  </style>
+</defs>
+<rect width="1900" height="1720" fill="#fff"/>
+<text x="40" y="53" class="title">Investigation and recovery sequence</text>
+<text x="40" y="89" class="subtitle">Research may adapt; persistence, evidence checks, and review authority remain explicit   •   October 23 2026</text>
+
+<g class="participant"><rect x="30" y="125" width="180" height="80" rx="8"/><rect x="270" y="125" width="190" height="80" rx="8"/><rect x="530" y="125" width="210" height="80" rx="8"/><rect x="820" y="125" width="220" height="80" rx="8"/><rect x="1110" y="125" width="210" height="80" rx="8"/><rect x="1400" y="125" width="220" height="80" rx="8"/><rect x="1680" y="125" width="190" height="80" rx="8"/></g>
+<g text-anchor="middle" class="head"><text x="120" y="173">Engineer</text><text x="365" y="160">Streamlit</text><text x="365" y="189">or CLI</text><text x="635" y="160">Service and</text><text x="635" y="189">outer graph</text><text x="930" y="160">Deep Agent</text><text x="930" y="189">and specialists</text><text x="1215" y="160">Bounded</text><text x="1215" y="189">read tools</text><text x="1510" y="160">Local SQLite</text><text x="1510" y="189">and locks</text><text x="1775" y="173">Fireworks</text></g>
+<g class="life"><path d="M120 205 V1510"/><path d="M365 205 V1510"/><path d="M635 205 V1510"/><path d="M930 205 V1510"/><path d="M1215 205 V1510"/><path d="M1510 205 V1510"/><path d="M1775 205 V1510"/></g>
+
+<path d="M120 250 H360" class="flow"/><text x="135" y="236" class="body">Issue and explicit options</text>
+<path d="M365 300 H630" class="flow"/><text x="380" y="286" class="body">start and validate intake</text>
+<path d="M635 355 H1505" class="flow"/><text x="660" y="341" class="body">Persist case and opt-in choice; lock, claim running, reconstruct cumulative usage</text>
+<path d="M635 410 H925" class="flow"/><text x="655" y="396" class="body">Invoke or resume inner thread</text>
+
+<rect x="785" y="445" width="1090" height="455" rx="8" class="frame"/>
+<text x="805" y="477" class="head">Adaptive loop with one shared case budget</text>
+<path d="M930 525 H1770" class="flow"/><text x="950" y="511" class="body">Reserve model call → issue, context, available tools, and selected evidence</text>
+<path d="M1775 585 H935" class="return"/><text x="1070" y="571" class="body">Tool requests or structured report with source and quote IDs</text>
+<path d="M930 645 H1210" class="flow"/><text x="948" y="631" class="body">Reserve and validate read</text>
+<path d="M1215 705 H1505" class="flow"/><text x="1235" y="691" class="body">Register literal snapshot</text>
+<path d="M1510 765 H1220" class="return"/><text x="1238" y="751" class="body">Evidence ID and quote spans</text>
+<path d="M1215 825 H935" class="return"/><text x="956" y="811" class="body">Bounded result or safe error</text>
+<text x="805" y="875" class="small">Tools may read the snapshot, approved provider pages, public GitHub, or explicitly enabled repository code. No code is executed.</text>
+
+<path d="M930 945 H640" class="return"/><text x="660" y="931" class="body">Candidate report as JSON</text>
+<path d="M635 1000 H1505" class="flow"/><text x="655" y="986" class="body">Validate schema and resolve saved literal quote IDs; save unapproved draft</text>
+<path d="M635 1055 H1770" class="flow"/><text x="655" y="1041" class="body">Separate budgeted evidence review: selected claims, proposals, and quotes only; no research tools</text>
+<path d="M1775 1110 H640" class="return"/><text x="660" y="1096" class="body">Strict indexed support verdicts → filter originals → revalidate citations</text>
+<path d="M635 1165 H1505" class="flow"/><text x="655" y="1151" class="body">Save filtered report and audit; checkpoint human interrupt; status awaiting_review</text>
+<path d="M635 1220 H370" class="return"/><text x="380" y="1206" class="body">Report, sources, safe events</text>
+<path d="M365 1275 H125" class="return"/><text x="136" y="1261" class="body">Inspect evidence and decide</text>
+<path d="M120 1330 H630" class="flow"/><text x="138" y="1316" class="body">Explicit approve or reject through UI / CLI</text>
+<path d="M635 1385 H1505" class="flow"/><text x="655" y="1371" class="body">Resume interrupt and save final local decision; no model call or external post</text>
+
+<rect x="35" y="1450" width="1830" height="110" rx="8" class="note"/>
+<text x="55" y="1485" class="head">Revision branch</text>
+<text x="55" y="1521" class="body">Human notes and prior report → new inner revision thread → research, citation checks, evidence review, and another human interrupt.</text>
+<text x="55" y="1548" class="small">Up to two revisions; original case, registered evidence, and cumulative provider/tool limits are retained.</text>
+<rect x="35" y="1590" width="1830" height="100" rx="8" class="note"/>
+<text x="55" y="1625" class="head">Failure and explicit retry</text>
+<text x="55" y="1661" class="body">Safe failure leaves the draft unapproved. Retry resumes pending work; invalid completed output can use a fresh repair thread, at most twice.</text>
+<text x="55" y="1687" class="small">OS lock recovery distinguishes abandoned runs from active sessions. Neither retry nor repair resets the budget. An AI audit is not human accuracy.</text>
+</svg>

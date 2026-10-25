@@ -2,9 +2,9 @@
 
 Investigate Streamlit behavior and prepare a reviewable issue draft from a bounded snapshot of official documentation, release notes, contribution guidance, and public issue reports. Inspect exact supporting passages, identify missing local details, and keep source authority and version scope visible.
 
-This independent course project does not establish a private application's root cause, prove a duplicate, promise a fix, inspect a developer's machine, execute pasted commands, or post issues.
+This independent course project does not establish a private application's root cause, prove a duplicate, promise a fix, inspect a developer's machine, execute pasted commands, or post issues. Week 3 adds a Deep Agents investigator with Fireworks, Keenable, saved cases, and resumable human review.
 
-For the demo walkthrough, open the standalone [architecture diagram](docs/architecture.svg) or its [PNG copy](docs/architecture.png). Read top to bottom: knowledge-base preparation, the LangGraph investigation workflow, and the generated-answer checks inside Analyze. Both files work offline.
+For the Week 3 walkthrough, open the [system architecture](docs/week3-system-architecture.svg), [investigation sequence](docs/week3-investigation-sequence.svg), and [architecture documentation](docs/ARCHITECTURE.md). The app's **Project guide** tab displays and downloads these assets. The original retrieval [diagram](docs/architecture.svg) and [PNG](docs/architecture.png) remain available for the earlier workflow.
 
 ## Run locally
 
@@ -19,18 +19,107 @@ Open http://localhost:8502. The 65-source snapshot is included. Keyword evidence
 
 The guided workflow defaults to structured passages. Fixed/structured indexes and optional hosted indexes are fingerprinted and cached separately in ignored `.cache/`; the bundled historical base-pipeline index does not replace those separate indexes. Changed corpus/model identities invalidate stale vectors.
 
-## Six working views
+## Eight working views
 
 | View | What it provides |
 | --- | --- |
 | Investigate | Structured reporter details, cited or extracted evidence, related public reports, missing details, workflow trace, and downloadable draft/JSON |
+| Deep Investigation | Fireworks-powered planning and specialist delegation, Keenable/GitHub tools, immutable source evidence, saved cases, and approve/reject/revise review |
 | Chat | Follow-up investigations with at most the last three user requests used only to resolve explicit references; prior assistant answers are never source evidence |
 | Knowledge base | Inspect the included source text, upstream URL, snapshot, source type, and version scope |
 | Relationships | Explore a provenance-bearing graph of literal API mentions and explicit reported versions, kinds, and issue states |
 | Retrieval lab | Compare fixed and structured passages and optional real FlashRank reranking for the same query |
 | Evaluation | Inspect recorded experiment reports and separately labeled user outcome summaries |
+| Project guide | View/download system and sequence diagrams, architecture, design decisions, operations, validation, and submission docs |
 
-The actual LangGraph path is `prepare → retrieve → grade → analyze → handoff → finish`, with conditional clarification/abstention branches. LangChain Core `Document` and `RunnableLambda` carry evidence and wrap nodes. Each eligible request retrieves once. Guards can request local diagnostics before retrieval; no persistent checkpoint or cross-session memory is implemented.
+The original investigation's LangGraph path is `prepare → retrieve → grade → analyze → handoff → finish`, with conditional clarification/abstention branches. LangChain Core `Document` and `RunnableLambda` carry evidence and wrap nodes. Each eligible request retrieves once. Guards can request local diagnostics before retrieval. This original path remains stateless; the new Deep Investigation path has separate durable checkpoints.
+
+## Week 3 Deep Investigation
+
+The new mode helps an engineer investigate a Streamlit report, compare documentation and public repository evidence, inspect supplied reproduction code, and prepare a cited report for review. A real `deepagents.create_deep_agent` loop chooses tools and delegates to three specialists: documentation/issue research (`general-purpose`), correctness/security, and tests/reproduction. Planning uses `TodoListMiddleware` explicitly. The model controls research and delegation; deterministic Python checks source identities and literal quotes, manages review, and renders exports.
+
+Configure the local `.env` file with `FIREWORKS_API_KEY`, `FIREWORKS_MODEL`, and `KEENABLE_API_KEY`, then restart Streamlit. Select a Fireworks model that supports tool calling. The local probe verified `accounts/fireworks/models/gpt-oss-120b` with the configured account; other accounts must verify their own model access. The Fireworks key and model are required to start. Keenable is optional: unavailable web tools return an explicit error while local snapshot and public GitHub tools remain usable. Existing Nebius configuration continues to serve the original mode.
+
+Starting a deep investigation sends the issue, supplied code, and selected evidence to Fireworks. Keenable receives search queries and requested page URLs. Optional `GITHUB_TOKEN` increases public API allowance. `LANGSMITH_TRACING=true` with `LANGSMITH_API_KEY` enables tracing; traces may retain model/tool content. Keep all credentials in `.env`, which is excluded from Git and submission assets.
+
+The five domain tools are:
+
+- `search_knowledge_base`: bounded keyword search of the included corpus, with its original snapshot date and version scope.
+- `search_web`: Keenable discovery restricted to Streamlit, Python, and LangChain documentation and `streamlit/streamlit` GitHub pages; snippets are labeled as snippets.
+- `fetch_web_page`: fetch an approved page through Keenable, preserving its literal bounded content and retrieval timestamp.
+- `read_github_issue`: read a public Streamlit issue and bounded comments, attributed as reports rather than confirmed diagnoses.
+- `read_github_pr`: read PR context and up to five file patches using immutable base/head commit comparison; truncated patches are labeled.
+
+Specialists access evidence through a shared case registry rather than relying on filesystem visibility. Deep Agents' filesystem is a virtual `StateBackend`; the agent has no host shell or code execution tool. Source records preserve exact text, hashes, source URLs, evidence type, timestamps, version scope, and commit references. Each source has deterministic quote IDs for literal spans of up to 1,000 characters. The model selects an evidence ID and one of that source's quote IDs; the application resolves the saved text, so punctuation, Unicode, and whitespace cannot be rewritten by the model. Legacy saved literal citations remain supported. Model-facing tool results show spans without duplicating the raw source text. **These checks establish citation integrity, not entailment or factual correctness.** A separate Fireworks evidence reviewer assesses complete findings and proposed steps against selected quotes, removes unsupported items, and records its verdicts before the human checkpoint. It cannot author replacements or approve the report. Its one model call shares the case budget, and a failed review leaves the case unapproved. AI review can miss unsupported advice or reject useful content; a human must still assess the evidence and causal applicability.
+
+The surrounding LangGraph flow is `investigate → evidence_review → human_review → finish`, with a revision branch back to investigation. SQLite checkpoints persist both the Deep Agents loop and the human-review state under stable case/thread IDs. Approval and rejection resume without calling a model. Requesting revision supplies the review notes to a new agent iteration. Approval saves the local report; this version does not post to GitHub. Saved cases can be reopened from the workspace selector.
+
+Case records, immutable evidence, audit events, checkpoints, and process locks live under ignored `.cache/agent/`. This is one local personal workspace, not a multi-user hosted service. Independent case locks prevent simultaneous executions, and startup recovery only marks an abandoned running case as failed after acquiring its process lock. Retry resumes the unfinished checkpoint; completed reads and pending review are not automatically repeated. An invalid completed report can be repaired on explicit retry, at most twice. A report repair starts a fresh inner conversation with the original request and saved source registry; its calls still consume the same case-wide allowance. Human-requested revisions receive the previous report as well as review notes.
+
+Each case shares limits across the orchestrator, specialists, retries, and revisions: 18 model calls, 28 tools, and two human-requested revisions. The 64,000 reported-token threshold and 180-second active-invocation deadline are checked before dispatch; in-flight calls have separate timeouts and may finish after a threshold. Missing token usage remains unknown. Automatic model-powered summarization is replaced with a deterministic 80,000-character message-context guard so summary calls cannot bypass accounting. Large cases stop with retained evidence rather than silently expanding the allowance. Truncated or malformed model tool output stops before further tool execution, with reported usage preserved. Provider errors are sanitized; the plan, calls, reported usage, and saved provenance remain inspectable.
+
+The CLI uses the same saved cases and review graph. After configuring `.env`, explicitly check provider connectivity with the small probe before a full investigation:
+
+```bash
+uv run python scripts/investigate_deep.py probe
+uv run python scripts/investigate_deep.py start --question "My uploaded CSV resets after a widget interaction. Investigate the documentation and propose a focused reproduction."
+uv run python scripts/investigate_deep.py list
+uv run python scripts/investigate_deep.py show CASE_ID
+uv run python scripts/investigate_deep.py audit CASE_ID
+uv run python scripts/investigate_deep.py review CASE_ID --decision approve --notes "Reviewed the cited sources."
+```
+
+The probe makes at most two small Fireworks calls and one Keenable search when the respective configuration is present. It returns status/booleans/counts, not keys or raw model/search text. `list` and `show` need no credentials. To review a file, add `--code-file triage_desk/reviews.py` to `start`; only that explicitly selected file is read. A revision uses `review CASE_ID --decision revise --notes "Describe the change"`; retry uses `retry CASE_ID`. Legacy drafts without an evidence review must use `audit CASE_ID` before approval; auditing reviews saved evidence without repeating research.
+
+Run all offline regression checks with `uv run pytest -q`. The new tests exercise the actual Deep Agents harness with a scripted tool-calling model, real tools, real SQLite checkpoints, specialist delegation, malformed-citation rejection, cross-specialist limits, restart/review, revision, and failure recovery. These tests establish workflow behavior with controlled responses. Provider connectivity and live evaluation have separate recorded evidence; none establishes human investigation quality. The earlier manual plan in `evaluation/agent-cases.json` remains unscored. The executable three-code-sample dataset is `evaluation/week3-cases.json`.
+
+## Week 3 deliverables and recorded evaluation
+
+The [submission handoff](docs/WEEK3_SUBMISSION.md) maps the handout to the implemented agent, datasets, development iterations, required links, and remaining work. The [Week 3 write-up](docs/Engineering%20Issue%20Desk%20Week%203%20Writeup.docx), [native Google Doc](https://docs.google.com/document/d/1gOxafWnF3u6OI5Rp1OtHMQyF0VYTPsBnm_NzWH3Dzus), [4:45 demo guide](docs/Engineering%20Issue%20Desk%20Week%203%20Demo%20Guide.docx), and [agent architecture](docs/week3-architecture.svg) accompany the code. The Google Doc is private. A video has not been recorded, and the Week 3 changes have not been pushed or submitted to the course form.
+
+The [live three-code-sample report](evaluation/week3-results/report.html) and [raw JSON](evaluation/week3-results/report.json) preserve one run of `evaluation/week3-cases.json`:
+
+| Observed measure | Result |
+| --- | --- |
+| Saved human-review handoffs | 2/3 scheduled cases |
+| Failed cases | 1; independent evidence review response did not pass validation |
+| Literal quote/source integrity | 3/3 drafts, including the failed case; this does not establish entailment |
+| AI filtering on completed reviews | 1 finding and 2 proposed steps removed |
+| Dispatch and usage | 9 model calls, 3 tools, 44,382 reported tokens; usage present for all calls |
+| Human accuracy, usefulness, citation entailment | Unscored |
+
+The static samples required only supplied code: the observed tools were three `read_case_evidence` calls, with no specialist delegation or live web research in this run. Other scripted harness tests exercise delegation; a separate actual provider probe verified Fireworks tool calling and Keenable search. The [post-run code inspection](evaluation/week3-results/engineering-review.md) records incorrect retained claims. AI review did not establish investigation quality, and no case was automatically approved.
+
+Validate fixtures without provider calls, or explicitly run another live evaluation into a new directory:
+
+```bash
+uv run python -m evaluation.agent_workflow --output-dir .cache/week3-input-inventory
+uv run python -m evaluation.agent_workflow --live --output-dir evaluation/week3-results-rerun
+uv run python scripts/package_submission.py --output artifacts/engineering-issue-desk-week3.zip
+```
+
+The initial Week 3 verification passed **401 tests** and the 65-source integrity check. The source package excludes local credentials, private saved cases, environments, caches, and logs, and includes a per-file hash manifest.
+
+## October 23 architecture and reliability update
+
+The [architecture](docs/ARCHITECTURE.md), [design decisions](docs/DESIGN.md), [operations runbook](docs/OPERATIONS.md), and [validation record](docs/VALIDATION.md) document the implemented system, state model, trust boundaries, recovery, and deployment limits. The earlier Word/Google Docs submission assets preserve the initial Week 3 observations; these technical docs describe the later extension.
+
+**Related application code is optional.** Enable **Include related application code** when creating a case, or add `--repository-context` to CLI `start`. Three additional tools list, search, and read only `app.py` and Python files under `triage_desk/`. The immutable case option defaults off, including migrated older cases; retry/revision inherit it. Selected context goes to Fireworks. No code is executed.
+
+Reads preserve whole lines, relative paths, file/excerpt hashes, timestamps, and immutable case evidence. Inventory/search are bounded discovery operations; a source must be read before citation. Symlinks, hardlinks, nonregular files, hidden paths, and paths outside the allowlist are rejected. Configured credential values and common credential patterns cause the whole file to be withheld; this heuristic does not classify every possible secret. Search shares a bounded character allowance across file prefixes, so omitted matches are not proof of absence. Exact bounds are in the architecture document.
+
+Evidence-review failures now have finite safe codes in the saved timeline and CLI `show`. Harmless paired inline-code backticks in reviewer reasons normalize to plain text; schema, coverage, URLs, HTML, and unsafe formatting checks remain enforced. No automatic model retry was added.
+
+The [new live report](evaluation/week3-context-results/report.html) recorded **3/3 saved handoffs**, 12 model calls, six tools, and 70,046 reported tokens across all three cases, with usage available for every model call. One overlong repository read was rejected; smaller reads succeeded. It used repository listing/reading, but no repository search, helper read, Keenable, or specialist delegation. The [post-run inspection](evaluation/week3-context-results/engineering-review.md) records the remaining quality limits. This run changes multiple implementation/prompt conditions and does not isolate a causal quality improvement.
+
+A separate [live checkpoint recovery](evaluation/week3-context-results/checkpoint-recovery.json) resumed the original failed W3-02 case using only one evidence-review call, zero tools, and 2,716 reported tokens. It reached `awaiting_review`, repeated no investigator call, and did not approve the report. The frozen original 2/3 report remains unchanged. A separate [provider probe](evaluation/week3-context-results/provider-probe.json) again verified a Fireworks tool round trip and five Keenable results.
+
+Current validation passed **473 tests**, the 65-source integrity check, actual browser checks, diagram rendering, and source-package checks. See the validation record for the exact scope and unmeasured outcomes.
+
+```bash
+uv run python scripts/investigate_deep.py start --question "Review the embedding response and its configuration helpers." --code-file triage_desk/hosted_embeddings.py --repository-context
+uv run python -m evaluation.agent_workflow --live --repository-context --output-dir evaluation/week3-context-rerun
+```
 
 ## Evidence and optional Nebius models
 
@@ -118,7 +207,7 @@ uv run python scripts/package_submission.py --output artifacts/engineering-issue
 
 The script excludes credentials, environments, caches, and local outcome logs; it checks candidate assets against configured local credentials before writing. The local handoff includes a generated source ZIP at `artifacts/engineering-issue-desk-week2.zip`, with a per-file manifest inside it.
 
-## Course handoff
+## Historical Week 2 handoff
 
 - [Private project repository](https://github.com/naresh25ganji/engineering-issue-desk)
 - [Private Google Docs write-up](https://docs.google.com/document/d/1C1OZmA_590xQs1ItVmqQq2ljM9BM2dvxlKilXt9vH44)
@@ -126,14 +215,14 @@ The script excludes credentials, environments, caches, and local outcome logs; i
 - [Four minute and forty second recording guide](docs/Engineering%20Issue%20Desk%20Video%20Recording%20Guide.docx) with narration, screen cues, and recording controls; also available as a [private Google Doc](https://docs.google.com/document/d/1wPnj_PcB3pk73QN6mVSyr9hAz0TVUiJd076T1sUF408)
 - [Latest workflow report and AI review](evaluation/workflow-results/report.html)
 
-Local verification passed 200 tests, the 65-source integrity check, real browser investigation/chat checks, and all six converted Google Docs pages. The video and course form submission remain separate deliverables. The repository and Google Doc are private; reviewer access has not been configured.
+The Week 2 handoff verification passed 200 tests at that point, the 65-source integrity check, real browser investigation/chat checks, and all six converted Google Docs pages. The video and course form submission remain separate deliverables. The repository and Google Doc are private; reviewer access has not been configured.
 
 ## Course expansion
 
 The backend is independent of Streamlit. Continue this project with read-only engineering tools/MCP, stronger evaluation and observability, reviewed issue-routing training data/local model comparisons, and deliberate action/permission controls as later handouts require. See [docs/ASSIGNMENT.md](docs/ASSIGNMENT.md) for requirement mapping, prompt locations, four-guide adaptations, historical runs, and the five-minute demo sequence.
 
 ```text
-app.py                       Six-view Streamlit workspace
+app.py                       Eight-view Streamlit workspace
 triage_desk/                  Core RAG, workflow, retrieval lab, graph, providers, outcomes
 scripts/fetch_corpus.py       Bounded source snapshot and offline validation
 scripts/package_submission.py Source ZIP and per-file manifest builder

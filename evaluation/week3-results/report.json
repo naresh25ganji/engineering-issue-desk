@@ -1,0 +1,547 @@
+{
+  "schema_version": 1,
+  "report_kind": "deep_agent_workflow",
+  "generated_at": "2026-10-23T05:57:07.952191+00:00",
+  "execution_mode": "live",
+  "dataset_name": "Week 3 real-code Deep Investigation cases v1",
+  "dataset_sha256": "52571ba0c0d354728088feefaa93f950d7d47d94be12411db95bf671c8432cc8",
+  "corpus_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "summary": {
+    "scheduled_cases": 3,
+    "attempted_cases": 3,
+    "completed_handoffs": 2,
+    "failed_cases": 1,
+    "not_run_cases": 0,
+    "handoff_rate": 0.6666666666666666,
+    "handoff_denominator": "All scheduled selected cases, including errors. This measures saved review handoff completion, not answer accuracy.",
+    "human_accuracy": null,
+    "human_citation_entailment": null,
+    "citation_integrity_passed_cases": 3,
+    "ai_rejected_findings": 1,
+    "ai_rejected_next_steps": 2,
+    "model_calls": 9,
+    "tool_calls": 3,
+    "unfinished_call_records": 0,
+    "model_calls_by_role": {
+      "investigator": 6,
+      "evidence_reviewer": 3
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 3
+    },
+    "errors_by_role_or_tool": {},
+    "reported_token_usage": {
+      "input_tokens": 37229,
+      "output_tokens": 7153,
+      "total_tokens": 44382
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "reported_tokens": 44382,
+    "accounting_unknown_error_rows": 0,
+    "usage_complete": true
+  },
+  "results": [
+    {
+      "id": "W3-01",
+      "eval_id": "W3-01",
+      "question": "Statically review the supplied reviews.py for outcome-label correctness and concurrency assumptions. Use local documentation only if relevant. Return at most two supported findings, with exact registered quotes, and focused proposed checks. Distinguish threading.Lock from cross-process guarantees, and user-reported resolution labels from automated quality scores. Ask for missing deployment details and pause for human review. Do not run code or claim a reproduced race.",
+      "sample": {
+        "path": "triage_desk/reviews.py",
+        "start_line": 1,
+        "end_line": 41,
+        "file_sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+        "excerpt_sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+        "excerpt_characters": 1812,
+        "context_characters": 1946
+      },
+      "goals": [
+        "Ground static observations in the supplied code.",
+        "Identify thread/process scope and outcome-measurement limitations without inventing failures.",
+        "Leave a cited report and proposed checks at a saved human-review checkpoint."
+      ],
+      "relevant_source_kinds": [
+        "code",
+        "documentation"
+      ],
+      "expected_boundary": "Static code observations and proposed checks only; no execution, private-file inspection, external posting, or automatic approval.",
+      "attempted": true,
+      "status": "awaiting_review",
+      "case_id": "4291ce9f-f147-4a43-b1b2-21edab06dc72",
+      "handoff_required": true,
+      "handoff_observed": true,
+      "persisted_case_observed": true,
+      "report": {
+        "findings": [
+          {
+            "statement": "The outcome_summary function correctly treats user‑reported resolution labels as distinct from any automated quality score, counting only records where first_contact is true and outcome equals \"resolved\".",
+            "category": "correctness",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_534ac87249233c737da92da199c0e321",
+                "quote_id": "ev_534ac87249233c737da92da199c0e321:q3",
+                "quote": ",\n            'user_reported_resolved_first_contacts': resolved,\n            'user_reported_first_contact_resolution': resolved / len(first) if first else None,\n            'note': 'User outcome labels on reviewed first contacts only; not an automated quality score or a claim about unreviewed users.'}\n"
+              }
+            ]
+          }
+        ],
+        "missing_information": [
+          "Deployment details: Are multiple processes or workers expected to invoke save_outcome on the same file path? What runtime (e.g., gunicorn, uWSGI, multiprocessing) and filesystem (local disk vs. network share) are used?"
+        ],
+        "next_steps": [
+          "Add a test that spawns multiple processes writing to the same outcome file concurrently, then verify that the file contains well‑formed JSON lines without interleaving."
+        ],
+        "quality_review": {
+          "status": "completed",
+          "finding_verdicts": [
+            {
+              "index": 0,
+              "supported": true,
+              "reason": "Quote 0 shows fields and note indicating only first‑contact user labels are counted, distinct from any automated score, matching the claim."
+            },
+            {
+              "index": 1,
+              "supported": false,
+              "reason": "Quotes show threading.Lock usage but do not state that it lacks cross‑process safety; claim about inter‑process interleaving is not directly evidenced."
+            }
+          ],
+          "next_step_verdicts": [
+            {
+              "index": 0,
+              "supported": true,
+              "reason": "Based on observed threading.Lock use, a multi‑process write test is a valid diagnostic to check for interleaving."
+            },
+            {
+              "index": 1,
+              "supported": false,
+              "reason": "Quotes do not provide evidence that a cross‑process lock like portalocker exists or would address the issue; remedy not substantiated."
+            }
+          ],
+          "retained_findings": 1,
+          "removed_findings": 1,
+          "removed_next_steps": 1,
+          "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+        }
+      },
+      "independent_ai_review": {
+        "status": "completed",
+        "finding_verdicts": [
+          {
+            "index": 0,
+            "supported": true,
+            "reason": "Quote 0 shows fields and note indicating only first‑contact user labels are counted, distinct from any automated score, matching the claim."
+          },
+          {
+            "index": 1,
+            "supported": false,
+            "reason": "Quotes show threading.Lock usage but do not state that it lacks cross‑process safety; claim about inter‑process interleaving is not directly evidenced."
+          }
+        ],
+        "next_step_verdicts": [
+          {
+            "index": 0,
+            "supported": true,
+            "reason": "Based on observed threading.Lock use, a multi‑process write test is a valid diagnostic to check for interleaving."
+          },
+          {
+            "index": 1,
+            "supported": false,
+            "reason": "Quotes do not provide evidence that a cross‑process lock like portalocker exists or would address the issue; remedy not substantiated."
+          }
+        ],
+        "retained_findings": 1,
+        "removed_findings": 1,
+        "removed_next_steps": 1,
+        "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+      },
+      "sources": [
+        {
+          "evidence_id": "ev_534ac87249233c737da92da199c0e321",
+          "title": "User supplied reproduction code",
+          "url": "",
+          "kind": "code",
+          "origin": "user_code",
+          "evidence_type": "",
+          "fetched_at": "2026-10-23T05:56:26.643141+00:00",
+          "snapshot_at": "",
+          "version_scope": "",
+          "commit_sha": "",
+          "sha256": "dfaf1f9d1bc39f6ac116b1be6c4848470fd61915f738c3bfb4c5f51230db3162",
+          "published_at": "",
+          "acquired_at": ""
+        }
+      ],
+      "error": null,
+      "accounting": {
+        "model_calls": 3,
+        "tool_calls": 1,
+        "model_calls_by_role": {
+          "investigator": 2,
+          "evidence_reviewer": 1
+        },
+        "tool_calls_by_name": {
+          "read_case_evidence": 1
+        },
+        "errors_by_role_or_tool": {},
+        "unfinished_call_records": 0,
+        "reported_token_usage": {
+          "input_tokens": 11436,
+          "output_tokens": 2452,
+          "total_tokens": 13888
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "usage_complete": true,
+        "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+      },
+      "elapsed_ms": 15376.223,
+      "automatic_citation_integrity": {
+        "status": "passed",
+        "checked_supports": 1,
+        "failed_supports": 0,
+        "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+      },
+      "human_review": {
+        "accuracy": null,
+        "relevance": null,
+        "citation_entailment": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "W3-02",
+      "eval_id": "W3-02",
+      "question": "Statically review the supplied freshness.py timestamp validation and freshness disclosure. Return at most two supported findings using exact registered quotes. Explain what current and stale establish, how missing/future/naive timestamps are treated, and propose focused boundary tests. Use local documentation if useful; avoid unnecessary web searches. Do not claim that a recent fetch verifies upstream facts or that tests were executed. Pause for human review.",
+      "sample": {
+        "path": "triage_desk/freshness.py",
+        "start_line": 1,
+        "end_line": 30,
+        "file_sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+        "excerpt_sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+        "excerpt_characters": 1629,
+        "context_characters": 1765
+      },
+      "goals": [
+        "Distinguish snapshot-age disclosure from factual correctness and version compatibility.",
+        "Inspect actual timestamp and threshold branches with literal evidence.",
+        "Propose invalid/future/threshold test cases separately from observed execution results."
+      ],
+      "relevant_source_kinds": [
+        "code",
+        "documentation",
+        "release"
+      ],
+      "expected_boundary": "Do not execute the function or substitute host time for a measured test; disclose missing assumptions and preserve human review.",
+      "attempted": true,
+      "status": "failed",
+      "case_id": "abc63196-bfa2-43d2-b89f-fed2e18eef1a",
+      "handoff_required": true,
+      "handoff_observed": false,
+      "persisted_case_observed": true,
+      "report": {
+        "findings": [
+          {
+            "statement": "The function returns status 'current' when the oldest valid snapshot is younger than the configured max_age_days, and 'stale' when its age in days is greater than or equal to max_age_days.",
+            "category": "correctness",
+            "severity": "medium",
+            "support": [
+              {
+                "evidence_id": "ev_4e3570db49b182c56aa7effcdb6f349b",
+                "quote_id": "ev_4e3570db49b182c56aa7effcdb6f349b:q2",
+                "quote": "atetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise ValueError('Invalid snapshot time')\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n    oldest = min(snapshots) if snapshots else None\n    age_days = (now - oldest).total_seconds() / 86400 if oldest else None\n    status = 'unknown' if missing or not oldest else 'stale' if age_days >= max_age_days else 'current'\n    return {'status': status, 'oldest_snapshot_at': oldest.isoformat() if oldest else None,\n            'age_days': round(age_days, 2) if age_days is not None else None,\n            'max_age_days': max_age_days, 'missing_or_invalid_timestamps': missing,\n            'refresh_mode': 'manual',\n            'note': 'Snapshot age measures fetch time, not whether an upstream claim or version is still correct.'}\n"
+              }
+            ]
+          },
+          {
+            "statement": "Snapshots without timezone information, timestamps in the future, or missing/invalid snapshot_at fields raise a ValueError, are counted as missing, and cause the overall status to be reported as 'unknown'.",
+            "category": "correctness",
+            "severity": "medium",
+            "support": [
+              {
+                "evidence_id": "ev_4e3570db49b182c56aa7effcdb6f349b",
+                "quote_id": "ev_4e3570db49b182c56aa7effcdb6f349b:q1",
+                "quote": "Supplied repository file: triage_desk/freshness.py:1-30\nFile SHA-256: 48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91\n\n\"\"\"Snapshot-age disclosure; a recent fetch does not verify upstream facts.\"\"\"\nfrom __future__ import annotations\n\nfrom datetime import datetime, timezone\n\n\ndef corpus_freshness(sources: list[dict], *, now: datetime | None = None, max_age_days: int = 7) -> dict:\n    if not isinstance(max_age_days, int) or isinstance(max_age_days, bool) or max_age_days < 1:\n        raise ValueError('Maximum snapshot age must be a positive number of days')\n    now = now or datetime.now(timezone.utc)\n    if now.tzinfo is None:\n        raise ValueError('Snapshot age requires a timezone-aware current time')\n    snapshots = []\n    missing = 0\n    for source in sources:\n        try:\n            snapshot = datetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise"
+              },
+              {
+                "evidence_id": "ev_4e3570db49b182c56aa7effcdb6f349b",
+                "quote_id": "ev_4e3570db49b182c56aa7effcdb6f349b:q2",
+                "quote": "atetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise ValueError('Invalid snapshot time')\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n    oldest = min(snapshots) if snapshots else None\n    age_days = (now - oldest).total_seconds() / 86400 if oldest else None\n    status = 'unknown' if missing or not oldest else 'stale' if age_days >= max_age_days else 'current'\n    return {'status': status, 'oldest_snapshot_at': oldest.isoformat() if oldest else None,\n            'age_days': round(age_days, 2) if age_days is not None else None,\n            'max_age_days': max_age_days, 'missing_or_invalid_timestamps': missing,\n            'refresh_mode': 'manual',\n            'note': 'Snapshot age measures fetch time, not whether an upstream claim or version is still correct.'}\n"
+              }
+            ]
+          }
+        ],
+        "missing_information": [],
+        "next_steps": [
+          "Add a test where the oldest valid snapshot is exactly max_age_days old to verify the boundary between 'current' and 'stale'.",
+          "Add tests for sources with missing snapshot_at, future timestamps, and naive timestamps (no tzinfo) to confirm they produce status 'unknown' and increment the missing counter."
+        ]
+      },
+      "independent_ai_review": null,
+      "sources": [
+        {
+          "evidence_id": "ev_4e3570db49b182c56aa7effcdb6f349b",
+          "title": "User supplied reproduction code",
+          "url": "",
+          "kind": "code",
+          "origin": "user_code",
+          "evidence_type": "",
+          "fetched_at": "2026-10-23T05:56:42.019041+00:00",
+          "snapshot_at": "",
+          "version_scope": "",
+          "commit_sha": "",
+          "sha256": "83272d70c3374f164f9fa37d5f4432be196c21b13fdbcca64af7db30ab4759fd",
+          "published_at": "",
+          "acquired_at": ""
+        }
+      ],
+      "error": {
+        "type": "InvestigationFailed",
+        "message": "The saved investigation did not finish; inspect its local audit events."
+      },
+      "accounting": {
+        "model_calls": 3,
+        "tool_calls": 1,
+        "model_calls_by_role": {
+          "investigator": 2,
+          "evidence_reviewer": 1
+        },
+        "tool_calls_by_name": {
+          "read_case_evidence": 1
+        },
+        "errors_by_role_or_tool": {},
+        "unfinished_call_records": 0,
+        "reported_token_usage": {
+          "input_tokens": 11266,
+          "output_tokens": 2289,
+          "total_tokens": 13555
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "usage_complete": true,
+        "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+      },
+      "elapsed_ms": 12271.569,
+      "automatic_citation_integrity": {
+        "status": "passed",
+        "checked_supports": 3,
+        "failed_supports": 0,
+        "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+      },
+      "human_review": {
+        "accuracy": null,
+        "relevance": null,
+        "citation_entailment": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "W3-03",
+      "eval_id": "W3-03",
+      "question": "Statically review the supplied hosted_embeddings.py for API-response validation, cache identity, and safe error handling. Return at most two supported findings with exact code quotes and focused proposed checks. Use local caching/security documentation only if needed. Distinguish inspected safeguards from verified runtime behavior; do not call an embeddings endpoint, reveal credentials, or claim benchmarks/tests ran. Pause for human review.",
+      "sample": {
+        "path": "triage_desk/hosted_embeddings.py",
+        "start_line": 1,
+        "end_line": 218,
+        "file_sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+        "excerpt_sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+        "excerpt_characters": 11687,
+        "context_characters": 11832
+      },
+      "goals": [
+        "Inspect endpoint/model/dimension/corpus cache identity from actual code.",
+        "Assess response shape, embedding dimensions, and credential-safe metadata using exact evidence.",
+        "Separate proposed response-validation tests from unexecuted runtime claims."
+      ],
+      "relevant_source_kinds": [
+        "code",
+        "documentation"
+      ],
+      "expected_boundary": "No embeddings calls, code execution, host-secret inspection, inferred cost, or automatic report approval.",
+      "attempted": true,
+      "status": "awaiting_review",
+      "case_id": "30d898c9-e0a6-4632-8686-bd41966e6bb5",
+      "handoff_required": true,
+      "handoff_observed": true,
+      "persisted_case_observed": true,
+      "report": {
+        "findings": [
+          {
+            "statement": "The HostedDenseIndex does not verify that the runtime provider key is non‑empty before sending the Authorization header, which could result in unauthenticated requests being sent to the embeddings endpoint.",
+            "category": "security",
+            "severity": "medium",
+            "support": [
+              {
+                "evidence_id": "ev_65af45ba60e502781608f0dc705510ac",
+                "quote_id": "ev_65af45ba60e502781608f0dc705510ac:q5",
+                "quote": "int\": self.endpoint,\n                    \"model\": self.model_name, \"dimensions\": self.dimensions,\n                    \"chunk_fingerprint\": original_fingerprint}\n        self.fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()\n        self.index_path = self.cache_dir / f\"vectors-{self.fingerprint}.npz\"\n        self.prebuilt_path = None\n        self.calls: list[dict] = []\n        self._query_cache: OrderedDict[str, np.ndarray] = OrderedDict()\n        self._query_lock = threading.RLock()\n\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the"
+              },
+              {
+                "evidence_id": "ev_65af45ba60e502781608f0dc705510ac",
+                "quote_id": "ev_65af45ba60e502781608f0dc705510ac:q7",
+                "quote": "ntime_key()\n            with httpx.Client(timeout=httpx.Timeout(45, connect=10), follow_redirects=False) as client:\n                metadata[\"attempted\"] = True\n                self.calls.append(metadata)\n                response = client.post(self.endpoint, headers={\"Authorization\": f\"Bearer {key}\"},\n                                       json={\"model\": self.model_name, \"input\": texts, \"dimensions\": self.dimensions})\n                status = response.status_code\n                metadata[\"http_status\"] = status\n                if not 200 <= status < 300:\n                    metadata[\"status\"] = \"provider_http_error\"\n                    raise EmbeddingUnavailable(f\"Hosted embeddings returned HTTP {status}; no embedding results were accepted.\")\n                body = response.json()\n            if not isinstance(body, dict):\n                raise ValueError(\"Expected an embedding response object\")\n            metadata[\"returned_model\"] = _safe_model(body.get(\"model\"), key)"
+              }
+            ]
+          },
+          {
+            "statement": "The request metadata records only high‑level status flags; however, the code does not capture or redact the raw HTTP response body on error, which could inadvertently expose provider‑specific error messages if later logged.",
+            "category": "security",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_65af45ba60e502781608f0dc705510ac",
+                "quote_id": "ev_65af45ba60e502781608f0dc705510ac:q7",
+                "quote": "ntime_key()\n            with httpx.Client(timeout=httpx.Timeout(45, connect=10), follow_redirects=False) as client:\n                metadata[\"attempted\"] = True\n                self.calls.append(metadata)\n                response = client.post(self.endpoint, headers={\"Authorization\": f\"Bearer {key}\"},\n                                       json={\"model\": self.model_name, \"input\": texts, \"dimensions\": self.dimensions})\n                status = response.status_code\n                metadata[\"http_status\"] = status\n                if not 200 <= status < 300:\n                    metadata[\"status\"] = \"provider_http_error\"\n                    raise EmbeddingUnavailable(f\"Hosted embeddings returned HTTP {status}; no embedding results were accepted.\")\n                body = response.json()\n            if not isinstance(body, dict):\n                raise ValueError(\"Expected an embedding response object\")\n            metadata[\"returned_model\"] = _safe_model(body.get(\"model\"), key)"
+              },
+              {
+                "evidence_id": "ev_65af45ba60e502781608f0dc705510ac",
+                "quote_id": "ev_65af45ba60e502781608f0dc705510ac:q11",
+                "quote": "Error, KeyError, OverflowError) as exc:\n            metadata[\"status\"] = \"provider_error\" if isinstance(exc, (httpx.HTTPError, OSError)) else \"invalid_response\"\n            metadata[\"failure_type\"] = type(exc).__name__\n            raise EmbeddingUnavailable(f\"Hosted embedding request failed ({type(exc).__name__}); no embedding results were accepted.\") from None\n        finally:\n            metadata[\"latency_ms\"] = round((time.perf_counter() - started) * 1000, 3)\n\n    def embed_documents(self, texts: Sequence[str]) -> np.ndarray:\n        if isinstance(texts, (str, bytes)):\n            raise ValueError(\"Embedding inputs must be a sequence of nonempty texts\")\n        values = list(texts)\n        if any(not isinstance(value, str) or not value.strip() for value in values):\n            raise ValueError(\"Embedding inputs must be nonempty text strings\")\n        if not values:\n            return np.empty((0, self.dimensions), dtype=np.float32)\n        batches = []\n        # Deliberately"
+              }
+            ]
+          }
+        ],
+        "missing_information": [],
+        "next_steps": [
+          "Add an explicit check after retrieving the runtime key (e.g., `if not key: raise EmbeddingUnavailable(\"Provider key missing or empty\")`) to prevent sending empty Authorization headers."
+        ],
+        "quality_review": {
+          "status": "completed",
+          "finding_verdicts": [
+            {
+              "index": 0,
+              "supported": true,
+              "reason": "Quotes 0 and 1 show no check for empty key before Authorization header is set."
+            },
+            {
+              "index": 1,
+              "supported": true,
+              "reason": "Quotes 1 and 2 record only high‑level flags and never store the HTTP response body on error."
+            }
+          ],
+          "next_step_verdicts": [
+            {
+              "index": 0,
+              "supported": true,
+              "reason": "Adding a non‑empty key check directly addresses the missing verification shown in quotes."
+            },
+            {
+              "index": 1,
+              "supported": false,
+              "reason": "Code does not capture raw body; storing a sanitized excerpt is unrelated to the observed issue."
+            }
+          ],
+          "retained_findings": 2,
+          "removed_findings": 0,
+          "removed_next_steps": 1,
+          "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+        }
+      },
+      "independent_ai_review": {
+        "status": "completed",
+        "finding_verdicts": [
+          {
+            "index": 0,
+            "supported": true,
+            "reason": "Quotes 0 and 1 show no check for empty key before Authorization header is set."
+          },
+          {
+            "index": 1,
+            "supported": true,
+            "reason": "Quotes 1 and 2 record only high‑level flags and never store the HTTP response body on error."
+          }
+        ],
+        "next_step_verdicts": [
+          {
+            "index": 0,
+            "supported": true,
+            "reason": "Adding a non‑empty key check directly addresses the missing verification shown in quotes."
+          },
+          {
+            "index": 1,
+            "supported": false,
+            "reason": "Code does not capture raw body; storing a sanitized excerpt is unrelated to the observed issue."
+          }
+        ],
+        "retained_findings": 2,
+        "removed_findings": 0,
+        "removed_next_steps": 1,
+        "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+      },
+      "sources": [
+        {
+          "evidence_id": "ev_65af45ba60e502781608f0dc705510ac",
+          "title": "User supplied reproduction code",
+          "url": "",
+          "kind": "code",
+          "origin": "user_code",
+          "evidence_type": "",
+          "fetched_at": "2026-10-23T05:56:54.295323+00:00",
+          "snapshot_at": "",
+          "version_scope": "",
+          "commit_sha": "",
+          "sha256": "c4eddde3810a5ab7ca5774e76a74573639206d6eb3aa6bebe447d4bbdfac058a",
+          "published_at": "",
+          "acquired_at": ""
+        }
+      ],
+      "error": null,
+      "accounting": {
+        "model_calls": 3,
+        "tool_calls": 1,
+        "model_calls_by_role": {
+          "investigator": 2,
+          "evidence_reviewer": 1
+        },
+        "tool_calls_by_name": {
+          "read_case_evidence": 1
+        },
+        "errors_by_role_or_tool": {},
+        "unfinished_call_records": 0,
+        "reported_token_usage": {
+          "input_tokens": 14527,
+          "output_tokens": 2412,
+          "total_tokens": 16939
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "usage_complete": true,
+        "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+      },
+      "elapsed_ms": 13670.977,
+      "automatic_citation_integrity": {
+        "status": "passed",
+        "checked_supports": 4,
+        "failed_supports": 0,
+        "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+      },
+      "human_review": {
+        "accuracy": null,
+        "relevance": null,
+        "citation_entailment": null,
+        "notes": null
+      }
+    }
+  ],
+  "measurement_limits": [
+    "No report is approved, rejected, posted, or executed by this evaluation. Saved awaiting_review status establishes a handoff only.",
+    "Automatic citation checks establish literal registered quotes, not claim entailment or factual accuracy.",
+    "Independent AI review is model judgment with the reported reviewer identity; it is not independent human validation.",
+    "Human quality fields remain null until an actual human evaluates the cases. No accuracy, faithfulness, or entailment rate is inferred.",
+    "Accounting uses observed dispatch/result events. Missing token usage and unobserved failed-call accounting remain explicit.",
+    "Only generated reports and bounded source provenance are exported; full source bodies, raw tool history, environment values, and provider error bodies are excluded.",
+    "Configured credential values and common token patterns are redacted before export. Integrity is checked against original local evidence before redaction."
+  ]
+}

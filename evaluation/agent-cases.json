@@ -1,0 +1,85 @@
+{
+  "name": "Week 3 Deep Investigation manual evaluation inputs v1",
+  "purpose": "Review adaptive retrieval, specialist findings, source provenance, and saved human handoff. This is an input plan, not an evaluation result or an achieved score. Do not index this file as evidence.",
+  "execution_status": "not_run",
+  "scoring": "Record observed tool events, supported and unsupported findings, missing-information requests, review checkpoints, and human assessment separately after each actual run. No success rate has been measured for these inputs.",
+  "cases": [
+    {
+      "id": "AG01",
+      "scenario": "Widget state investigation with current upstream context",
+      "question": "Deleting a keyed widget's Session State entry leaves the frontend showing its old value. Investigate Streamlit issue #16388 against the documentation and current upstream report. The supplied test exercises this repository's chat state; assess what additional focused reproduction checks are needed without claiming it reproduces the upstream bug. Ask for my installed Streamlit version and browser when necessary.",
+      "version": "",
+      "code_files": ["tests/test_app_chat.py"],
+      "upstream_issue_url": "https://github.com/streamlit/streamlit/issues/16388",
+      "expected_source_ids": ["issue-16388", "doc-session-state", "doc-widget-behavior", "doc-apptest-start"],
+      "expected_observations": [
+        "Retrieve relevant snapshot passages and retain original snapshot_at and version_scope.",
+        "Read the live upstream issue when available; distinguish the fetched report and comment timestamps from snapshot state.",
+        "The test/reproduction specialist can inspect the supplied test and propose a focused widget-state check; tool choice and delegation remain adaptive.",
+        "Attribute the upstream symptom to its reporter and avoid claiming this application has the same defect, a confirmed duplicate, or a verified fix.",
+        "Cite literal registered text and pause for a human decision with missing environment details visible."
+      ],
+      "execution_status": "not_run",
+      "results": null
+    },
+    {
+      "id": "AG02",
+      "scenario": "Cached database connection investigation and credential handling",
+      "question": "My DuckDB/MotherDuck app crashes when using st.cache_resource for its connection and st.cache_data for its dataframe. Compare the public report at Streamlit issue #10615 with official caching and security guidance. Determine what evidence and environment details are missing, and propose focused checks. Do not request or expose a database token or assume a closed issue proves my environment is fixed.",
+      "version": "",
+      "code_files": [],
+      "code_context_source": "The public issue-10615 body in data/sources.json contains the reporter's reproduction code; it is attributed report data and must not be executed.",
+      "upstream_issue_url": "https://github.com/streamlit/streamlit/issues/10615",
+      "expected_source_ids": ["issue-10615", "doc-caching", "doc-api-cache-data", "doc-api-cache-resource", "doc-secrets-management", "doc-security-reminders"],
+      "expected_observations": [
+        "Distinguish serializable cached data from shared cached resources using exact supporting documentation passages.",
+        "Use live GitHub or Keenable only when useful for current context; label search snippets as discovery leads and fetch substantive pages before detailed claims.",
+        "The correctness/security specialist can review the report's code without running it or revealing credentials.",
+        "Request installed Streamlit, Python, DuckDB, deployment and reproduction details where necessary; do not invent a compatible version or tested workaround.",
+        "Save a report and proposed checks for human review; leave provider and GitHub state unchanged."
+      ],
+      "execution_status": "not_run",
+      "results": null
+    },
+    {
+      "id": "AG03",
+      "scenario": "Repository code review with explicit concurrency scope",
+      "question": "Review the supplied triage_desk/reviews.py, especially save_outcome and outcome_summary, for correctness, credential exposure, and concurrency assumptions. Distinguish the threading.Lock's scope from guarantees about separate processes. Identify supported concerns or missing assumptions, propose focused tests, and prepare a human handoff. Do not claim a data race or corrupt file was reproduced.",
+      "version": "",
+      "code_files": ["triage_desk/reviews.py"],
+      "expected_source_ids": ["doc-multithreading", "doc-security-reminders"],
+      "expected_observations": [
+        "Register supplied code as user_code evidence and ground static findings in exact code quotes.",
+        "Delegate substantial static review to correctness/security and test/reproduction specialists when useful; retain specialist events in the audit trail.",
+        "Explain the inspected lock and append behavior only to the extent supported by code and authoritative references; ask whether multiple workers/processes share the output file.",
+        "Separate proposed concurrency and malformed-input tests from tests actually run; no tool executes the code.",
+        "Pause with a cited report that the user can approve, reject, or revise."
+      ],
+      "execution_status": "not_run",
+      "results": null
+    }
+  ],
+  "operational_checks": [
+    {
+      "id": "OP01",
+      "scenario": "Keenable unavailable",
+      "setup": "In a controlled test environment, omit KEENABLE_API_KEY or inject a timeout/rate-limit response through the tool's test HTTP transport. Do not alter real credentials or count simulated provider responses as live access.",
+      "expected_observations": ["Record a sanitized tool error without response bodies or keys.", "Continue with registered snapshot/GitHub evidence or state the limitation.", "Do not invent current web findings."],
+      "execution_status": "not_run"
+    },
+    {
+      "id": "OP02",
+      "scenario": "Human review survives a new process",
+      "setup": "Start a real configured investigation and wait until awaiting_review. Exit normally. Run list and show in a new process with Fireworks credentials unavailable, then approve or reject the saved case.",
+      "expected_observations": ["The saved report, source IDs, timestamps, hashes, and audit events remain available.", "Approval/rejection changes the local saved case and does not add model calls or publish to GitHub.", "A requested revision requires model configuration and explicit review notes."],
+      "execution_status": "not_run"
+    },
+    {
+      "id": "OP03",
+      "scenario": "Execution budget stops further dispatch",
+      "setup": "Use deliberately low model/tool budgets in a controlled automated service test and compare audit events before and after exhaustion. This is a limit test, not a successful investigation result.",
+      "expected_observations": ["Budget exhaustion propagates and produces a failed case with a safe explanation.", "No further provider request is dispatched after the exhausted limit.", "Unsupported or incomplete findings are not presented as an approved report."],
+      "execution_status": "not_run"
+    }
+  ]
+}

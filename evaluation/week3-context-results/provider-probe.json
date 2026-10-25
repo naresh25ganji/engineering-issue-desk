@@ -1,0 +1,11 @@
+{
+  "status": "ok",
+  "fireworks": {
+    "status": "ok",
+    "tool_call_roundtrip": true
+  },
+  "keenable": {
+    "status": "ok",
+    "evidence_count": 5
+  }
+}

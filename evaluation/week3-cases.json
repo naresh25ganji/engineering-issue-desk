@@ -1,0 +1,42 @@
+{
+  "name": "Week 3 real-code Deep Investigation cases v1",
+  "description": "Three explicit repository code samples for live investigation and saved human handoff. These are evaluation inputs, not achieved scores. Static inspection only; never execute code or approve a report automatically.",
+  "cases": [
+    {
+      "id": "W3-01",
+      "question": "Statically review the supplied reviews.py for outcome-label correctness and concurrency assumptions. Use local documentation only if relevant. Return at most two supported findings, with exact registered quotes, and focused proposed checks. Distinguish threading.Lock from cross-process guarantees, and user-reported resolution labels from automated quality scores. Ask for missing deployment details and pause for human review. Do not run code or claim a reproduced race.",
+      "code_file": "triage_desk/reviews.py",
+      "start_line": 1,
+      "end_line": 41,
+      "version": "",
+      "goals": ["Ground static observations in the supplied code.", "Identify thread/process scope and outcome-measurement limitations without inventing failures.", "Leave a cited report and proposed checks at a saved human-review checkpoint."],
+      "relevant_source_kinds": ["code", "documentation"],
+      "expected_source_ids": ["doc-multithreading", "doc-security-reminders"],
+      "expected_boundary": "Static code observations and proposed checks only; no execution, private-file inspection, external posting, or automatic approval."
+    },
+    {
+      "id": "W3-02",
+      "question": "Statically review the supplied freshness.py timestamp validation and freshness disclosure. Return at most two supported findings using exact registered quotes. Explain what current and stale establish, how missing/future/naive timestamps are treated, and propose focused boundary tests. Use local documentation if useful; avoid unnecessary web searches. Do not claim that a recent fetch verifies upstream facts or that tests were executed. Pause for human review.",
+      "code_file": "triage_desk/freshness.py",
+      "start_line": 1,
+      "end_line": 30,
+      "version": "",
+      "goals": ["Distinguish snapshot-age disclosure from factual correctness and version compatibility.", "Inspect actual timestamp and threshold branches with literal evidence.", "Propose invalid/future/threshold test cases separately from observed execution results."],
+      "relevant_source_kinds": ["code", "documentation", "release"],
+      "expected_source_ids": ["doc-upgrade-streamlit", "release-notes-2026"],
+      "expected_boundary": "Do not execute the function or substitute host time for a measured test; disclose missing assumptions and preserve human review."
+    },
+    {
+      "id": "W3-03",
+      "question": "Statically review the supplied hosted_embeddings.py for API-response validation, cache identity, and safe error handling. Return at most two supported findings with exact code quotes and focused proposed checks. Use local caching/security documentation only if needed. Distinguish inspected safeguards from verified runtime behavior; do not call an embeddings endpoint, reveal credentials, or claim benchmarks/tests ran. Pause for human review.",
+      "code_file": "triage_desk/hosted_embeddings.py",
+      "start_line": 1,
+      "end_line": 218,
+      "version": "",
+      "goals": ["Inspect endpoint/model/dimension/corpus cache identity from actual code.", "Assess response shape, embedding dimensions, and credential-safe metadata using exact evidence.", "Separate proposed response-validation tests from unexecuted runtime claims."],
+      "relevant_source_kinds": ["code", "documentation"],
+      "expected_source_ids": ["doc-caching", "doc-api-cache-data", "doc-security-reminders"],
+      "expected_boundary": "No embeddings calls, code execution, host-secret inspection, inferred cost, or automatic report approval."
+    }
+  ]
+}

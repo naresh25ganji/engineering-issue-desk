@@ -13,6 +13,9 @@ dependencies = [
   "langchain-core>=1,<2",
   "networkx>=3,<4",
   "flashrank>=0.2,<1",
+  "deepagents>=0.7,<0.8",
+  "langchain-fireworks>=1,<2",
+  "langgraph-checkpoint-sqlite>=3,<4",
 ]
 
 [dependency-groups]

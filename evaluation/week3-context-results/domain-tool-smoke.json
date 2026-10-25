@@ -1,0 +1,138 @@
+{
+  "verified_at_utc": "2026-10-24T04:33:08.598730+00:00",
+  "verification_kind": "direct_read_tool_smoke",
+  "model_calls": 0,
+  "tool_calls": 4,
+  "pr_number": 17631,
+  "pr_number_source": "Prior public PR discovery recorded in domain-tool-smoke-setup-failure.json; no extra discovery request in this rerun.",
+  "tools": [
+    {
+      "tool": "search_knowledge_base",
+      "status": "ok",
+      "evidence_count": 5,
+      "sources": [
+        {
+          "url": "https://docs.streamlit.io/develop/concepts/architecture/session-state",
+          "kind": "documentation",
+          "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+          "kind": "documentation",
+          "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://docs.streamlit.io/develop/concepts/architecture/fragments",
+          "kind": "documentation",
+          "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://docs.streamlit.io/develop/concepts/design/buttons",
+          "kind": "documentation",
+          "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://docs.streamlit.io/develop/concepts/architecture/session-state",
+          "kind": "documentation",
+          "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+          "base_sha": "",
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "tool": "fetch_web_page",
+      "status": "ok",
+      "evidence_count": 1,
+      "sources": [
+        {
+          "url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+          "kind": "documentation",
+          "commit_sha": "",
+          "base_sha": "",
+          "truncated": true
+        }
+      ]
+    },
+    {
+      "tool": "read_github_issue",
+      "status": "ok",
+      "evidence_count": 6,
+      "sources": [
+        {
+          "url": "https://github.com/streamlit/streamlit/issues/10615",
+          "kind": "issue",
+          "commit_sha": "",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://github.com/streamlit/streamlit/issues/10615#issuecomment-2695367672",
+          "kind": "issue",
+          "commit_sha": "",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://github.com/streamlit/streamlit/issues/10615#issuecomment-2698345222",
+          "kind": "issue",
+          "commit_sha": "",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://github.com/streamlit/streamlit/issues/10615#issuecomment-2698351921",
+          "kind": "issue",
+          "commit_sha": "",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://github.com/streamlit/streamlit/issues/10615#issuecomment-2698558706",
+          "kind": "issue",
+          "commit_sha": "",
+          "base_sha": "",
+          "truncated": false
+        },
+        {
+          "url": "https://github.com/streamlit/streamlit/issues/10615#issuecomment-2698651933",
+          "kind": "issue",
+          "commit_sha": "",
+          "base_sha": "",
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "tool": "read_github_pr",
+      "status": "ok",
+      "evidence_count": 2,
+      "sources": [
+        {
+          "url": "https://github.com/streamlit/streamlit/pull/17631",
+          "kind": "issue",
+          "commit_sha": "afe669afb759ee04601ce2d586e99d127c92e174",
+          "base_sha": "6688c0faa5f5f4b2007bdff34c3b02ecf550506d",
+          "truncated": false
+        },
+        {
+          "url": "https://github.com/streamlit/streamlit/compare/6688c0faa5f5f4b2007bdff34c3b02ecf550506d...afe669afb759ee04601ce2d586e99d127c92e174#diff-84321598744d84dbee2318e634c74c9aae39a1c253f1c4bd17ebf9ef2f807b11",
+          "kind": "code",
+          "commit_sha": "afe669afb759ee04601ce2d586e99d127c92e174",
+          "base_sha": "6688c0faa5f5f4b2007bdff34c3b02ecf550506d",
+          "truncated": false
+        }
+      ]
+    }
+  ],
+  "search_web": "Verified separately by provider-probe.json.",
+  "note": "Direct validation is separate from the three-case evaluation. Only bounded provenance is exported; no raw source bodies, keys, provider error bodies, or private case state."
+}
