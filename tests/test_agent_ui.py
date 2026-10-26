@@ -74,13 +74,13 @@ class FakeService:
         self.resume_calls = []
         self.retry_calls = []
 
-    def start(self, question, version='', code_context='', progress=None, *, repository_context=False):
+    def start(self, question, version='', code_context='', progress=None, *, repository_context=False, memory_context=False):
         self.start_calls.append((question, version, code_context))
         if progress:
             progress({'event': 'search_started', 'message': 'Searching local evidence.'})
         case = pending_case()
         case.update(question=question, version=version, code_context=code_context,
-                    repository_context=repository_context)
+                    repository_context=repository_context, memory_context=memory_context)
         self.store.cases[case['case_id']] = deepcopy(case)
         return case
 
@@ -260,3 +260,54 @@ def test_saved_case_dates_use_the_workspace_timezone():
     assert _local_time('2026-10-23T05:15:32+00:00') == 'Oct 22, 2026 10:15 PM PDT'
     assert _local_time('unknown') == 'unknown'
 
+
+
+def test_review_memory_defaults_off_and_requires_explicit_case_choice(tmp_path):
+    service = FakeService()
+    app = render(tmp_path, service)
+    assert app.checkbox(key='deep_memory_context').value is False
+    app.text_area(key='deep_question').input('Consider earlier human review guidance.')
+    app.checkbox(key='deep_memory_context').check()
+    app.button(key='FormSubmitter:deep_new_investigation-Start deep investigation').click().run()
+    assert not app.exception
+    assert service.store.get_case('case-001')['memory_context'] is True
+
+
+def test_publication_requires_local_approval_preview_and_exact_separate_confirmation(tmp_path, monkeypatch):
+    import triage_desk.review_publication as publication
+    plans, actions = {}, []
+    class Publisher:
+        def __init__(self, store, token='', **options):
+            assert token == 'test-github-token'
+        def prepare(self, case_id, pr_number):
+            actions.append(('prepare', case_id, pr_number))
+            plans['preview-id'] = {'plan_id': 'preview-id', 'pr_number': pr_number, 'head_sha': 'a'*40,
+                                   'base_sha': 'b'*40, 'body': 'Exact public summary', 'status': 'prepared'}
+            return plans['preview-id']
+        def get(self, plan_id):
+            return plans[plan_id]
+        def publish(self, plan_id, confirmation=None):
+            actions.append(('publish', plan_id, confirmation))
+            plans[plan_id]['status'] = 'published'
+            return plans[plan_id]
+    monkeypatch.setattr(publication, 'ReviewPublisher', Publisher)
+    case = pending_case()
+    case['status'] = 'approved'
+    service = FakeService(cases=[case])
+    service.settings.github_token = 'test-github-token'
+    app = render(tmp_path, service)
+    app.selectbox(key='deep_case_picker').select('case-001').run()
+    assert not actions
+    app.number_input(key='deep_publish_pr_case-001').set_value(123)
+    app.button(key='deep_prepare_case-001').click().run()
+    assert actions == [('prepare', 'case-001', 123)]
+    assert app.button(key='deep_publish_preview-id').disabled
+    assert any(item.value == 'Exact public summary' for item in app.text)
+    app.text_input(key='deep_publication_confirmation_preview-id').input('wrong-id').run()
+    assert app.button(key='deep_publish_preview-id').disabled
+    app.text_input(key='deep_publication_confirmation_preview-id').input('preview-id').run()
+    assert not app.button(key='deep_publish_preview-id').disabled
+    app.button(key='deep_publish_preview-id').click().run()
+    assert not app.exception
+    assert actions[-1] == ('publish', 'preview-id', 'preview-id')
+    assert app.button(key='deep_publish_preview-id').disabled

@@ -1,6 +1,6 @@
 # Engineering Issue Desk operations
 
-Version date: October 23, 2026.
+Version date: October 25, 2026.
 
 This runbook operates one local personal workspace. Commands are instructions for an operator; writing this guide does not run provider calls, stop processes, restore files, or publish anything. Read the [architecture](ARCHITECTURE.md) for data flow and the [design record](DESIGN.md) for the authority and recovery rules.
 
@@ -24,7 +24,7 @@ Configure server-side values in the ignored local `.env`, then restart Streamlit
 | `FIREWORKS_API_KEY` | Fireworks account access | Start, retry, revision, or saved evidence audit |
 | `FIREWORKS_MODEL` | A model ID with tool calling | Same model-backed operations |
 | `KEENABLE_API_KEY` | Current public search/page fetch | Keenable tools; optional for the rest of the agent |
-| `GITHUB_TOKEN` | Optional authenticated public GitHub allowance | Public reads when needed; no GitHub write capability |
+| `GITHUB_TOKEN` | Optional public API allowance; a write-capable token is needed only for separately confirmed publication | Reads do not publish; preparing a preview needs no token |
 | `LANGSMITH_TRACING` and `LANGSMITH_API_KEY` | Optional tracing | Trace collection; may retain model/tool content |
 
 The live baseline used `accounts/fireworks/models/gpt-oss-120b`. Account entitlement and provider availability must be checked explicitly rather than inferred from this recorded model ID. Existing Nebius variables affect the separate original retrieval/generated-answer path.
@@ -59,6 +59,12 @@ Use `start --repository-context`, or select the default-off **Include related ap
 
 Inventory/search are discovery leads. Only an explicit excerpt read becomes citation evidence. Search is literal and bounded across file prefixes; missing matches do not prove absent behavior. Reads preserve at most 160 lines and 8,000 code characters from a file of at most 256,000 bytes. Each saved excerpt records path, line range, hashes, timestamp, and static-inspection provenance. A changed working tree can produce a new snapshot on a later read. The [architecture bounds](ARCHITECTURE.md#opt-in-repository-context) describe the complete limits and path/credential guards; no file is executed or modified.
 
+## Optional guidance and static checks
+
+Select **Use earlier human reviews**, or add `--review-memory` to CLI `start`, only when earlier approved/rejected prose from this local workspace may be sent to Fireworks. The choice defaults off and is immutable for that case. Retry/revision inherit it. Start a new case to change consent. Pending/current cases, raw source/code, questions, and support quotes are excluded; bounded literal lookup returns hints, not factual evidence or prior approval authority. This is not Mem0 or semantic retrieval.
+
+The agent can list/load three maintained review playbooks on demand. They are versioned guidance, not native `SkillsMiddleware` or citable sources. It can also call `run_static_checks` on a registered code evidence ID. Fixed Bandit rules parse saved Python in a trusted isolated worker; supplied code and tests are never executed. Inspect the analysis status, parent hash, partial-source flag, and original/evidence line mapping. A syntax/complexity/timeout error is not a clean scan, and no flags does not establish security.
+
 ## Human review
 
 Inspect the cited text, source type/date/version, retained findings, proposed steps, missing details, and independent AI verdicts before deciding:
@@ -78,6 +84,25 @@ uv run python scripts/investigate_deep.py audit CASE_ID
 ```
 
 The audit spends a model call against the same case allowance and does not repeat research. An AI audit can retain an unsupported claim; completion is a prerequisite for approval, not proof of correctness.
+
+## Separate approved PR summary preview
+
+Only an approved evidence-reviewed case with a registered public PR description and matching commit-pinned patch can prepare a preview for `streamlit/streamlit`. The published findings must use allowed public source evidence. Reports supported by local code or review history cannot be published through this path.
+
+```bash
+uv run python scripts/investigate_deep.py prepare-publication CASE_ID --pr PR_NUMBER
+uv run python scripts/investigate_deep.py show-publication PLAN_ID
+```
+
+Preparation is offline and needs no write token. Inspect the exact body, target, observed base/head, and saved plan ID. The UI exposes the same preview only for approved cases. Publication is a separate external action requiring exact plan-ID confirmation and a deliberately configured write-capable `GITHUB_TOKEN`; investigation or local approval alone cannot trigger it.
+
+```bash
+uv run python scripts/investigate_deep.py publish-review PLAN_ID --confirm PLAN_ID
+```
+
+That command can create a public summary review `COMMENT`. It is an operator instruction, not an action performed by this runbook. No live POST or write token was used during submission verification. Fresh PR checks stop if the target is not an open public fixed-repository PR or its base/head changed. The plan also binds the original approved report and evidence hashes. There are no inline comments or PR approval/request-changes actions.
+
+An atomically claimed plan cannot be replayed. A `failed` preflight requires inspecting the saved safe error before preparing anything new. An `uncertain` result, or a plan left `publishing` after interruption, must be checked on GitHub manually; never retry a potentially completed POST by editing the database or regenerating plans. No automatic remote reconciliation is implemented.
 
 ## Failure and recovery
 
@@ -178,12 +203,17 @@ uv run python scripts/fetch_corpus.py --check
 | Opt-in paths, race/credential/bounds guards and immutable snapshots | [test_repository_context.py](../tests/test_repository_context.py), [test_deep_investigation.py](../tests/test_deep_investigation.py), [test_agent_evaluation_context.py](../tests/test_agent_evaluation_context.py) | Inspect actual read events and saved source hashes; bounded search may omit later code |
 | Finite review errors and inline-code presentation normalization | [test_agent_review.py](../tests/test_agent_review.py) | Inspect safe error code; keep semantic quality separate |
 | Static Project guide assets and no provider work on opening | [test_project_guide.py](../tests/test_project_guide.py) | Open/download both diagrams and inspect readable layout |
+| Versioned playbooks and opt-in literal review guidance | [test_review_extensions.py](../tests/test_review_extensions.py) | Distinguish history hints from new factual evidence |
+| Real static analyzer and source/line/bounds preservation | [test_static_analysis.py](../tests/test_static_analysis.py) | Review attributed flags and omitted context; do not claim tests ran |
+| Approved public-summary preview, stale target and replay guards | [test_review_publication.py](../tests/test_review_publication.py) | Mocked HTTP only; live POST and write credentials unvalidated |
 
 See [VALIDATION.md](VALIDATION.md) for the final test count, live extension results, browser checks, and limitations recorded for this revision.
 
+Final software checks passed 603 tests and the source environment check found 117 packages current. Use a repository checkout with `uv`; default `uv build` discovery is not configured, so this runbook does not promise a working wheel or `pip install` distribution. The latest [verified report](../evaluation/week3-verified-results/report.json), separate [extension exercise](../evaluation/week3-verified-results/extension-exercise.json), and [Codex-assisted inspection](../evaluation/week3-verified-results/engineering-review.md) are distinct records. They do not establish human approval or accuracy.
+
 The frozen [Week 3 report](../evaluation/week3-results/report.json) records three static code samples: two saved handoffs, one failed evidence-review response, nine model calls, three saved-evidence reads, and 44,382 reported tokens. Literal quotes passed for all three drafts, including the failed case. No human quality score was collected. It did not exercise repository context, delegation, or Keenable. See the [retained false positives](../evaluation/week3-results/engineering-review.md); exact references and an AI review are not a correctness guarantee.
 
-The separate [repository-context report](../evaluation/week3-context-results/report.json) records three of three saved handoffs, zero failures, 12 model calls, six tools, and 70,046 reported tokens with complete returned usage. Its tool calls were two saved-evidence reads, one inventory, and three repository reads; one overlong line range failed safely before two valid reads. This run did not invoke repository search or inspect `_configuration`, and did not use Keenable or delegation. The suite passed 473 tests; these operational observations are not a human accuracy score.
+The separate [repository-context report](../evaluation/week3-context-results/report.json) records three of three saved handoffs, zero failures, 12 model calls, six tools, and 70,046 reported tokens with complete returned usage. Its tool calls were two saved-evidence reads, one inventory, and three repository reads; one overlong line range failed safely before two valid reads. This run did not invoke repository search or inspect `_configuration`, and did not use Keenable or delegation. The October 23 suite passed 473 tests; these operational observations are not a human accuracy score.
 
 New live evaluation spends provider credit and must use a new or empty output directory:
 
@@ -195,4 +225,4 @@ Omit `--live` to validate fixtures and export an unscored inventory without load
 
 ## Deployment limits
 
-Bind the demonstration server to loopback. This build has no multi-user login/authorization layer, tenant separation, distributed execution lease, container sandbox for reproductions, or encrypted case storage. `fcntl` case locks require suitable local filesystem semantics and do not make SQLite a multi-host queue. It does not integrate Mem0, execute tests, post to GitHub, or submit course forms automatically. Those capabilities require separate design, authority, tests, and operational procedures before deployment.
+Bind the demonstration server to loopback. This build has no multi-user login/authorization layer, tenant separation, distributed execution lease, container sandbox for reproductions, or encrypted case storage. `fcntl` case locks require suitable local filesystem semantics and do not make SQLite a multi-host queue. It does not integrate Mem0, execute supplied programs/tests, publish autonomously, or submit course forms. The separate confirmed GitHub summary path exists but has not been live-validated. Those deployment and execution capabilities require separate design, authority, tests, and operational procedures.

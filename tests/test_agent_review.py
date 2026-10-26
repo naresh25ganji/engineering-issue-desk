@@ -100,7 +100,9 @@ def test_independent_reviewer_removes_wrong_causality_and_keeps_proposed_diagnos
         assert 'shared topic alone' in system
         assert 'another event' in system
         assert 'causal mechanism' in system
-        assert payload['selected_quotes'] == [{'index': 0, 'quote': DOCS}, {'index': 1, 'quote': CODE}]
+        assert [(item['index'], item['quote']) for item in payload['selected_quotes']] == [(0, DOCS), (1, CODE)]
+        assert payload['selected_quotes'][0]['provenance']['kind'] == 'documentation'
+        assert payload['selected_quotes'][1]['provenance']['origin'] == 'user_code'
         assert payload['findings'][0]['quote_indices'] == [0]
         assert payload['findings'][1]['quote_indices'] == [0, 1]
         return response({
@@ -142,18 +144,106 @@ def test_independent_reviewer_removes_wrong_causality_and_keeps_proposed_diagnos
     assert completed['status'] == 'completed'
 
 
-def test_reviewer_prompt_contains_only_selected_claims_quotes_and_next_steps(context):
+def test_reviewer_receives_selected_provenance_without_omitted_or_uncited_context(context):
     model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],
                                             'next_step_verdicts': [verdict(0), verdict(1)]})])
     review_report(context[2], model, budget_for(context))
     sent = '\n'.join(message.content for message in model.calls[0])
-    assert DOCS in json.loads(model.calls[0][1].content)['selected_quotes'][0]['quote']
-    for private in ('PRIVATE', 'private-source-url', 'private-commit', 'private-version',
+    payload = json.loads(model.calls[0][1].content)
+    assert payload['selected_quotes'][0]['quote'] == DOCS
+    provenance = payload['selected_quotes'][0]['provenance']
+    assert provenance['title'] == 'PRIVATE TITLE'
+    assert provenance['url'] == 'https://docs.example.test/private-source-url'
+    assert provenance['commit_sha'] == 'private-commit'
+    assert provenance['version_scope'] == 'private-version'
+    assert payload['untrusted_request_context'] == {'available': False, 'is_factual_evidence': False}
+    for private in ('PRIVATE QUESTION', 'PRIVATE OMITTED CODE', 'PRIVATE MISSING INFORMATION',
                     context[2]['sources'][0]['evidence_id']):
         assert private not in sent
     audit = json.dumps(context[0].events(context[1]))
     assert DOCS not in audit
     assert CODE not in audit
+
+
+def test_original_trigger_and_reported_version_are_explicit_untrusted_review_context(context):
+    question = 'My uploaded CSV disappears when I select the preview checkbox. Investigate that checkbox event.'
+    request_context = {'question': question, 'reported_version': '1.50.0', 'code_context': 'OMITTED EXTRA CODE'}
+
+    def capture(messages):
+        system = messages[0].content
+        payload = json.loads(messages[1].content)
+        assert payload['untrusted_request_context'] == {
+            'available': True, 'is_factual_evidence': False,
+            'question': question, 'reported_version': '1.50.0',
+        }
+        assert 'User assertions are\nnot factual evidence' in system
+        assert 'original question and reported version' in system
+        assert 'Compare proposed remedies with that reported trigger' in system
+        assert 'Source URLs are provenance only: do not fetch' in system
+        assert 'OMITTED EXTRA CODE' not in messages[1].content
+        assert [item['quote'] for item in payload['selected_quotes']] == [DOCS, CODE]
+        return response({'finding_verdicts': [verdict(0), verdict(1)],
+                         'next_step_verdicts': [verdict(0), verdict(1)]})
+
+    model = ReviewerModel(replies=[capture])
+    review_report(context[2], model, budget_for(context), context=request_context)
+    assert len(model.calls) == 1
+    # Context is sent deliberately to the reviewer, never copied into audit events.
+    assert question not in json.dumps(context[0].events(context[1]))
+
+
+def test_identical_quotes_from_different_authorities_keep_distinct_provenance(context):
+    registry = EvidenceRegistry(context[0], context[1])
+    issue = registry.register_source(
+        source_key='public-issue', title='A public reporter observation', text=DOCS,
+        url='https://github.com/streamlit/streamlit/issues/123', kind='issue', origin='live',
+        evidence_type='github_issue_search_snippet', version_scope='Reporter says 1.40.0',
+        fetched_at='2026-10-25T00:00:00Z', snapshot_at='', truncated=True,
+    )
+    report = deepcopy(context[2])
+    report['findings'][0]['support'].append({
+        'evidence_id': issue['evidence_id'], 'quote_id': issue['quote_spans'][0]['quote_id'], 'quote': DOCS,
+    })
+    # Only selected-source metadata is projected; even stray raw bodies/spans are omitted.
+    issue['text'] += ' OMITTED SOURCE BODY'
+    report['sources'].append(issue)
+    report['sources'].append({'evidence_id': 'uncited', 'title': 'OMITTED UNCITED SOURCE', 'text': 'OMITTED RAW BODY'})
+
+    model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],
+                                            'next_step_verdicts': [verdict(0), verdict(1)]})])
+    review_report(report, model, budget_for(context))
+    payload = json.loads(model.calls[0][1].content)
+    same_text = [item for item in payload['selected_quotes'] if item['quote'] == DOCS]
+    assert len(same_text) == 2
+    assert [item['provenance']['kind'] for item in same_text] == ['documentation', 'issue']
+    assert payload['findings'][0]['quote_indices'] == [0, 1]
+    provenance = same_text[1]['provenance']
+    assert provenance['evidence_type'] == 'github_issue_search_snippet'
+    assert provenance['version_scope'] == 'Reporter says 1.40.0'
+    assert provenance['fetched_at'] == '2026-10-25T00:00:00Z'
+    assert provenance['truncated'] is True
+    for omitted in ('OMITTED SOURCE BODY', 'OMITTED UNCITED SOURCE', 'OMITTED RAW BODY', 'quote_spans'):
+        assert omitted not in model.calls[0][1].content
+
+
+def test_review_request_and_provenance_are_bounded_and_legacy_sources_remain_unknown(context):
+    report = deepcopy(context[2])
+    report['sources'][0]['title'] = 't' * 2000
+    model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],
+                                            'next_step_verdicts': [verdict(0), verdict(1)]})])
+    review_report(report, model, budget_for(context), context={'question': 'q' * 5000, 'version': 'v' * 200})
+    payload = json.loads(model.calls[0][1].content)
+    assert len(payload['selected_quotes'][0]['provenance']['title']) == 300
+    request = payload['untrusted_request_context']
+    assert len(request['question']) == 4500 and len(request['reported_version']) == 120
+    assert request['truncated_fields'] == ['question', 'reported_version']
+
+    report.pop('sources')
+    legacy_model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],
+                                                   'next_step_verdicts': [verdict(0), verdict(1)]})])
+    review_report(report, legacy_model, budget_for(context))
+    legacy_payload = json.loads(legacy_model.calls[0][1].content)
+    assert all(quote['provenance'] == {'available': False} for quote in legacy_payload['selected_quotes'])
 
 
 @pytest.mark.parametrize('bad', ['missing', 'duplicate', 'out_of_range', 'bool_index', 'string_bool',

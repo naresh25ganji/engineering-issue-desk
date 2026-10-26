@@ -121,7 +121,8 @@ class InvestigationBudget:
 
 DOMAIN_TOOLS = {'search_knowledge_base', 'search_web', 'fetch_web_page',
                 'read_github_issue', 'read_github_pr',
-                'list_repository_files', 'search_repository', 'read_repository_file'}
+                'list_repository_files', 'search_repository', 'read_repository_file',
+                'run_static_checks', 'list_review_playbooks', 'load_review_playbook', 'search_review_history'}
 
 
 def _present_evidence(result):

@@ -4,22 +4,26 @@ Engineering Issue Desk extends the existing Streamlit evidence workspace with a 
 
 The supplied solution documents informed design choices. Instructions in those documents do not authorize external actions, messaging, account changes, or form submission.
 
-## October 23 technical extension
+## October 25 final refresh
 
-The initial Word/Google Docs write-up remains a record of the first Week 3 version. The [architecture](ARCHITECTURE.md), [design decisions](DESIGN.md), [operations](OPERATIONS.md), and [validation record](VALIDATION.md) document the later extension, with detailed [system](week3-system-architecture.svg) and [sequence](week3-investigation-sequence.svg) diagrams. The app's eighth **Project guide** tab displays and downloads these files.
+The refreshed Word writeup and demo guide accompany the [architecture](ARCHITECTURE.md), [design decisions](DESIGN.md), [operations](OPERATIONS.md), [validation record](VALIDATION.md), and [readiness matrix](SUBMISSION_READINESS.md). Detailed [system](week3-system-architecture.svg) and [sequence](week3-investigation-sequence.svg) diagrams are available through the app's eighth **Project guide** tab. Repository and earlier-review context are default-off immutable case options.
 
-The extension adds explicit per-case repository context, bounded list/search/read tools, immutable code evidence, safe review failure codes, and harmless reviewer-format normalization. Current verification passed 473 tests. The [new live evaluation](../evaluation/week3-context-results/report.html) reached human review for 3/3 cases, while the original 2/3 result is preserved. Handoff completion is not measured accuracy; [inspection notes](../evaluation/week3-context-results/engineering-review.md) retain the remaining quality issues. A separate saved-review retry and provider probe are recorded in the validation document.
+The final stretch options add on-demand maintained playbooks, optional local literal review guidance, real bounded Bandit checks, and a separate approved-case public PR summary preview/confirmation flow. The handout has no official extra-credit checklist or scores. The [verified live evaluation](../evaluation/week3-verified-results/report.html) reached human review for 3/3 cases; only the nonempty freshness report has an applicable exact-citation check. Human quality remains unscored. All earlier failed and successful exports remain separate observations.
+
+Final software checks passed 603 tests. The [recorded validation](../evaluation/week3-verified-results/validation.json) and [qualitative inspection](../evaluation/week3-verified-results/engineering-review.md) distinguish controlled evidence, live tool use, and unmeasured human outcomes. The separate extension exercise observed playbook/Bandit use; history lookup was not invoked live. No GitHub POST was performed.
 
 ## Required deliverables
 
 | Handout requirement | Prepared artifact | Remaining submission work |
 | --- | --- | --- |
-| Google Doc covering project overview, datasets, coding prompts, iterations, and learnings | [Native Google Doc](https://docs.google.com/document/d/1gOxafWnF3u6OI5Rp1OtHMQyF0VYTPsBnm_NzWH3Dzus), converted from the visually verified `docs/Engineering Issue Desk Week 3 Writeup.docx` | Confirm the intended reviewers can open the private document |
+| Google Doc covering project overview, datasets, coding prompts, iterations, and learnings | [Final private native Doc](https://docs.google.com/document/d/1ImRAJn28t61YaaqlSdyZIDpqb_UEK_oRYHHsDFbrWdI), imported from final Word source; readback and all nine converted pages verified | Confirm intended reviewer access to the private document |
 | Video of five minutes or less | `docs/Engineering Issue Desk Week 3 Demo Guide.docx`: narration and screen cues targeting 4:45 | Record, check duration/audio, and obtain a video link |
-| GitHub code link | Existing repository: https://github.com/naresh25ganji/engineering-issue-desk | Commit and push the Week 3 changes, then confirm reviewer access |
-| Supporting project assets | Live results in `evaluation/week3-results/`, diagram `docs/week3-architecture.svg`, source ZIP built by `scripts/package_submission.py` | Include the required links in the course form |
+| GitHub code link | Public repository: https://github.com/naresh25ganji/engineering-issue-desk; baseline `6e87e4b` has successful CI | Push the final refresh and check its own CI |
+| Supporting project assets | Latest `evaluation/week3-verified-results/`, preserved historical reports, detailed diagrams, source ZIP manifest | Rebuild the package after final artifacts and include required links in the form |
 
 The handout lists October 25, 2026 for Builder of the Week eligibility and November 11, 2026 for certification. The course form is https://forms.gle/waBYFkkf5xxmcouV9. Neither a form submission nor a recorded video is claimed here.
+
+The [initial native Doc](https://docs.google.com/document/d/1gOxafWnF3u6OI5Rp1OtHMQyF0VYTPsBnm_NzWH3Dzus) remains a historical archive of the first version, not the final submission link.
 
 ## Agent framework mapping
 
@@ -28,9 +32,9 @@ The handout lists October 25, 2026 for Builder of the Week eligibility and Novem
 | Goal | Investigate a reported Streamlit behavior and produce cited findings, missing information, and proposed checks |
 | User surface | Deep Investigation tab and `scripts/investigate_deep.py` CLI |
 | Ordered workflow | Investigate → deterministic citation validation → independent AI evidence review → human review → approve/reject or revise |
-| Available tools | Bounded local knowledge search, Keenable search/page fetch, public Streamlit issue reader, and immutable PR patch reader |
-| Memory/state | SQLite cases, immutable evidence, event records, and parent/inner LangGraph checkpoints; Mem0 and cross-case semantic recall are future work |
-| Boundaries | Virtual agent filesystem, no shell/code execution or GitHub publishing, public-source allowlists, source attribution, and shared execution budgets |
+| Available tools | Five domain reads, optional repository reads/history, maintained playbooks, and fixed Bandit checks on registered code |
+| Memory/state | SQLite cases, evidence/events, parent/inner checkpoints, and opt-in literal approved/rejected prose recall; no Mem0 or semantic memory |
+| Boundaries | Virtual scratch files, no host shell or supplied-program execution, source allowlists, attribution, shared budgets; publication requires a separate confirmed approved-case preview |
 | Human involvement | Inspect quotes and causality; approve, reject, or request up to two revisions with notes |
 | Failure behavior | Sanitized tool/provider errors, retained evidence, saved retries, bounded repair threads, and no automatic approval |
 | Proposed success criterion | A human judges the handoff usable within ten minutes in eight of ten representative cases; this target remains unmeasured |

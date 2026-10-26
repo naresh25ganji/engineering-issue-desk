@@ -184,3 +184,37 @@ def test_explicit_probe_verifies_tool_result_and_outputs_only_status_counts(monk
     assert model.calls == 2
     assert all(value not in json.dumps(result) for value in [
         'private-provider-output', 'private-source-content', 'fake-fireworks-key', 'fake-search-key'])
+
+
+def test_review_memory_cli_requires_explicit_flag(tmp_path, monkeypatch, capsys, fake_service):
+    monkeypatch.setenv('FIREWORKS_API_KEY', 'fake-test-key')
+    monkeypatch.setenv('FIREWORKS_MODEL', 'fake-test-model')
+    assert cli.main(['--root', str(tmp_path), 'start', '--question', 'Recall reviews', '--review-memory']) == 0
+    assert ('start_options', {'memory_context': True}) in fake_service
+    assert json.loads(capsys.readouterr().out)['status'] == 'awaiting_review'
+
+
+def test_publication_cli_preview_and_show_do_not_initialize_models_or_post(tmp_path, monkeypatch, capsys):
+    import triage_desk.review_publication as publication
+    actions = []
+    class Publisher:
+        def __init__(self, store, token='', **options):
+            assert not token
+        def prepare(self, case_id, pr_number):
+            actions.append(('prepare', case_id, pr_number))
+            return {'plan_id': 'plan', 'status': 'prepared', 'body': 'Public preview'}
+        def get(self, plan_id):
+            return {'plan_id': plan_id, 'status': 'prepared', 'body': 'Public preview'}
+        def publish(self, *args, **kwargs):
+            pytest.fail('Preview and inspection must never publish')
+    def forbidden(*args, **kwargs):
+        pytest.fail('Preview must not initialize a model or corpus')
+    monkeypatch.setattr(publication, 'ReviewPublisher', Publisher)
+    monkeypatch.setattr(cli, 'TriageDesk', forbidden)
+    monkeypatch.setattr(cli, 'InvestigationService', forbidden)
+    assert cli.main(['--root', str(tmp_path), 'prepare-publication', 'approved-case', '--pr', '10']) == 0
+    assert actions == [('prepare', 'approved-case', 10)]
+    assert json.loads(capsys.readouterr().out)['status'] == 'prepared'
+    monkeypatch.setattr(cli, 'load_dotenv', forbidden)
+    assert cli.main(['--root', str(tmp_path), 'show-publication', 'plan']) == 0
+    assert json.loads(capsys.readouterr().out)['body'] == 'Public preview'

@@ -1,0 +1,73 @@
+{
+  "description": "Additional live extension exercise over actual freshness.py; separate from the three-case evaluation denominator. Review memory was opted in but the agent did not invoke search_review_history. Playbook and static-check use are observed in the tool accounting.",
+  "case_id": "8c857321-9d0f-414f-a811-d291947bc391",
+  "status": "awaiting_review",
+  "memory_context": true,
+  "accounting": {
+    "model_calls": 6,
+    "tool_calls": 4,
+    "model_calls_by_role": {
+      "investigator": 5,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "list_case_evidence": 1,
+      "read_case_evidence": 1,
+      "load_review_playbook": 1,
+      "run_static_checks": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 32188,
+      "output_tokens": 1932,
+      "total_tokens": 34120
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "evidence_types": [
+    {
+      "origin": "user_code",
+      "evidence_type": ""
+    },
+    {
+      "origin": "analysis",
+      "evidence_type": "static_analysis"
+    }
+  ],
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "code validates max_age_days is int, not bool, >=1 and raises ValueError, matching claim"
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "test of invalid max_age_days values is grounded in observed ValueError behavior"
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "test of timezone\u2011naive now is grounded in observed ValueError for missing tzinfo"
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "human_approved": false,
+  "review_memory_tool_observed": false,
+  "review_memory_validation": "Positive terminal-case lookup is covered by offline harness tests, not this live exercise."
+}

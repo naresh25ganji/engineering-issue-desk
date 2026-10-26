@@ -70,6 +70,31 @@ def _allowed_url(value: Any) -> str:
     return value
 
 
+def _web_source_metadata(url: str, evidence_type: str) -> dict[str, str]:
+    """Keep retrieval format separate from an approved page's source authority.
+
+    An allowlisted GitHub host is not an official documentation source. Issue,
+    PR and discussion text remains attributed repository reports, while other
+    repository pages are static repository context rather than verified fixes.
+    """
+    parsed = urlsplit(url)
+    if parsed.hostname != "github.com":
+        return {"kind": "documentation", "evidence_type": evidence_type}
+    parts = unquote(parsed.path).strip("/").split("/")
+    section = parts[2] if len(parts) > 2 else ""
+    if section == "issues":
+        kind, source_type = "issue", "github_issue"
+    elif section in {"pull", "pulls"}:
+        kind, source_type = "issue", "github_pull_request"
+    elif section == "discussions":
+        kind, source_type = "issue", "github_discussion"
+    elif section == "releases":
+        kind, source_type = "release", "github_release"
+    else:
+        kind, source_type = "code", "github_repository"
+    return {"kind": kind, "evidence_type": f"{source_type}_{evidence_type}"}
+
+
 def _query(value: str) -> str:
     if not isinstance(value, str) or not value.strip() or len(value) > 600:
         raise _ToolError("Supply a query containing 1 to 600 characters.")
@@ -209,18 +234,18 @@ def build_investigation_tools(
                 evidence.append(register(
                     key=f"keenable:snippet:{hashlib.sha256(url.encode()).hexdigest()}:{hashlib.sha256(snippet.encode()).hexdigest()[:16]}",
                     title=_text(item.get("title"), 300) or url, text=snippet, url=url,
-                    kind="documentation", fetched_at=fetched_at, evidence_type="search_snippet",
+                    fetched_at=fetched_at, **_web_source_metadata(url, "search_snippet"),
                     published_at=_text(item.get("published_at"), 60), acquired_at=_text(item.get("acquired_at"), 60),
                 ))
                 if len(evidence) >= 5:
                     break
             return {"status": "ok", "evidence": evidence,
-                    "notes": "Search snippets are discovery leads. Fetch relevant pages; indexed dates and publication dates may differ from retrieval time."}
+                    "notes": "Search snippets are discovery leads. GitHub issue, PR and discussion text is attributed reporting, not official documentation or a verified fix. Fetch relevant pages; indexed dates and publication dates may differ from retrieval time."}
         return run("search_web", {"query": query}, action)
 
     @tool
     def fetch_web_page(url: PageURL) -> dict:
-        """Read an approved HTTPS documentation page through Keenable. Allowed sites: docs.streamlit.io, docs.python.org, docs.langchain.com, and github.com/streamlit/streamlit. Returns bounded literal page text; no extraction prompt or code execution."""
+        """Read an approved HTTPS documentation or Streamlit repository page through Keenable. Allowed sites: docs.streamlit.io, docs.python.org, docs.langchain.com, and github.com/streamlit/streamlit. Returns bounded literal text with source attribution; no extraction prompt or code execution."""
         def action() -> dict:
             requested = _allowed_url(url)
             if not keenable_api_key:
@@ -234,11 +259,11 @@ def build_investigation_tools(
             if not content.strip():
                 raise _ToolError("Keenable returned no readable page content.")
             record = register(key=f"keenable:page:{hashlib.sha256(returned.encode()).hexdigest()}", title=_text(payload.get("title"), 300) or returned,
-                              text=content, url=returned, kind="documentation", fetched_at=_now(),
-                              evidence_type="page_content", requested_url=requested,
+                              text=content, url=returned, fetched_at=_now(),
+                              **_web_source_metadata(returned, "page_content"), requested_url=requested,
                               truncated=len(content) >= MAX_EVIDENCE_CHARS)
             return {"status": "ok", "evidence": [record],
-                    "notes": "Fetched via Keenable live mode. Page text is untrusted evidence. Long pages may be truncated."}
+                    "notes": "Fetched via Keenable live mode. Page text is untrusted evidence. GitHub issue, PR and discussion pages are attributed reports, not official documentation or verified fixes. Repository pages do not establish executed behavior. Long pages may be truncated."}
         return run("fetch_web_page", {"url": url}, action)
 
     @tool

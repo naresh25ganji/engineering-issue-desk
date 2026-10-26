@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -110,6 +111,69 @@ def _markdown_report(case: dict) -> str:
     return '\n'.join(lines) + '\n'
 
 
+def _render_publication(case, service):
+    if case.get('status') != 'approved':
+        return
+    with st.expander('Publish an approved public PR summary'):
+        st.caption('Prepare a preview for streamlit/streamlit. Only public-source findings qualify. Publishing sends a summary review comment to GitHub and requires a separate confirmation.')
+        number = st.number_input('Target pull request number', min_value=1, max_value=1000000, value=1, step=1,
+                                 key='deep_publish_pr_' + case['case_id'])
+        from .review_publication import ReviewPublisher
+        token = getattr(service.settings, 'github_token', '')
+        publication_options = {'forbidden_values': tuple(filter(None, (
+            getattr(service.settings, 'api_key', ''), getattr(service.settings, 'keenable_api_key', ''),
+            *(os.getenv(name, '') for name in ('TRIAGE_API_KEY', 'NEBIUS_API_KEY', 'LANGSMITH_API_KEY')))))}
+        if not token:
+            st.caption('Preview is available locally. Set GITHUB_TOKEN with permission to write PR reviews to enable publishing.')
+        if st.button('Prepare publication preview', key='deep_prepare_' + case['case_id']):
+            try:
+                publisher = ReviewPublisher(service.store, token=token, **publication_options)
+                plan = publisher.prepare(case['case_id'], int(number))
+                st.session_state['deep_publication_' + case['case_id']] = plan['plan_id']
+            except ValueError as exc:
+                st.warning(str(exc))
+            except Exception:
+                st.error('Publication preview could not be prepared. Check the approved report and its public PR evidence.')
+        plan_id = st.session_state.get('deep_publication_' + case['case_id'])
+        if not plan_id:
+            return
+        try:
+            publisher = ReviewPublisher(service.store, token=token, **publication_options)
+            plan = publisher.get(plan_id)
+        except Exception:
+            st.error('The saved publication preview could not be loaded.')
+            return
+        st.text('Plan: ' + _plain(plan_id))
+        st.text('Target: streamlit/streamlit PR #' + str(plan['pr_number']))
+        st.text('Observed head: ' + _plain(plan['head_sha']))
+        st.text('Observed base: ' + _plain(plan['base_sha']))
+        st.text('Publication status: ' + _plain(plan['status']))
+        if plan.get('error_code'):
+            st.caption('Publication detail: ' + _plain(plan['error_code'], limit=100))
+        if plan.get('review_url') and _https_url(plan['review_url']):
+            st.link_button('Open published review', plan['review_url'])
+        st.text(plan['body'])
+        st.download_button('Download publication preview', plan['body'], file_name='pr-review-preview.md', mime='text/markdown',
+                           key='deep_preview_download_' + case['case_id'])
+        confirmation = st.text_input('To confirm this exact public comment, type its plan ID',
+                                     key='deep_publication_confirmation_' + plan_id)
+        if st.button('Publish this summary to GitHub', disabled=not token or plan['status'] != 'prepared' or confirmation != plan_id,
+                     key='deep_publish_' + plan_id):
+            try:
+                result = publisher.publish(plan_id, confirmation=confirmation)
+                if result['status'] == 'published':
+                    st.success('GitHub summary review published.')
+                elif result['status'] == 'uncertain':
+                    st.warning('GitHub publication could not be confirmed. Inspect the PR before taking any further action; this plan will not retry.')
+                else:
+                    st.warning('Publication stopped. Check the saved plan status and refresh the investigation if the PR changed.')
+                st.rerun()
+            except ValueError as exc:
+                st.warning(str(exc))
+            except Exception:
+                st.error('Publication could not finish. Inspect the saved plan before taking any further action.')
+
+
 def _render_report(case: dict) -> None:
     report = case.get('report')
     if not isinstance(report, dict):
@@ -123,7 +187,7 @@ def _render_report(case: dict) -> None:
                    + ' findings and ' + str(quality.get('removed_next_steps', 0))
                    + ' proposed steps removed. This review can make mistakes.')
         with st.expander('Evidence review decisions'):
-            for label, key in [('Finding', 'finding_verdicts'), ('Proposed step', 'next_step_verdicts')]:
+            for label, key in [('Draft finding', 'finding_verdicts'), ('Proposed step', 'next_step_verdicts')]:
                 for verdict in quality.get(key, []):
                     st.text(label + ' ' + str(verdict.get('index', 0) + 1) + ': '
                             + ('retained' if verdict.get('supported') else 'removed'))
@@ -134,7 +198,8 @@ def _render_report(case: dict) -> None:
         st.info('This draft predates the evidence-review step. Review its saved evidence before approving it.')
     findings = report.get('findings') or []
     if not findings:
-        st.info('No findings are available yet. Review the next steps and missing information.')
+        st.info('No findings were retained. Review the next steps and missing information.' if quality.get('status') in {'completed', 'no_content'}
+                else 'No findings are available yet. Review the next steps and missing information.')
     for index, finding in enumerate(findings, start=1):
         if not isinstance(finding, dict):
             continue
@@ -261,6 +326,8 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
         repository_context = st.checkbox('Include related application code', value=False,
                                          key='deep_repository_context',
                                          help='Allow bounded static reads of app.py and Python files under triage_desk. Selected code is sent to Fireworks. No code is executed.')
+        memory_context = st.checkbox('Use earlier human reviews', value=False, key='deep_memory_context',
+                                     help='Recall bounded summaries and notes from approved or rejected cases in this workspace. Selected guidance is sent to Fireworks. Past reviews are never current evidence.')
         submitted = st.form_submit_button('Start deep investigation', type='primary', disabled=not ready)
     if submitted and ready:
         if not question.strip():
@@ -270,7 +337,8 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
                 case = _run_with_progress(
                     lambda progress: service.start(question.strip(), version=version.strip(),
                                                    code_context=code_context.strip(), progress=progress,
-                                                   **({'repository_context': True} if repository_context else {})),
+                                                   **({'repository_context': True} if repository_context else {}),
+                                                   **({'memory_context': True} if memory_context else {})),
                     'Investigating your report…',
                 )
                 st.session_state['deep_case_picker'] = case['case_id']
@@ -311,6 +379,7 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
     st.text(_STATUS_LABELS.get(case.get('status'), _plain(case.get('status'), limit=100)))
     st.text('Case: ' + _plain(case.get('case_id'), limit=100))
     st.caption('Related application code: ' + ('Enabled for this case' if case.get('repository_context') else 'Not enabled for this case'))
+    st.caption('Earlier human reviews: ' + ('Enabled for this case' if case.get('memory_context') else 'Not enabled for this case'))
     st.text(_plain(case.get('question')))
     if case.get('version'):
         st.text('Version: ' + _plain(case.get('version'), limit=100))
@@ -392,5 +461,6 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
                     st.rerun()
                 except Exception:
                     st.error('Your review could not be saved. The report remains available for review.')
+    _render_publication(case, service)
     _render_evidence(evidence)
     _render_timeline(events)

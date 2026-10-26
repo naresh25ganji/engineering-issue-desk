@@ -29,3 +29,13 @@ def test_archive_rejects_configured_credential_inside_an_asset(tmp_path):
     with pytest.raises(ValueError, match='credential'):
         build_archive(tmp_path, output)
     assert not output.exists()
+
+
+def test_archive_includes_versioned_application_playbooks(tmp_path):
+    playbook = tmp_path / 'agent_skills' / 'python-security' / 'SKILL.md'
+    playbook.parent.mkdir(parents=True)
+    playbook.write_text('---\nname: python-security\nversion: 1.0.0\n---\nReview guidance.')
+    output = tmp_path / 'submission.zip'
+    build_archive(tmp_path, output)
+    with zipfile.ZipFile(output) as archive:
+        assert 'engineering-issue-desk/agent_skills/python-security/SKILL.md' in archive.namelist()

@@ -1,6 +1,6 @@
 # Engineering Issue Desk architecture
 
-Version date: October 23, 2026.
+Version date: October 25, 2026.
 
 Engineering Issue Desk turns a Streamlit issue report into a saved, cited investigation that an engineer can review. The agent chooses research tools and specialist delegation; application code controls source identities, execution limits, durable state, and the final review decision. A report can have exact citations and still contain an incorrect conclusion.
 
@@ -24,6 +24,9 @@ Open the [standalone component diagram](week3-system-architecture.svg) or [inves
 | Specialist roles | Documentation/issues, correctness/security, and tests/reproduction; all share case evidence and limits | `general-purpose`, `correctness_security`, `test_reproduction` |
 | Domain read tools | Bounded snapshot, Keenable, and public Streamlit GitHub reads | [agent_tools.py](../triage_desk/agent_tools.py) |
 | Repository context tools | Explicitly enabled inventory, literal search, and evidence excerpt reads within the application Python allowlist | [repository_context.py](../triage_desk/repository_context.py) |
+| Review guidance tools | Three maintained playbooks and explicitly enabled local reviewed-case prose search; neither is factual evidence | [review_extensions.py](../triage_desk/review_extensions.py) |
+| Static analyzer | Fixed Bandit rules over registered code in an isolated trusted parser worker; never executes the supplied program | [static_analysis.py](../triage_desk/static_analysis.py), [_static_analysis_worker.py](../triage_desk/_static_analysis_worker.py) |
+| Separate PR publisher | Immutable approved-case preview and explicit confirmed summary COMMENT with revision/replay guards; absent from agent tools | [review_publication.py](../triage_desk/review_publication.py) |
 | Case evidence registry | Immutable snapshots, deterministic quote IDs, citation checks, and escaped report rendering | [agent_evidence.py](../triage_desk/agent_evidence.py) |
 | Independent evidence reviewer | One separate tool-constrained model call that can remove findings or next steps; cannot author replacements or approve | [agent_review.py](../triage_desk/agent_review.py) |
 | Shared accounting | Reserve calls before dispatch, collect reported usage and safe metadata, enforce limits | [agent_budget.py](../triage_desk/agent_budget.py) |
@@ -83,9 +86,10 @@ All private operational state lives under ignored `.cache/agent/`:
 
 | Artifact | Stored content | Recovery role |
 | --- | --- | --- |
-| `cases.sqlite` / `cases` | UUID, issue, reported version, code context, immutable repository opt-in, status, timestamps, current report, Markdown, review notes, safe error | Workspace case list and current artifact |
+| `cases.sqlite` / `cases` | UUID, issue, reported version, code context, immutable repository/history options, status, timestamps, current report, Markdown, review notes, safe error | Workspace case list and current artifact |
 | `cases.sqlite` / `evidence` | Case ID, source key, SHA-256, immutable source JSON | Revalidate and reopen the exact evidence used |
 | `cases.sqlite` / `events` | Ordered event IDs, UTC timestamps, safe event JSON | Reconstruct usage, stages, repairs, and observed errors |
+| `cases.sqlite` / `review_publication_plans` | Immutable plan/body/target/revision hashes plus publication status and safe error code | One attempt per confirmed plan; uncertain writes cannot be replayed |
 | `checkpoints.sqlite` | LangGraph checkpoints and pending writes | Resume the outer graph and inner agent steps |
 | `locks/<case UUID>.lock` | Retained advisory-lock file | Prevent concurrent execution of one case |
 
@@ -114,7 +118,7 @@ Repair events determine the active thread for each revision. A pending repair re
 
 Allowed page hosts are `docs.streamlit.io`, `docs.python.org`, `docs.langchain.com`, and `github.com`; GitHub page paths must stay under `streamlit/streamlit`. Provider API origins are fixed. Redirects are not followed. Tool requests have bounded timeouts and response sizes. Credentials are server-side configuration, never tool arguments.
 
-Deep Agents uses a virtual `StateBackend`. Its scratch files are agent state; they are not access to the repository or host filesystem. No working host shell, reproduction runner, GitHub write tool, automatic issue posting, or automatic approval is implemented.
+Deep Agents uses a virtual `StateBackend`. Its scratch files are agent state; they are not access to the repository or host filesystem. The investigator has no working host shell, reproduction runner, external-write tool, or automatic approval. A separate confirmed publisher is described below.
 
 ### Opt-in repository context
 
@@ -131,6 +135,28 @@ Every path component is opened with file-descriptor-based no-follow checks. Syml
 
 The working tree is read when a tool runs; it is not frozen at case creation. Each registered excerpt is immutable, and a later changed file creates a different hash/evidence ID. Bounded prefix search can miss later lines. A tool must explicitly read the located helper before citing it, and no bounded excerpt establishes that omitted behavior is absent.
 
+### Maintained playbooks and optional local history
+
+`list_review_playbooks` and `load_review_playbook` deliver three fixed version 1.0.0 bundles: `python-security`, `python-testing`, and `evidence-causality`. Each read validates the fixed identifier, regular nonsymlink file, maximum 12,000 bytes, frontmatter identity/version, credential guard, and content hash. This is on-demand tool delivery, not native Deep Agents `SkillsMiddleware`. Playbooks do not register evidence or grant permissions.
+
+`start(..., memory_context=True)`, CLI `--review-memory`, and the default-off **Use earlier human reviews** checkbox enable `search_review_history`. The immutable choice survives retry/revision. The tool considers at most 200 recent approved/rejected cases from the same local SQLite store, excludes the current and pending cases, and matches at most eight literal terms from a query of at most 160 characters. It returns at most three guidance records with up to three 320-character finding summaries, 600-character notes, and a 200-character version label.
+
+The database query projects only those prose fields; questions, code, source bodies, support quotes, and whole reports are not returned. Credential/raw-code/control filters run before presentation. Results include version warnings and are noncitable untrusted historical guidance. Prior approval is not ground truth. This is local literal recall, not semantic retrieval, project-isolated hosted memory, or Mem0.
+
+### Static checks over registered code
+
+`run_static_checks(evidence_id)` accepts only code already registered as `user_code` or `repository`. The model cannot supply a path, command, rule set, or new code argument. At most 16,000 saved characters are parsed by real Bandit in a fixed isolated Python worker, with a six-second parent timeout, three-second CPU limit, 6,000 AST-node limit, 65,536-byte output bound, and at most 50 displayed flags.
+
+The fixed rules are B102, B301, B307, B324, B506, B602, B605, and B608. Results preserve the analyzer/parser versions, rule-set version, parent/code hashes, and original/evidence line mapping in a registered `static_analysis` source. An incomplete excerpt can fail parsing; an empty list on failure is never a clean result. Flags are attributed analyzer observations, not verified vulnerabilities. No supplied code or tests run. The worker is not a container or a general untrusted-code execution sandbox.
+
+### Approved PR summary publication
+
+Publication is a separate UI/CLI operation, unavailable to the agent. An approved evidence-reviewed case must contain a valid public PR description and commit-pinned patch for the chosen `streamlit/streamlit` PR. All published supports must resolve to allowed public HTTPS source evidence; local code, history, questions, next steps, and private source bodies are not published.
+
+Preparing a preview makes no HTTP request and needs no write credential. It stores the exact body, report/evidence hashes, target PR, base/head commits, and plan ID. Only exact plan-ID confirmation plus configured `GITHUB_TOKEN` can attempt publication. A case lock and atomic prepared-to-publishing claim prevent concurrent/replayed attempts; fresh PR checks require an open public fixed-repository PR and unchanged base/head. The API action is a summary review `COMMENT`, with no inline comments or PR approval/request-changes action.
+
+Plans transition `prepared → publishing → published`, `failed`, or `uncertain`. A timeout or ambiguous response after a possible POST is never retried automatically; inspect GitHub before any further action. The implementation is exercised with mocked HTTP/state tests. No live GitHub POST or write-token validation was performed during this submission verification.
+
 ## Trust and deployment boundaries
 
 User reports, source pages, issue comments, code, and model outputs are data. They do not grant permissions or change tool scope. A model can request a tool call, but Python validates its arguments and the configured read boundary. Saved source IDs establish provenance; the AI reviewer and human assess relevance and causal support separately.
@@ -141,6 +167,10 @@ The supported operating model is one personal local workspace on macOS or Linux,
 
 ## Evidence of behavior
 
+Final software validation passed **603 tests**. The latest [verified three-case run](../evaluation/week3-verified-results/report.json) reached all three saved handoffs with 12 model calls, six tools, and 70,003 reported tokens. Only the two-finding freshness report had an applicable citation check; the other two reports retained no factual findings, so their checks are not applicable. The [qualitative inspection](../evaluation/week3-verified-results/engineering-review.md) is Codex-assisted analysis, not human approval or accuracy scoring.
+
+A separate [extension exercise](../evaluation/week3-verified-results/extension-exercise.json) observed playbook loading and real Bandit over registered freshness code, with six model calls, four tools, and 34,120 tokens outside the three-case totals. History was opted in but not invoked. Positive history lookup is covered by controlled tests. Publication uses 55 controlled HTTP/state tests, without a live POST. The [final validation record](../evaluation/week3-verified-results/validation.json) and [validation guide](VALIDATION.md) describe exact scope.
+
 The [validation matrix](OPERATIONS.md#validation-matrix) links executable checks to each boundary. The frozen [three-sample evaluation](../evaluation/week3-results/report.json) predates repository-context reads: two cases reached saved human review and one failed reviewer-response validation. All three drafts passed literal citation checks, including the failed case. The run used saved evidence reads, not delegation or Keenable; the separate provider probe tested connectivity. The [engineering review](../evaluation/week3-results/engineering-review.md) records retained false positives. These observations establish neither human accuracy nor a production success rate.
 
-The separate [repository-context run](../evaluation/week3-context-results/report.json) reached human review for all three scheduled cases, with 12 model calls, six tools, and 70,046 reported tokens across the three cases. Its observed tools were two saved-evidence reads, one repository inventory, and three repository reads. One read hit the line-range bound; subsequent bounded reads succeeded. It did not use repository search, Keenable, delegation, or read `_configuration`. Avoiding an earlier missing-helper claim does not establish that the agent inspected that helper. The current suite passed 473 tests; the [validation record](VALIDATION.md) records the complete observed scope.
+The separate [repository-context run](../evaluation/week3-context-results/report.json) reached human review for all three scheduled cases, with 12 model calls, six tools, and 70,046 reported tokens across the three cases. Its observed tools were two saved-evidence reads, one repository inventory, and three repository reads. One read hit the line-range bound; subsequent bounded reads succeeded. It did not use repository search, Keenable, delegation, or read `_configuration`. Avoiding an earlier missing-helper claim does not establish that the agent inspected that helper. The October 23 suite passed 473 tests; the [validation record](VALIDATION.md) records the complete observed scope.

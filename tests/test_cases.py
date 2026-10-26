@@ -232,3 +232,20 @@ def test_execution_lock_rejects_unknown_cases_and_path_traversal(tmp_path):
         with store.execution_lock('00000000-0000-0000-0000-000000000000'):
             pytest.fail('Acquired a nonexistent case lock')
     assert not (tmp_path / 'locks').exists()
+
+
+def test_review_memory_consent_is_immutable_durable_and_legacy_defaults_off(tmp_path):
+    path = tmp_path / 'cases.sqlite'
+    store = CaseStore(path)
+    off = store.create_case('No earlier reviews')
+    on = store.create_case('Recall prior reviews', memory_context=True)
+    assert off['memory_context'] is False
+    assert CaseStore(path).get_case(on['case_id'])['memory_context'] is True
+    with pytest.raises(ValueError, match='Cannot update'):
+        store.update_case(off['case_id'], memory_context=True)
+    for invalid in ('yes', 1, None):
+        with pytest.raises(ValueError, match='boolean'):
+            store.create_case('Invalid consent', memory_context=invalid)
+    with sqlite3.connect(path) as connection:
+        connection.execute('ALTER TABLE cases DROP COLUMN memory_context')
+    assert CaseStore(path).get_case(on['case_id'])['memory_context'] is False

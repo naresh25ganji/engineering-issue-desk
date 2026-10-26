@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1580" viewBox="0 0 1800 1580" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1580" viewBox="0 0 1900 1580" role="img" aria-labelledby="title desc">
 <title id="title">Engineering Issue Desk system architecture</title>
 <desc id="desc">The engineer uses Streamlit or the CLI. A local service coordinates a checkpointed Deep Agents investigator, bounded read tools, immutable evidence and an independent support reviewer before human review. Fireworks, Keenable and GitHub are external providers. Local databases preserve cases, sources, events and graph state. Repository context is explicitly opt in and never executes code.</desc>
 <defs>
@@ -7,9 +7,9 @@
     text{font-family:Arial,Helvetica,sans-serif;fill:#142b2b} .title{font-size:34px;font-weight:700}.subtitle{font-size:20px}.section{font-size:25px;font-weight:700}.head{font-size:24px;font-weight:700}.body{font-size:21px}.small{font-size:18px}.box{fill:#fff;stroke:#819b91;stroke-width:1.6}.boundary{fill:#f2f7f4;stroke:#51736a;stroke-width:2}.external{fill:#f8faf9;stroke:#9aaba5;stroke-width:2;stroke-dasharray:9 6}.flow{fill:none;stroke:#365f54;stroke-width:2.4;marker-end:url(#arrow)}
   </style>
 </defs>
-<rect width="1800" height="1580" fill="#fff"/>
+<rect width="1900" height="1580" fill="#fff"/>
 <text x="40" y="55" class="title">Engineering Issue Desk system architecture</text>
-<text x="40" y="91" class="subtitle">Local control and durable evidence with bounded provider reads   •   October 23 2026</text>
+<text x="40" y="91" class="subtitle">Local investigation and evidence with a separate confirmed publication action   •   October 25 2026</text>
 
 <rect x="40" y="125" width="570" height="140" rx="10" class="box"/>
 <text x="65" y="162" class="head">Engineer through Streamlit or CLI</text>
@@ -20,9 +20,9 @@
 <text x="675" y="198" class="body">Original RAG graph and experiments</text>
 <text x="675" y="232" class="body">Project guide: static docs and diagrams</text>
 <rect x="1140" y="125" width="620" height="140" rx="10" class="box"/>
-<text x="1165" y="162" class="head">Human review and local report</text>
-<text x="1165" y="198" class="body">Inspect sources → approve, reject, or revise</text>
-<text x="1165" y="232" class="body">No GitHub publishing or automatic approval</text>
+<text x="1165" y="162" class="head">Human review and separate PR preview</text>
+<text x="1165" y="198" class="body">Local approve, reject, or revise; inspect exact preview</text>
+<text x="1165" y="232" class="body">Confirmed summary COMMENT only; no automatic approval</text>
 
 <rect x="40" y="325" width="1160" height="835" rx="12" class="boundary"/>
 <text x="65" y="363" class="section">Local application control boundary</text>
@@ -51,9 +51,9 @@
 <text x="100" y="907" class="head">Bounded static read tools</text>
 <text x="100" y="945" class="body">Snapshot search • Keenable search and page fetch</text>
 <text x="100" y="981" class="body">Public Streamlit issue and immutable PR patch reads</text>
-<text x="100" y="1017" class="body">Opt-in repository list, literal search, and excerpt read</text>
-<text x="100" y="1053" class="small">Repository scope: app.py and triage_desk Python files only</text>
-<text x="100" y="1085" class="small">Repository inventory/search give leads; reads save evidence</text>
+<text x="100" y="1017" class="body">Opt-in repository reads and reviewed-case guidance</text>
+<text x="100" y="1053" class="small">On-demand playbooks • fixed Bandit checks on registered code</text>
+<text x="100" y="1085" class="small">Sources and analysis are evidence; history/playbooks are guidance</text>
 
 <rect x="775" y="870" width="385" height="240" rx="8" class="box"/>
 <text x="800" y="907" class="head">Independent evidence review</text>
@@ -96,13 +96,15 @@
 <path d="M1200 489 H1280" class="flow"/>
 <path d="M1200 720 H1280" class="flow"/>
 <path d="M1200 945 H1280" class="flow"/>
+<path d="M1700 265 H1850 V930 H1730" class="flow"/>
+<text x="1825" y="485" class="small" transform="rotate(90 1825 485)">Confirmed public summary COMMENT only</text>
 
 <rect x="40" y="1230" width="1720" height="245" rx="12" class="boundary"/>
 <text x="65" y="1268" class="section">Local persistence and reproducible inputs</text>
 <rect x="75" y="1290" width="530" height="155" rx="8" class="box"/>
 <text x="100" y="1327" class="head">cases.sqlite</text>
-<text x="100" y="1365" class="body">Case, consent flag, current report, review notes</text>
-<text x="100" y="1401" class="body">Immutable evidence and ordered audit events</text>
+<text x="100" y="1365" class="body">Case, opt-in choices, report, review notes, plans</text>
+<text x="100" y="1401" class="body">Immutable evidence, publication state, audit events</text>
 <text x="100" y="1430" class="small">Short connections • WAL • per-case advisory process lock</text>
 <rect x="645" y="1290" width="530" height="155" rx="8" class="box"/>
 <text x="670" y="1327" class="head">checkpoints.sqlite</text>
@@ -120,5 +122,5 @@
 <text x="990" y="1206" class="small">Checkpoint graph state</text>
 
 <text x="40" y="1516" class="small">Shared case limits: 18 model calls • 28 tool calls • 64,000 reported-token threshold • 2 revisions • 2 repairs</text>
-<text x="40" y="1548" class="small">180-second active-invocation check before dispatch • no semantic memory across cases • no code execution or external publishing</text>
+<text x="40" y="1548" class="small">180-second pre-dispatch check • literal local history, not Mem0 • no supplied-program execution • no live publication validated</text>
 </svg>

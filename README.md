@@ -2,7 +2,7 @@
 
 Investigate Streamlit behavior and prepare a reviewable issue draft from a bounded snapshot of official documentation, release notes, contribution guidance, and public issue reports. Inspect exact supporting passages, identify missing local details, and keep source authority and version scope visible.
 
-This independent course project does not establish a private application's root cause, prove a duplicate, promise a fix, inspect a developer's machine, execute pasted commands, or post issues. Week 3 adds a Deep Agents investigator with Fireworks, Keenable, saved cases, and resumable human review.
+This independent course project does not establish a private application's root cause, prove a duplicate, promise a fix, inspect arbitrary host files, or execute supplied programs. Week 3 adds a Deep Agents investigator with Fireworks, Keenable, saved cases, and resumable human review. The investigator cannot publish; an approved report can use a separate human-confirmed PR summary workflow.
 
 For the Week 3 walkthrough, open the [system architecture](docs/week3-system-architecture.svg), [investigation sequence](docs/week3-investigation-sequence.svg), and [architecture documentation](docs/ARCHITECTURE.md). The app's **Project guide** tab displays and downloads these assets. The original retrieval [diagram](docs/architecture.svg) and [PNG](docs/architecture.png) remain available for the earlier workflow.
 
@@ -52,7 +52,7 @@ The five domain tools are:
 
 Specialists access evidence through a shared case registry rather than relying on filesystem visibility. Deep Agents' filesystem is a virtual `StateBackend`; the agent has no host shell or code execution tool. Source records preserve exact text, hashes, source URLs, evidence type, timestamps, version scope, and commit references. Each source has deterministic quote IDs for literal spans of up to 1,000 characters. The model selects an evidence ID and one of that source's quote IDs; the application resolves the saved text, so punctuation, Unicode, and whitespace cannot be rewritten by the model. Legacy saved literal citations remain supported. Model-facing tool results show spans without duplicating the raw source text. **These checks establish citation integrity, not entailment or factual correctness.** A separate Fireworks evidence reviewer assesses complete findings and proposed steps against selected quotes, removes unsupported items, and records its verdicts before the human checkpoint. It cannot author replacements or approve the report. Its one model call shares the case budget, and a failed review leaves the case unapproved. AI review can miss unsupported advice or reject useful content; a human must still assess the evidence and causal applicability.
 
-The surrounding LangGraph flow is `investigate → evidence_review → human_review → finish`, with a revision branch back to investigation. SQLite checkpoints persist both the Deep Agents loop and the human-review state under stable case/thread IDs. Approval and rejection resume without calling a model. Requesting revision supplies the review notes to a new agent iteration. Approval saves the local report; this version does not post to GitHub. Saved cases can be reopened from the workspace selector.
+The surrounding LangGraph flow is `investigate → evidence_review → human_review → finish`, with a revision branch back to investigation. SQLite checkpoints persist both the Deep Agents loop and the human-review state under stable case/thread IDs. Approval and rejection resume without calling a model. Requesting revision supplies the review notes and prior report to a new agent iteration. Approval saves the local report; a separate explicit preview/confirmation is required for a public PR summary. Saved cases can be reopened from the workspace selector.
 
 Case records, immutable evidence, audit events, checkpoints, and process locks live under ignored `.cache/agent/`. This is one local personal workspace, not a multi-user hosted service. Independent case locks prevent simultaneous executions, and startup recovery only marks an abandoned running case as failed after acquiring its process lock. Retry resumes the unfinished checkpoint; completed reads and pending review are not automatically repeated. An invalid completed report can be repaired on explicit retry, at most twice. A report repair starts a fresh inner conversation with the original request and saved source registry; its calls still consume the same case-wide allowance. Human-requested revisions receive the previous report as well as review notes.
 
@@ -75,9 +75,30 @@ Run all offline regression checks with `uv run pytest -q`. The new tests exercis
 
 ## Week 3 deliverables and recorded evaluation
 
-The [submission handoff](docs/WEEK3_SUBMISSION.md) maps the handout to the implemented agent, datasets, development iterations, required links, and remaining work. The [Week 3 write-up](docs/Engineering%20Issue%20Desk%20Week%203%20Writeup.docx), [native Google Doc](https://docs.google.com/document/d/1gOxafWnF3u6OI5Rp1OtHMQyF0VYTPsBnm_NzWH3Dzus), [4:45 demo guide](docs/Engineering%20Issue%20Desk%20Week%203%20Demo%20Guide.docx), and [agent architecture](docs/week3-architecture.svg) accompany the code. The Google Doc is private. A video has not been recorded, and the Week 3 changes have not been pushed or submitted to the course form.
+The [submission handoff](docs/WEEK3_SUBMISSION.md) maps the handout to the agent, datasets, development iterations, required links, and remaining work. The [readiness matrix](docs/SUBMISSION_READINESS.md) distinguishes required deliverables from stretch options. The [final Week 3 write-up](docs/Engineering%20Issue%20Desk%20Week%203%20Writeup.docx), [final native Google Doc](https://docs.google.com/document/d/1ImRAJn28t61YaaqlSdyZIDpqb_UEK_oRYHHsDFbrWdI), [4:45 demo guide](docs/Engineering%20Issue%20Desk%20Week%203%20Demo%20Guide.docx), and [agent architecture](docs/week3-architecture.svg) accompany the code. The private native Doc passed metadata/content readback and visual inspection of all nine converted pages; reviewer access still needs confirmation. Baseline Week 3 commit `6e87e4b` is public with [successful CI](https://github.com/naresh25ganji/engineering-issue-desk/actions/runs/40246144330); the validated October 25 refresh awaits its own push and CI. The user confirmed no existing video, and no course form has been submitted.
 
-The [live three-code-sample report](evaluation/week3-results/report.html) and [raw JSON](evaluation/week3-results/report.json) preserve one run of `evaluation/week3-cases.json`:
+## October 25 final verification and stretch options
+
+The latest frozen [verified three-code-sample report](evaluation/week3-verified-results/report.html) and [raw JSON](evaluation/week3-verified-results/report.json) record **3/3 saved handoffs**, zero failed cases, 12 model calls, six tools, and 70,003 reported tokens with complete returned usage. There were nine investigator calls and three evidence-review calls. Tool use was two saved-evidence reads, one repository inventory, and three repository reads, including one safe line-bound error followed by smaller reads.
+
+Only W3-02 retained factual findings: two static observations about `freshness.py`, with exact citation integrity passed. W3-01 and W3-03 retained no factual findings, so citation checks are **not applicable**, rather than passes or accuracy successes. AI review removed four draft findings and three proposed steps. Human quality remains unscored; none was automatically approved. The third sample established no defect. This run did not exercise playbook/history lookup, Bandit, Keenable, repository search, or specialist delegation.
+
+Four stretch options extend the agent; the handout has no official extra-credit checklist or point values:
+
+- **Maintained playbooks:** list/load three versioned, hashed guidance bundles on demand. This is tool delivery, not native `SkillsMiddleware` or factual evidence.
+- **Earlier human reviews:** default-off immutable opt-in to bounded literal prose lookup from approved/rejected cases in this local SQLite workspace. Results are untrusted guidance, not source evidence, semantic retrieval, or Mem0.
+- **Static checks:** real Bandit with eight fixed rules over registered Python code in a bounded trusted parser worker. No supplied program or tests execute; flags are not verified vulnerabilities.
+- **Approved public PR summary:** a separate offline preview and exact plan-ID confirmation can publish a summary `COMMENT` after unchanged case/evidence and fresh base/head checks. The agent cannot publish. Atomic plan claims prevent replay; uncertain POSTs cannot auto-retry. Only mocked HTTP/state validation was performed, with no live POST or write token used.
+
+A separate [live extension exercise](evaluation/week3-verified-results/extension-exercise.json) observed one playbook load and real Bandit call on the 30-line freshness sample, alongside one evidence list and one evidence read. It used six model calls, four tools, and 34,120 reported tokens and saved one finding plus two test proposals pending human review. These totals are outside the three-case denominator. Review memory was opted in but never invoked; positive history recall is covered by controlled harness tests.
+
+The [readiness matrix](docs/SUBMISSION_READINESS.md) and [validation record](docs/VALIDATION.md) distinguish implemented scope, controlled tests, actual live observations, and remaining deliverables. The October 17 corpus remains a dated snapshot on October 25; live evidence has separate acquisition timestamps.
+
+Final software verification passed **603 tests** in 13.77 seconds, the 65-source integrity check, and source-environment validation. The [machine-readable validation record](evaluation/week3-verified-results/validation.json) and [qualitative inspection](evaluation/week3-verified-results/engineering-review.md) preserve the exact boundary. The latter is Codex-assisted analysis, not human approval. Supported execution is a source checkout with `uv`; default wheel build discovery is not configured.
+
+### Preserved initial Week 3 run
+
+The initial [three-code-sample report](evaluation/week3-results/report.html) and [raw JSON](evaluation/week3-results/report.json) preserve an earlier run of `evaluation/week3-cases.json`:
 
 | Observed measure | Result |
 | --- | --- |
@@ -102,7 +123,7 @@ The initial Week 3 verification passed **401 tests** and the 65-source integrity
 
 ## October 23 architecture and reliability update
 
-The [architecture](docs/ARCHITECTURE.md), [design decisions](docs/DESIGN.md), [operations runbook](docs/OPERATIONS.md), and [validation record](docs/VALIDATION.md) document the implemented system, state model, trust boundaries, recovery, and deployment limits. The earlier Word/Google Docs submission assets preserve the initial Week 3 observations; these technical docs describe the later extension.
+The [architecture](docs/ARCHITECTURE.md), [design decisions](docs/DESIGN.md), [operations runbook](docs/OPERATIONS.md), and [validation record](docs/VALIDATION.md) document the implemented system, state model, trust boundaries, recovery, and deployment limits. The [archived initial native Google Doc](https://docs.google.com/document/d/1gOxafWnF3u6OI5Rp1OtHMQyF0VYTPsBnm_NzWH3Dzus) preserves the first Week 3 observations; final Word/native Doc assets and these technical docs include the later extensions.
 
 **Related application code is optional.** Enable **Include related application code** when creating a case, or add `--repository-context` to CLI `start`. Three additional tools list, search, and read only `app.py` and Python files under `triage_desk/`. The immutable case option defaults off, including migrated older cases; retry/revision inherit it. Selected context goes to Fireworks. No code is executed.
 
@@ -114,7 +135,7 @@ The [new live report](evaluation/week3-context-results/report.html) recorded **3
 
 A separate [live checkpoint recovery](evaluation/week3-context-results/checkpoint-recovery.json) resumed the original failed W3-02 case using only one evidence-review call, zero tools, and 2,716 reported tokens. It reached `awaiting_review`, repeated no investigator call, and did not approve the report. The frozen original 2/3 report remains unchanged. A separate [provider probe](evaluation/week3-context-results/provider-probe.json) again verified a Fireworks tool round trip and five Keenable results.
 
-Current validation passed **473 tests**, the 65-source integrity check, actual browser checks, diagram rendering, and source-package checks. See the validation record for the exact scope and unmeasured outcomes.
+October 23 validation passed **473 tests**, the 65-source integrity check, actual browser checks, diagram rendering, and source-package checks. See the validation record for the exact scope and unmeasured outcomes.
 
 ```bash
 uv run python scripts/investigate_deep.py start --question "Review the embedding response and its configuration helpers." --code-file triage_desk/hosted_embeddings.py --repository-context
@@ -215,7 +236,7 @@ The script excludes credentials, environments, caches, and local outcome logs; i
 - [Four minute and forty second recording guide](docs/Engineering%20Issue%20Desk%20Video%20Recording%20Guide.docx) with narration, screen cues, and recording controls; also available as a [private Google Doc](https://docs.google.com/document/d/1wPnj_PcB3pk73QN6mVSyr9hAz0TVUiJd076T1sUF408)
 - [Latest workflow report and AI review](evaluation/workflow-results/report.html)
 
-The Week 2 handoff verification passed 200 tests at that point, the 65-source integrity check, real browser investigation/chat checks, and all six converted Google Docs pages. The video and course form submission remain separate deliverables. The repository and Google Doc are private; reviewer access has not been configured.
+The Week 2 handoff verification passed 200 tests at that point, the 65-source integrity check, real browser investigation/chat checks, and all six converted Google Docs pages. At that handoff the repository and Google Doc were private. The repository is now public; access to older private Docs is a separate concern. The video and course form remain outstanding deliverables.
 
 ## Course expansion
 

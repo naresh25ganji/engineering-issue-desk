@@ -8,13 +8,15 @@ Examples from the repository root:
     uv run python scripts/investigate_deep.py review CASE_ID --decision approve
 
 Start, retry, and revision may call configured providers. Approval and rejection
-only resume local review state; no command publishes to GitHub.
+only resume local review state. Publishing requires the separate publish-review command,
+a prepared preview, and exact plan-ID confirmation.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
@@ -51,6 +53,8 @@ def build_parser() -> argparse.ArgumentParser:
     start.add_argument('--code-file', type=Path, help='Optional UTF-8 reproduction or code, at most 16000 characters.')
     start.add_argument('--repository-context', action='store_true',
                        help='Allow bounded static reads of app.py and triage_desk Python files; selected content is sent to Fireworks.')
+    start.add_argument('--review-memory', action='store_true',
+                       help='Allow bounded recall of earlier approved/rejected case summaries and review notes; selected guidance is sent to Fireworks.')
     listing = commands.add_parser('list', help='List saved case summaries without provider calls.')
     listing.add_argument('--limit', type=int, choices=range(1, 1001), default=30, metavar='1..1000')
     show = commands.add_parser('show', help='Read a saved report, provenance, and audit events without provider calls.')
@@ -63,6 +67,14 @@ def build_parser() -> argparse.ArgumentParser:
     retry.add_argument('case_id')
     audit = commands.add_parser('audit', help='Review a saved draft against its evidence without repeating research.')
     audit.add_argument('case_id')
+    prepare = commands.add_parser('prepare-publication', help='Prepare a local preview for an approved public-source PR report; no network calls.')
+    prepare.add_argument('case_id')
+    prepare.add_argument('--pr', type=int, required=True)
+    publication = commands.add_parser('show-publication', help='Read a saved immutable publication preview; no network calls.')
+    publication.add_argument('plan_id')
+    publish = commands.add_parser('publish-review', help='Explicitly publish a prepared summary COMMENT after checking the current PR head and base.')
+    publish.add_argument('plan_id')
+    publish.add_argument('--confirm', required=True, help='Exact plan ID from the preview. Requires GITHUB_TOKEN with permission to write PR reviews.')
     commands.add_parser('probe', help='Explicitly test Fireworks tool calling and Keenable access using small live requests.')
     return parser
 
@@ -96,7 +108,7 @@ def _show(store: CaseStore, case_id: str) -> dict:
                      'evidence_type', 'published_at', 'acquired_at', 'base_sha', 'filename', 'truncated')
     event_fields = ('event_id', 'phase', 'name', 'status', 'started_at', 'latency_ms',
                     'error_type', 'error_code', 'evidence_count', 'specialist', 'usage', 'usage_reported', 'findings', 'revision')
-    return {**_summary(case), 'repository_context': case.get('repository_context', False), 'report': case.get('report'),
+    return {**_summary(case), 'repository_context': case.get('repository_context', False), 'memory_context': case.get('memory_context', False), 'report': case.get('report'),
             'provenance': [{key: source.get(key, '') for key in source_fields}
                            for source in store.evidence(case_id)],
             'events': [{key: event[key] for key in event_fields if key in event}
@@ -171,6 +183,23 @@ def dispatch(args: argparse.Namespace) -> dict | list:
             return [_summary(case) for case in store.list_cases(args.limit)]
         return _show(store, args.case_id)
 
+    if args.command in {'prepare-publication', 'show-publication', 'publish-review'}:
+        from triage_desk.review_publication import ReviewPublisher
+        if args.command != 'show-publication':
+            load_dotenv(root / '.env', override=False)
+        store = CaseStore(root / '.cache' / 'agent' / 'cases.sqlite')
+        publisher = ReviewPublisher(store, token=AgentSettings.from_env().github_token if args.command == 'publish-review' else '',
+            forbidden_values=tuple(os.getenv(name, '') for name in (
+                'FIREWORKS_API_KEY', 'KEENABLE_API_KEY', 'TRIAGE_API_KEY', 'NEBIUS_API_KEY', 'LANGSMITH_API_KEY')))
+        try:
+            if args.command == 'prepare-publication':
+                return publisher.prepare(args.case_id, args.pr)
+            if args.command == 'show-publication':
+                return publisher.get(args.plan_id)
+            return publisher.publish(args.plan_id, confirmation=args.confirm)
+        except ValueError as exc:
+            raise _CLIError(str(exc)) from None
+
     if args.command == 'probe':
         load_dotenv(root / '.env', override=False)
         return _probe(AgentSettings.from_env())
@@ -202,6 +231,8 @@ def dispatch(args: argparse.Namespace) -> dict | list:
     service = InvestigationService(root, desk, settings)
     if args.command == 'start':
         options = {'repository_context': True} if args.repository_context else {}
+        if args.review_memory:
+            options['memory_context'] = True
         case = service.start(question, args.version, code, **options)
     elif args.command == 'retry':
         case = service.retry(args.case_id)
@@ -228,7 +259,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     print(json.dumps(result, indent=2, ensure_ascii=False))
     failed = isinstance(result, dict) and (
-        result.get('status') == 'failed' and args.command != 'show'
+        result.get('status') in {'failed', 'uncertain'} and args.command not in {'show', 'show-publication'}
         or args.command == 'probe' and result.get('status') == 'error')
     return 1 if failed else 0
 

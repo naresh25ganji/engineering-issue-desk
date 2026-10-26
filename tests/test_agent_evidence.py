@@ -325,3 +325,13 @@ def test_too_short_sources_have_no_eligible_quote_ids(registry):
                                           'quote_id': source['evidence_id'] + ':q1'}]
     with pytest.raises(ValueError):
         registry.validate_report(proposed)
+
+
+def test_plain_code_comparisons_are_not_mistaken_for_html_tags(registry):
+    proposed = report(register(registry))
+    proposal = "Test oldest < max_age_days for current and oldest >= max_age_days for stale."
+    proposed['next_steps'] = [proposal]
+    checked = registry.validate_report(proposed)
+    assert checked['next_steps'] == [proposal]
+    rendered = render_report_markdown(checked, registry.list_sources())
+    assert '&lt;' in rendered

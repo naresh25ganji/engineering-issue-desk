@@ -1,0 +1,43 @@
+{
+  "verified_at": "2026-10-26T00:03:59.638470+00:00",
+  "offline_tests": {
+    "passed": 603,
+    "failed": 0,
+    "seconds": 13.77,
+    "command": "uv run pytest -q"
+  },
+  "corpus": {
+    "sources": 65,
+    "sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+    "command": "uv run python scripts/fetch_corpus.py --check"
+  },
+  "environment": {
+    "python": "3.12.14",
+    "locked_dependencies": {
+      "deepagents": "0.7.30",
+      "langgraph": "1.2.16",
+      "langchain-fireworks": "1.7.1",
+      "langgraph-checkpoint-sqlite": "3.1.2",
+      "bandit": "1.9.4",
+      "streamlit": "1.66.0"
+    }
+  },
+  "checks": {
+    "uv_sync_frozen_check": "passed;117 installed packages require no changes",
+    "git_diff_check": "passed",
+    "markdown_local_links": "all resolved after URL decoding",
+    "live_providers": "Fireworks tool roundtrip and Keenable five results passed in ../week3-final-results/provider-probe.json"
+  },
+  "boundaries": {
+    "human_accuracy": "unscored",
+    "github_post": "not performed;55 mocked publication tests",
+    "video": "user confirmed no existing video",
+    "course_form": "not submitted",
+    "supported_installation": "source checkout using uv sync; no installable wheel claim"
+  },
+  "observations": {
+    "three_code_sample_run": "report.json",
+    "qualitative_coding_assistant_inspection": "engineering-review.md",
+    "separate_playbook_and_static_check_exercise": "extension-exercise.json"
+  }
+}

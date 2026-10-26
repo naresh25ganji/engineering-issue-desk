@@ -1,0 +1,524 @@
+{
+  "schema_version": 1,
+  "report_kind": "deep_agent_workflow",
+  "generated_at": "2026-10-25T23:58:13.186385+00:00",
+  "execution_mode": "live",
+  "dataset_name": "Week 3 real-code Deep Investigation cases v1",
+  "repository_context_enabled": true,
+  "dataset_sha256": "52571ba0c0d354728088feefaa93f950d7d47d94be12411db95bf671c8432cc8",
+  "corpus_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "summary": {
+    "scheduled_cases": 3,
+    "attempted_cases": 3,
+    "completed_handoffs": 2,
+    "failed_cases": 1,
+    "not_run_cases": 0,
+    "handoff_rate": 0.6666666666666666,
+    "handoff_denominator": "All scheduled selected cases, including errors. This measures saved review handoff completion, not answer accuracy.",
+    "human_accuracy": null,
+    "human_citation_entailment": null,
+    "citation_integrity_passed_cases": 1,
+    "ai_rejected_findings": 3,
+    "ai_rejected_next_steps": 3,
+    "model_calls": 11,
+    "tool_calls": 6,
+    "unfinished_call_records": 0,
+    "model_calls_by_role": {
+      "investigator": 9,
+      "evidence_reviewer": 2
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1,
+      "list_repository_files": 2,
+      "read_repository_file": 3
+    },
+    "errors_by_role_or_tool": {
+      "read_repository_file": 1
+    },
+    "reported_token_usage": {
+      "input_tokens": 59199,
+      "output_tokens": 5381,
+      "total_tokens": 64580
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "reported_tokens": 64580,
+    "accounting_unknown_error_rows": 0,
+    "usage_complete": true
+  },
+  "results": [
+    {
+      "id": "W3-01",
+      "eval_id": "W3-01",
+      "question": "Statically review the supplied reviews.py for outcome-label correctness and concurrency assumptions. Use local documentation only if relevant. Return at most two supported findings, with exact registered quotes, and focused proposed checks. Distinguish threading.Lock from cross-process guarantees, and user-reported resolution labels from automated quality scores. Ask for missing deployment details and pause for human review. Do not run code or claim a reproduced race.",
+      "sample": {
+        "path": "triage_desk/reviews.py",
+        "start_line": 1,
+        "end_line": 41,
+        "file_sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+        "excerpt_sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+        "excerpt_characters": 1812,
+        "context_characters": 1946
+      },
+      "goals": [
+        "Ground static observations in the supplied code.",
+        "Identify thread/process scope and outcome-measurement limitations without inventing failures.",
+        "Leave a cited report and proposed checks at a saved human-review checkpoint."
+      ],
+      "relevant_source_kinds": [
+        "code",
+        "documentation"
+      ],
+      "expected_boundary": "Static code observations and proposed checks only; no execution, private-file inspection, external posting, or automatic approval.",
+      "attempted": true,
+      "status": "awaiting_review",
+      "case_id": "7b9bf0e6-0f50-4a45-ad26-cf5357450623",
+      "handoff_required": true,
+      "handoff_observed": true,
+      "persisted_case_observed": true,
+      "report": {
+        "findings": [
+          {
+            "statement": "The module restricts outcome labels to the predefined set {'resolved', 'needs_followup', 'human_handoff'}, and outcome_summary only counts records whose 'outcome' field is in this set, confirming that user‑reported labels are used rather than automated quality scores.",
+            "category": "correctness",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_3904df5117c2fadf2393d9b1869b488f",
+                "quote_id": "ev_3904df5117c2fadf2393d9b1869b488f:q1",
+                "quote": "Supplied repository file: triage_desk/reviews.py:1-41\nFile SHA-256: d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea\n\n\"\"\"Local user outcome labels, storing no report text, answers or credentials.\"\"\"\nfrom __future__ import annotations\n\nfrom datetime import datetime, timezone\nimport json\nfrom pathlib import Path\nimport re\nimport threading\n\nOUTCOMES = {'resolved', 'needs_followup', 'human_handoff'}\n_LOCK = threading.Lock()\n\n\ndef save_outcome(path: Path, run_id: str, outcome: str, *, first_contact: bool = True) -> None:\n    if not re.fullmatch(r'[a-f0-9]{32}', run_id) or outcome not in OUTCOMES:\n        raise ValueError('Choose a valid run and outcome')\n    record = {'run_id': run_id, 'outcome': outcome, 'first_contact': bool(first_contact),\n              'reviewed_at': datetime.now(timezone.utc).isoformat()}\n    path = Path(path)\n    with _LOCK:\n        path.parent.mkdir(parents=True, exist_ok=True)\n        with path.open('a', encoding='utf-8') as stream:"
+              },
+              {
+                "evidence_id": "ev_3904df5117c2fadf2393d9b1869b488f",
+                "quote_id": "ev_3904df5117c2fadf2393d9b1869b488f:q3",
+                "quote": ",\n            'user_reported_resolved_first_contacts': resolved,\n            'user_reported_first_contact_resolution': resolved / len(first) if first else None,\n            'note': 'User outcome labels on reviewed first contacts only; not an automated quality score or a claim about unreviewed users.'}\n"
+              }
+            ]
+          }
+        ],
+        "missing_information": [
+          "Deployment details: whether the application runs with multiple processes (e.g., via gunicorn, uWSGI, or Streamlit's multi‑session server) that could share the same outcome file."
+        ],
+        "next_steps": [
+          "Create a test that spawns several processes concurrently calling save_outcome with the same path and verifies that the resulting file contains a complete, non‑corrupted JSON line per call."
+        ],
+        "quality_review": {
+          "status": "completed",
+          "finding_verdicts": [
+            {
+              "index": 0,
+              "supported": true,
+              "reason": "Quotes show OUTCOMES set and outcome_summary filters by it; note confirms user-reported labels, not automated scores."
+            },
+            {
+              "index": 1,
+              "supported": false,
+              "reason": "Quotes show threading.Lock usage but do not state it lacks cross-process protection."
+            }
+          ],
+          "next_step_verdicts": [
+            {
+              "index": 0,
+              "supported": false,
+              "reason": "No evidence of cross-process race; proposal adds lock beyond shown code."
+            },
+            {
+              "index": 1,
+              "supported": true,
+              "reason": "Test aligns with observed use of threading.Lock and can verify if cross-process writes corrupt file."
+            }
+          ],
+          "retained_findings": 1,
+          "removed_findings": 1,
+          "removed_next_steps": 1,
+          "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+        }
+      },
+      "independent_ai_review": {
+        "status": "completed",
+        "finding_verdicts": [
+          {
+            "index": 0,
+            "supported": true,
+            "reason": "Quotes show OUTCOMES set and outcome_summary filters by it; note confirms user-reported labels, not automated scores."
+          },
+          {
+            "index": 1,
+            "supported": false,
+            "reason": "Quotes show threading.Lock usage but do not state it lacks cross-process protection."
+          }
+        ],
+        "next_step_verdicts": [
+          {
+            "index": 0,
+            "supported": false,
+            "reason": "No evidence of cross-process race; proposal adds lock beyond shown code."
+          },
+          {
+            "index": 1,
+            "supported": true,
+            "reason": "Test aligns with observed use of threading.Lock and can verify if cross-process writes corrupt file."
+          }
+        ],
+        "retained_findings": 1,
+        "removed_findings": 1,
+        "removed_next_steps": 1,
+        "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+      },
+      "sources": [
+        {
+          "evidence_id": "ev_3904df5117c2fadf2393d9b1869b488f",
+          "title": "User supplied reproduction code",
+          "url": "",
+          "kind": "code",
+          "origin": "user_code",
+          "evidence_type": "",
+          "filename": "",
+          "fetched_at": "2026-10-25T23:57:43.780997+00:00",
+          "snapshot_at": "",
+          "version_scope": "",
+          "commit_sha": "",
+          "sha256": "dfaf1f9d1bc39f6ac116b1be6c4848470fd61915f738c3bfb4c5f51230db3162",
+          "published_at": "",
+          "acquired_at": ""
+        }
+      ],
+      "error": null,
+      "accounting": {
+        "model_calls": 3,
+        "tool_calls": 1,
+        "model_calls_by_role": {
+          "investigator": 2,
+          "evidence_reviewer": 1
+        },
+        "tool_calls_by_name": {
+          "read_case_evidence": 1
+        },
+        "errors_by_role_or_tool": {},
+        "unfinished_call_records": 0,
+        "reported_token_usage": {
+          "input_tokens": 13292,
+          "output_tokens": 2541,
+          "total_tokens": 15833
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "usage_complete": true,
+        "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+      },
+      "elapsed_ms": 13501.117,
+      "automatic_citation_integrity": {
+        "status": "passed",
+        "checked_supports": 2,
+        "failed_supports": 0,
+        "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+      },
+      "human_review": {
+        "accuracy": null,
+        "relevance": null,
+        "citation_entailment": null,
+        "notes": null
+      },
+      "repository_context": true
+    },
+    {
+      "id": "W3-02",
+      "eval_id": "W3-02",
+      "question": "Statically review the supplied freshness.py timestamp validation and freshness disclosure. Return at most two supported findings using exact registered quotes. Explain what current and stale establish, how missing/future/naive timestamps are treated, and propose focused boundary tests. Use local documentation if useful; avoid unnecessary web searches. Do not claim that a recent fetch verifies upstream facts or that tests were executed. Pause for human review.",
+      "sample": {
+        "path": "triage_desk/freshness.py",
+        "start_line": 1,
+        "end_line": 30,
+        "file_sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+        "excerpt_sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+        "excerpt_characters": 1629,
+        "context_characters": 1765
+      },
+      "goals": [
+        "Distinguish snapshot-age disclosure from factual correctness and version compatibility.",
+        "Inspect actual timestamp and threshold branches with literal evidence.",
+        "Propose invalid/future/threshold test cases separately from observed execution results."
+      ],
+      "relevant_source_kinds": [
+        "code",
+        "documentation",
+        "release"
+      ],
+      "expected_boundary": "Do not execute the function or substitute host time for a measured test; disclose missing assumptions and preserve human review.",
+      "attempted": true,
+      "status": "failed",
+      "case_id": "1158a56f-1023-45cc-a9c2-5d102ca4a793",
+      "handoff_required": true,
+      "handoff_observed": false,
+      "persisted_case_observed": true,
+      "report": null,
+      "independent_ai_review": null,
+      "sources": [
+        {
+          "evidence_id": "ev_40af221e043ec53afb71239366cf1574",
+          "title": "User supplied reproduction code",
+          "url": "",
+          "kind": "code",
+          "origin": "user_code",
+          "evidence_type": "",
+          "filename": "",
+          "fetched_at": "2026-10-25T23:57:57.280571+00:00",
+          "snapshot_at": "",
+          "version_scope": "",
+          "commit_sha": "",
+          "sha256": "83272d70c3374f164f9fa37d5f4432be196c21b13fdbcca64af7db30ab4759fd",
+          "published_at": "",
+          "acquired_at": ""
+        },
+        {
+          "evidence_id": "ev_f54cf1f58c970685a0b1817841b93084",
+          "title": "triage_desk/freshness.py:1-30",
+          "url": "",
+          "kind": "code",
+          "origin": "repository",
+          "evidence_type": "repository_excerpt",
+          "filename": "triage_desk/freshness.py",
+          "fetched_at": "2026-10-25T23:57:58+00:00",
+          "snapshot_at": "2026-10-25T23:57:58+00:00",
+          "version_scope": "Local working-tree snapshot; lines 1-30 of 30; full-file SHA-256 48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91. Static inspection only; no tests or code were executed.",
+          "commit_sha": "",
+          "sha256": "d5e84f904007cc3d5732262f16ba913d41d428036a1b6bae1dddc31b0c2d6c52",
+          "published_at": "",
+          "acquired_at": ""
+        }
+      ],
+      "error": {
+        "type": "InvestigationFailed",
+        "message": "The saved investigation did not finish; inspect its local audit events."
+      },
+      "accounting": {
+        "model_calls": 3,
+        "tool_calls": 2,
+        "model_calls_by_role": {
+          "investigator": 3
+        },
+        "tool_calls_by_name": {
+          "list_repository_files": 1,
+          "read_repository_file": 1
+        },
+        "errors_by_role_or_tool": {},
+        "unfinished_call_records": 0,
+        "reported_token_usage": {
+          "input_tokens": 17667,
+          "output_tokens": 1035,
+          "total_tokens": 18702
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "usage_complete": true,
+        "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+      },
+      "elapsed_ms": 5726.475,
+      "automatic_citation_integrity": {
+        "status": "not_applicable",
+        "checked_supports": 0,
+        "failed_supports": 0,
+        "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+      },
+      "human_review": {
+        "accuracy": null,
+        "relevance": null,
+        "citation_entailment": null,
+        "notes": null
+      },
+      "repository_context": true
+    },
+    {
+      "id": "W3-03",
+      "eval_id": "W3-03",
+      "question": "Statically review the supplied hosted_embeddings.py for API-response validation, cache identity, and safe error handling. Return at most two supported findings with exact code quotes and focused proposed checks. Use local caching/security documentation only if needed. Distinguish inspected safeguards from verified runtime behavior; do not call an embeddings endpoint, reveal credentials, or claim benchmarks/tests ran. Pause for human review.",
+      "sample": {
+        "path": "triage_desk/hosted_embeddings.py",
+        "start_line": 1,
+        "end_line": 218,
+        "file_sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+        "excerpt_sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+        "excerpt_characters": 11687,
+        "context_characters": 11832
+      },
+      "goals": [
+        "Inspect endpoint/model/dimension/corpus cache identity from actual code.",
+        "Assess response shape, embedding dimensions, and credential-safe metadata using exact evidence.",
+        "Separate proposed response-validation tests from unexecuted runtime claims."
+      ],
+      "relevant_source_kinds": [
+        "code",
+        "documentation"
+      ],
+      "expected_boundary": "No embeddings calls, code execution, host-secret inspection, inferred cost, or automatic report approval.",
+      "attempted": true,
+      "status": "awaiting_review",
+      "case_id": "fd5e2975-72e8-4eb3-a958-b71dbde5a661",
+      "handoff_required": true,
+      "handoff_observed": true,
+      "persisted_case_observed": true,
+      "report": {
+        "findings": [],
+        "missing_information": [],
+        "next_steps": [],
+        "quality_review": {
+          "status": "completed",
+          "finding_verdicts": [
+            {
+              "index": 0,
+              "supported": false,
+              "reason": "Quote shows start of _request with try but no evidence of missing httpx exception handling; cannot confirm claim."
+            },
+            {
+              "index": 1,
+              "supported": false,
+              "reason": "Quotes only define QUERY_CACHE_SIZE; no evidence of its (non)use in cache logic, so claim unsupported."
+            }
+          ],
+          "next_step_verdicts": [
+            {
+              "index": 0,
+              "supported": false,
+              "reason": "Remedy assumes missing httpx.RequestError handling, but evidence of such omission is not established."
+            },
+            {
+              "index": 1,
+              "supported": false,
+              "reason": "Remedy assumes cache grows unbounded, but no evidence of cache implementation or lack of eviction."
+            }
+          ],
+          "retained_findings": 0,
+          "removed_findings": 2,
+          "removed_next_steps": 2,
+          "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+        }
+      },
+      "independent_ai_review": {
+        "status": "completed",
+        "finding_verdicts": [
+          {
+            "index": 0,
+            "supported": false,
+            "reason": "Quote shows start of _request with try but no evidence of missing httpx exception handling; cannot confirm claim."
+          },
+          {
+            "index": 1,
+            "supported": false,
+            "reason": "Quotes only define QUERY_CACHE_SIZE; no evidence of its (non)use in cache logic, so claim unsupported."
+          }
+        ],
+        "next_step_verdicts": [
+          {
+            "index": 0,
+            "supported": false,
+            "reason": "Remedy assumes missing httpx.RequestError handling, but evidence of such omission is not established."
+          },
+          {
+            "index": 1,
+            "supported": false,
+            "reason": "Remedy assumes cache grows unbounded, but no evidence of cache implementation or lack of eviction."
+          }
+        ],
+        "retained_findings": 0,
+        "removed_findings": 2,
+        "removed_next_steps": 2,
+        "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+      },
+      "sources": [
+        {
+          "evidence_id": "ev_75769aa4e9a0ab94fa5b07394bd33b34",
+          "title": "User supplied reproduction code",
+          "url": "",
+          "kind": "code",
+          "origin": "user_code",
+          "evidence_type": "",
+          "filename": "",
+          "fetched_at": "2026-10-25T23:58:03.010193+00:00",
+          "snapshot_at": "",
+          "version_scope": "",
+          "commit_sha": "",
+          "sha256": "c4eddde3810a5ab7ca5774e76a74573639206d6eb3aa6bebe447d4bbdfac058a",
+          "published_at": "",
+          "acquired_at": ""
+        },
+        {
+          "evidence_id": "ev_7e09411a72b554a6395ddc73845cfc1f",
+          "title": "triage_desk/hosted_embeddings.py:1-151",
+          "url": "",
+          "kind": "code",
+          "origin": "repository",
+          "evidence_type": "repository_excerpt",
+          "filename": "triage_desk/hosted_embeddings.py",
+          "fetched_at": "2026-10-25T23:58:04+00:00",
+          "snapshot_at": "2026-10-25T23:58:04+00:00",
+          "version_scope": "Local working-tree snapshot; lines 1-151 of 218; full-file SHA-256 ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c. Static inspection only; no tests or code were executed.",
+          "commit_sha": "",
+          "sha256": "64563c6a8cd57d85a0be9e4b1b9670c390e55cf776255f3ec136078fbf36a27a",
+          "published_at": "",
+          "acquired_at": ""
+        }
+      ],
+      "error": null,
+      "accounting": {
+        "model_calls": 5,
+        "tool_calls": 3,
+        "model_calls_by_role": {
+          "investigator": 4,
+          "evidence_reviewer": 1
+        },
+        "tool_calls_by_name": {
+          "list_repository_files": 1,
+          "read_repository_file": 2
+        },
+        "errors_by_role_or_tool": {
+          "read_repository_file": 1
+        },
+        "unfinished_call_records": 0,
+        "reported_token_usage": {
+          "input_tokens": 28240,
+          "output_tokens": 1805,
+          "total_tokens": 30045
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "usage_complete": true,
+        "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+      },
+      "elapsed_ms": 10187.96,
+      "automatic_citation_integrity": {
+        "status": "not_applicable",
+        "checked_supports": 0,
+        "failed_supports": 0,
+        "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+      },
+      "human_review": {
+        "accuracy": null,
+        "relevance": null,
+        "citation_entailment": null,
+        "notes": null
+      },
+      "repository_context": true
+    }
+  ],
+  "measurement_limits": [
+    "No report is approved, rejected, posted, or executed by this evaluation. Saved awaiting_review status establishes a handoff only.",
+    "Automatic citation checks establish literal registered quotes, not claim entailment or factual accuracy.",
+    "Independent AI review is model judgment with the reported reviewer identity; it is not independent human validation.",
+    "Human quality fields remain null until an actual human evaluates the cases. No accuracy, faithfulness, or entailment rate is inferred.",
+    "Accounting uses observed dispatch/result events. Missing token usage and unobserved failed-call accounting remain explicit.",
+    "Only generated reports and bounded source provenance are exported; full source bodies, raw tool history, environment values, and provider error bodies are excluded.",
+    "Configured credential values and common token patterns are redacted before export. Integrity is checked against original local evidence before redaction."
+  ]
+}

@@ -23,7 +23,7 @@ CASE_STATUSES = frozenset({
 _CASE_FIELDS = frozenset({
     'question', 'version', 'code_context', 'status', 'report', 'review_notes', 'error', 'report_markdown',
 })
-_ORIGINS = frozenset({'snapshot', 'live', 'user_code', 'repository'})
+_ORIGINS = frozenset({'snapshot', 'live', 'user_code', 'repository', 'analysis'})
 
 
 class CaseExecutionBusy(ValueError):
@@ -96,6 +96,8 @@ class CaseStore:
             # Older saved cases never acquire repository access implicitly.
             connection.execute('BEGIN IMMEDIATE')
             columns = {row['name'] for row in connection.execute('PRAGMA table_info(cases)')}
+            if 'memory_context' not in columns:
+                connection.execute('ALTER TABLE cases ADD COLUMN memory_context INTEGER NOT NULL DEFAULT 0 CHECK(memory_context IN (0,1))')
             if 'repository_context' not in columns:
                 connection.execute('ALTER TABLE cases ADD COLUMN repository_context INTEGER NOT NULL DEFAULT 0 CHECK(repository_context IN (0,1))')
 
@@ -117,6 +119,7 @@ class CaseStore:
         report_json = result.pop('report_json')
         result['report'] = json.loads(report_json) if report_json else None
         result['repository_context'] = bool(result['repository_context'])
+        result['memory_context'] = bool(result['memory_context'])
         return result
 
     @staticmethod
@@ -124,17 +127,19 @@ class CaseStore:
         if connection.execute('SELECT 1 FROM cases WHERE case_id=?', (case_id,)).fetchone() is None:
             raise KeyError(f'Unknown investigation case: {case_id}')
 
-    def create_case(self, question: str, version: str = '', code_context: str = '', *, repository_context: bool = False) -> dict:
+    def create_case(self, question: str, version: str = '', code_context: str = '', *, repository_context: bool = False, memory_context: bool = False) -> dict:
         question = _text(question, 'question', limit=20_000, required=True)
         version = _text(version, 'version', limit=200)
         code_context = _text(code_context, 'code_context')
         if not isinstance(repository_context, bool):
             raise ValueError('repository_context must be a boolean')
+        if not isinstance(memory_context, bool):
+            raise ValueError('memory_context must be a boolean')
         case_id, timestamp = str(uuid4()), _now()
         with self._connection() as connection:
             connection.execute(
-                'INSERT INTO cases(case_id,question,version,code_context,created_at,updated_at,repository_context) VALUES(?,?,?,?,?,?,?)',
-                (case_id, question, version, code_context, timestamp, timestamp, int(repository_context)),
+                'INSERT INTO cases(case_id,question,version,code_context,created_at,updated_at,repository_context,memory_context) VALUES(?,?,?,?,?,?,?,?)',
+                (case_id, question, version, code_context, timestamp, timestamp, int(repository_context), int(memory_context)),
             )
         return self.get_case(case_id)
 

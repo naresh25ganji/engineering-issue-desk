@@ -27,7 +27,7 @@ _CATEGORIES = frozenset({'docs', 'correctness', 'security', 'tests'})
 _SEVERITIES = frozenset({'low', 'medium', 'high', 'critical'})
 _LINK_OR_HTML = re.compile(
     r'(?i)(?:\b(?:https?|ftp|file|data|javascript)\s*:|\bwww\.|'
-    r'\[[^\]\n]*\]\s*(?:\(|\[)|<\s*/?\s*[a-z!][^>]*>)'
+    r'\[[^\]\n]*\]\s*(?:\(|\[)|<(?:/?[a-z][a-z0-9:-]*(?=[\s/>])[^>]*|![^>]*)>)'
 )
 _CONTROL = re.compile(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]')
 _MARKDOWN = re.compile(r'([\\`*_{}\[\]()#+\-.!|>~])')

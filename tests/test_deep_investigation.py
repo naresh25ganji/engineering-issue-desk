@@ -668,3 +668,54 @@ raise AssertionError("The offline repair process should have crashed")
     assert len([event for event in events_after if event['phase'] == 'model']) == 5
     assert len([event for event in events_after if event['phase'] == 'repair']) == 1
     assert len([event for event in events_after if event['phase'] == 'tool']) == 2
+
+
+def test_on_demand_playbook_and_opt_in_history_use_real_harness_and_single_tool_counts(tmp_path):
+    model = ScriptedToolModel(replies=[tool_call('load_review_playbook', {'name': 'evidence-causality'}),
+        tool_call('search_review_history', {'query': 'widget'}),
+        tool_call('search_knowledge_base', {'query': 'reruns'}), cite_kb])
+    engine = service(tmp_path, model)
+    previous = engine.store.create_case('Prior review', '1.2')
+    engine.store.update_case(previous['case_id'], status='rejected', review_notes='Widget causality was unsupported.',
+                             report={'findings': []})
+    pending = engine.start('Explain widget reruns.', '1.3', memory_context=True)
+    assert pending['status'] == 'awaiting_review'
+    assert pending['memory_context'] is True
+    history = next(json.loads(message.content) for calls in model.calls for message in calls
+                   if isinstance(message, ToolMessage) and message.name == 'search_review_history')
+    assert history['historical_guidance'][0]['case_id'] == previous['case_id']
+    assert history['historical_guidance'][0]['version_match'] is False
+    assert history['evidence'] == []
+    events = engine.store.events(pending['case_id'])
+    assert sum(event.get('phase') == 'tool' and event.get('name') == 'load_review_playbook' for event in events) == 1
+    assert sum(event.get('phase') == 'tool' and event.get('name') == 'search_review_history' for event in events) == 1
+    assert all(source['origin'] != 'historical_guidance' for source in engine.store.evidence(pending['case_id']))
+    disabled = ScriptedToolModel(replies=[tool_call('search_knowledge_base', {'query': 'reruns'}), cite_kb])
+    service(tmp_path, disabled).start('Explain widget reruns.')
+    names = {schema['function']['name'] for schema in disabled.bound_schemas}
+    assert 'search_review_history' not in names
+    assert {'load_review_playbook', 'list_review_playbooks', 'run_static_checks'} <= names
+
+
+def test_registered_code_static_check_runs_inside_harness_without_executing_code(tmp_path):
+    marker = tmp_path / 'must-not-exist'
+    code = f'from pathlib import Path\nPath({str(marker)!r}).touch()\neval("2+2")\n'
+    def analyze_supplied(messages):
+        request = next(json.loads(message.content) for message in messages if isinstance(message, HumanMessage))
+        return tool_call('run_static_checks', {'evidence_id': request['user_code_evidence'][0]})
+    def cite_analysis(messages):
+        result = json.loads(next(message.content for message in reversed(messages)
+                           if isinstance(message, ToolMessage) and message.name == 'run_static_checks'))
+        assert result['status'] == 'ok'
+        assert any(flag['rule_id'] == 'B307' for flag in result['analysis']['findings'])
+        record = result['evidence'][0]
+        return tool_call('InvestigationReport', report_payload(record['evidence_id'], record['quote_spans'][-1]['quote_id'],
+                         statement='Bandit reported the dynamic eval API pattern in the supplied code.'))
+    model = ScriptedToolModel(replies=[analyze_supplied, cite_analysis])
+    engine = service(tmp_path, model)
+    pending = engine.start('Statically inspect supplied Python without running it.', code_context=code)
+    assert pending['status'] == 'awaiting_review', engine.store.events(pending['case_id'])
+    assert not marker.exists()
+    assert any(source['origin'] == 'analysis' for source in engine.store.evidence(pending['case_id']))
+    assert sum(event.get('phase') == 'tool' and event.get('name') == 'run_static_checks'
+               for event in engine.store.events(pending['case_id'])) == 1

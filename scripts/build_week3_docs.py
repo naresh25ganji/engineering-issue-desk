@@ -229,99 +229,132 @@ def metric_summary(metrics):
 
 
 def build_writeup(args, diagram, metrics):
-    doc = base_doc('Engineering Issue Desk Week 3 Project Writeup', 'Naresh Ganji\nOctober 22 2026')
-    paragraph(doc, 'Engineering Issue Desk extends a Streamlit evidence workspace into a saved investigation agent. An engineer submits a behavior report and optional code; the agent plans research, chooses bounded tools, delegates specialist work, and prepares findings with sources for human review.')
-    paragraph(doc, 'The Week 3 contribution is a complete investigation and review workflow built with Deep Agents, Fireworks, Keenable, and LangGraph. The existing retrieval workspace remains available. This submission documents the implemented behavior, the development iterations, and the limits of the verification; a cited report still requires an engineer to judge whether its evidence supports the conclusion.')
+    doc = base_doc('Engineering Issue Desk Week 3 Project Writeup',
+                   'Naresh Ganji\n' + args.verification_date)
+    paragraph(doc, 'Engineering Issue Desk now supports a saved engineering investigation from intake through evidence review and a human decision. Deep Agents chooses research steps and can delegate; Fireworks supplies tool calling, Keenable supplies optional current web reads, and LangGraph preserves the workflow. The final result is a cited report that an engineer can reopen, challenge, revise, approve, or reject.')
     heading(doc, 'Project one liner')
-    paragraph(doc, 'Engineering Issue Desk helps a Streamlit engineer investigate an issue in a web workspace, replacing manual documentation searches and public issue comparison; it researches and delegates with five domain read tools, saves the evidence, and hands the report to an engineer for approval, with a proposed target of a usable handoff within ten minutes in eight of ten representative cases.')
-    paragraph(doc, 'That workflow target is proposed. The project has not measured an eight of ten human success rate, established ten minute end to end performance, or timed the manual workflow baseline.')
+    paragraph(doc, 'Engineering Issue Desk helps a Streamlit engineer investigate behavior and review code in a web workspace, replacing manual documentation searches and public issue comparison while researching with five domain read tools and bounded optional context, preserving evidence, and handing off before a final decision, with a proposed target of a usable investigation within ten minutes in eight of ten representative cases.')
+    paragraph(doc, 'The time and usefulness target is proposed. Human usefulness, accuracy, citation entailment, and the manual workflow cost have not been measured. Recorded handoffs establish saved workflow completion on the tested cases.')
     heading(doc, 'User and scope')
-    paragraph(doc, 'The user is a developer or engineering lead deciding what a Streamlit report means, what information is missing, and which reproduction checks to try next. The project adapts the handout\'s code review pattern to engineering issue investigation, using documentation and attributed public reports alongside explicitly supplied code.')
-    bullet(doc, 'Research can proceed autonomously within the approved documentation and public repository scope.')
-    bullet(doc, 'Correctness and security review, and test or reproduction planning, can be delegated when useful.')
-    bullet(doc, 'The engineer can reopen the case, inspect exact evidence, request a revision, and record a final local decision.')
-    paragraph(doc, 'The application does not inspect the user\'s installed environment, execute reproduction code, confirm a private root cause, or publish a GitHub issue or review. Three real sample investigations and automated failure checks are assessed separately from any future human quality study.')
-    source = paragraph(doc, 'Assignment source: Week 3 Project Handout October 2026. Submission: https://forms.gle/waBYFkkf5xxmcouV9. Tool access: https://tga-cohort-credits-hub.vercel.app/.')
-    for run in source.runs:
-        run.font.size = Pt(9)
+    paragraph(doc, 'The user is a developer or engineering lead deciding what a Streamlit report means, which claims have support, and what focused checks to perform next. This independent use case adapts the handout code review pattern to engineering issue investigation. The original retrieval application remains available alongside the new agent.')
+    bullet(doc, 'The agent can inspect supplied code, a 65-source snapshot, approved public pages, and bounded repository context when explicitly enabled.')
+    bullet(doc, 'Specialists share one evidence registry and budget; static checks and historical review guidance have separate provenance and limits.')
+    bullet(doc, 'Human approval is a local decision. A separate preview and confirmation workflow can prepare an approved report for a GitHub summary review; no live publication was performed.')
+    paragraph(doc, 'The project does not execute supplied programs or tests, prove a private root cause, or treat an attributed public report as a verified diagnosis. The third code sample did not establish a defect. The final evaluation and earlier failures are reported separately.')
+    paragraph(doc, 'Assignment: Week 3 Project Handout October 2026. Public code: https://github.com/naresh25ganji/engineering-issue-desk. Builder eligibility ends October 25 2026; certification ends November 11 2026. The user confirmed that no video has been recorded yet.')
 
     new_page(doc, 'Agent framework')
     fields = [
-        ('Agent goal', 'Produce a prioritized, evidence based investigation report and missing information list for one Streamlit engineering issue. The report remains a draft until an engineer reviews it.'),
-        ('Where people use it', 'The Deep Investigation tab in the existing Streamlit application is the main surface. A command line client uses the same saved case and review service for reproducible runs.'),
-        ('Steps in order', 'Accept the issue and optional version or code, plan research, choose tools and specialists, validate saved citation IDs, and run a separate evidence support review. Pause for a human decision, then save approval or rejection or investigate again with feedback and the prior report.'),
-        ('Available actions', 'Five domain tools search the bundled knowledge base, search the web, fetch an approved page, read a public issue, and read commit pinned PR patches. These tools read information; approval changes the local case record and does not publish externally.'),
-        ('What it remembers', 'SQLite preserves the case, immutable evidence, audit events, and graph checkpoints across application restarts. This is durable case state; semantic recall across cases and Mem0 integration are not implemented.'),
-        ('Hard limits', 'The agent cannot execute host commands, post to GitHub, or treat a public issue as a verified diagnosis of the user\'s application. Sources and pasted code are untrusted data, and provider or execution limits must stop further dispatch.'),
-        ('Human involvement', 'The engineer reviews retained findings, exact source passages, proposed checks, and missing details before approving or rejecting the local report. A revision requires explicit notes and receives the previous report; up to two revisions are allowed.'),
-        ('When a step fails', 'Unavailable web tools return a safe error so other evidence or missing information can guide the investigation. A failed saved case can resume an unfinished checkpoint; invalid completed reports can use a fresh repair conversation, at most twice, without resetting the case budget.'),
-        ('Success measure', 'The proposed measure is a human judged usable investigation handoff within ten minutes for eight of ten representative cases. Operational completion, source integrity, AI support review, and human usefulness must be reported as separate measures.'),
+        ('Agent goal', 'Produce prioritized, cited findings, missing information, and focused proposed checks for one Streamlit engineering question. Findings remain unapproved until an engineer decides.'),
+        ('Where people use it', 'The Deep Investigation tab and command line client use the same saved service. The Project guide tab exposes architecture, design, operations, validation, and submission assets.'),
+        ('Steps in order', 'Validate intake and options, claim the case, investigate using tools and specialists, and validate saved citation IDs. Run an independent support review, pause for a human, then save a decision or investigate again with notes and the previous report.'),
+        ('Available actions', 'Read the corpus, approved web pages, public issues and commit-pinned patches; optionally read related application code or prior reviewed guidance. Load maintained playbooks and run fixed static checks on registered code; external publication is a separate confirmed human action.'),
+        ('What it remembers', 'Local SQLite preserves cases, immutable evidence, events, publication plans, and graph checkpoints across restarts. Opt-in cross-case recall uses bounded literal search of approved or rejected summaries; it is not semantic memory or Mem0.'),
+        ('Hard limits', 'No host shell, supplied-program execution, arbitrary file read, automatic approval, or model-controlled publication. Source content and prior decisions remain untrusted; a prior approval cannot establish a new factual claim.'),
+        ('Human involvement', 'An engineer inspects claims, exact quotes, provenance, and proposed checks before approving or rejecting. Up to two revisions require notes; a GitHub summary needs an approved case, exact preview confirmation, and unchanged PR commits.'),
+        ('When a step fails', 'Tool errors remain visible and cannot become successful evidence. Explicit retry resumes an unfinished checkpoint; invalid completed reports can use at most two fresh repair conversations while preserving case limits.'),
+        ('Success measure', 'The proposed measure is a human-judged usable handoff within ten minutes in eight of ten representative cases. Operational completion, literal quote integrity, AI verdicts, and human quality are separate measurements.'),
     ]
     for label, text in fields:
         heading(doc, label, 2)
         paragraph(doc, text)
 
-    new_page(doc, 'Architecture and tools')
-    paragraph(doc, 'Deep Agents runs the adaptive research loop on a Fireworks tool calling model. LangGraph wraps it with durable state and an interrupt for human review. Python checks citation identities and resolves source text before the independent evidence review; the model chooses research steps, while deterministic application code controls saved state and final decisions.')
-    p = doc.add_paragraph()
-    p.add_run().add_picture(str(diagram), width=Inches(6.86))
-    paragraph(doc, 'A revision returns to investigation with the reviewer\'s notes and the prior report. Approval and rejection resume the saved review state without another investigation model call. The evidence review is an AI check, not a measured human accuracy score.')
-    paragraph(doc, 'Older drafts require a completed evidence review before approval. The saved evidence review action can audit an older report without repeating its research.')
-    table(doc, ['Tool', 'Read scope', 'What the result establishes'], [
-        ('Knowledge base search', '65 source snapshot', 'Literal passages with snapshot and version scope'),
-        ('Keenable search', 'Approved documentation and Streamlit repository pages', 'Discovery snippets that need further inspection'),
-        ('Keenable page fetch', 'Approved public HTTPS pages', 'Bounded page content with retrieval time'),
-        ('GitHub issue read', 'streamlit/streamlit issue and bounded comments', 'Attributed public reports and observed issue state'),
-        ('GitHub PR read', 'Observed base and head commits and up to five patches', 'Partial static code evidence tied to immutable commits'),
-    ], [1.5, 2.15, 3.21])
-    paragraph(doc, 'Three specialist roles cover documentation and issue research, correctness and security, and tests or reproduction. They share a case evidence registry and budget. The Deep Agents filesystem uses a virtual StateBackend and does not expose the host filesystem or a working shell.')
-    paragraph(doc, 'Case state and semantic memory serve different purposes. Checkpoints resume work that is already in progress; an evidence registry preserves what a source actually said. Future Mem0 work would retrieve selected approved resolutions across cases, with provenance and project isolation, and would need its own evaluation.')
+    new_page(doc, 'Architecture and tool authority')
+    paragraph(doc, 'An adaptive Deep Agents loop runs inside an application-controlled LangGraph. The model selects research and delegation; Python validates arguments, accounts for calls, owns immutable evidence, and controls the review transitions. Citation validation runs inside investigate, followed by separate evidence review and human review nodes.')
+    doc.add_paragraph().add_run().add_picture(str(diagram), width=Inches(6.86))
+    table(doc, ['Capability', 'Scope', 'Authority'], [
+        ('Five domain reads', 'Snapshot search, Keenable search and fetch, public issue and PR patch reads', 'Bounded source evidence; no GitHub writes'),
+        ('Related code option', 'app.py and triage_desk Python files; list, literal search, excerpt read', 'Default off and immutable per case'),
+        ('Playbooks', 'Three maintained version 1.0.0 guidance bundles loaded on demand', 'Guidance, not citable source evidence'),
+        ('Review history option', 'At most three prior approved or rejected prose summaries', 'Default off; revalidate with new evidence'),
+        ('Bandit checks', 'Eight fixed rules on registered Python code only', 'Attributed static flags, not verified vulnerabilities'),
+        ('Human decision', 'Approve, reject, or request revision', 'Approve/reject without a model; revision researches again'),
+        ('PR summary preview', 'Approved public-source report; streamlit/streamlit PR only', 'Separate COMMENT publication only after exact confirmation'),
+    ], [1.4, 3.0, 2.46])
+    paragraph(doc, 'Deep Agents scratch files use a virtual StateBackend. The isolated analyzer is trusted fixed code; it parses saved source without running the supplied program. The investigator has no publication tool. Detailed component, trust-boundary, and sequence diagrams are available in the Project guide and repository docs.')
 
-    new_page(doc, 'Datasets and source provenance')
-    paragraph(doc, 'The bundled corpus contains 65 English records selected for Streamlit engineering questions. The manifest records a snapshot completed October 17 2026 Pacific and an API reference version of 1.66.0. An individual report must still preserve each source\'s date and version scope; the corpus is a bounded sample rather than a complete history.')
-    table(doc, ['Source type', 'Records', 'How it is used'], [
-        ('Official documentation and API records', '38', 'Framework behavior and supported API context'),
-        ('Public GitHub issue reports', '24', 'Attributed symptoms and reproduction material'),
-        ('Contribution and template records', '2', 'Issue reporting and contribution guidance'),
-        ('Bounded release excerpt', '1', 'Version and release context'),
-        ('Total', '65', 'Curated allowlist with per source provenance'),
-    ], [2.9, .85, 3.11])
-    paragraph(doc, 'The reproducible ingestion script normalizes Markdown, MDX, API docstrings, and public issue text while retaining technical prose, code, headings, and source links. It removes display wrappers, issue boilerplate, and obvious contact or credential strings. The documentation commit begins 7a0a34742a9f and the Streamlit repository commit begins 4278206f51bd; full pins, hashes, allowlists, and licenses are stored with the corpus.')
-    heading(doc, 'Live evidence and supplied code', 2)
-    paragraph(doc, 'Keenable adds current search snippets and fetched page content, while GitHub tools add public issue context or commit pinned patch excerpts. These records are labeled as live evidence with retrieval timestamps. Supplied code is registered as user code; static inspection does not mean the code was executed or that a failure was reproduced.')
-    heading(doc, 'Citation integrity and support', 2)
-    paragraph(doc, 'Every saved source has a stable evidence ID, exact text, a content hash, and provenance fields. The application derives quote IDs from literal source spans. The model selects an evidence ID and a quote ID; the application resolves the original characters instead of accepting a rewritten quotation.')
-    paragraph(doc, 'A valid source identifier proves that the cited text exists. A separate Fireworks evidence reviewer assesses whether the claim follows from that text and filters statements or workarounds it judges unsupported before human review. It can miss an incorrect recommendation even when the cited text exists. Measured human faithfulness and end to end task success remain separate, unestablished outcomes.')
-    paragraph(doc, 'Primary project records are data/sources.json, data/manifest.json, data/licenses, evaluation/week3-cases.json, and the recorded Week 3 evaluation report. Historical Week 2 retrieval and generated answer results remain separate and are not reused as Week 3 agent quality scores.')
-    paragraph(doc, 'The Week 3 code review evaluation uses three real repository files: reviews.py, freshness.py, and hosted_embeddings.py. Each sample preserves its original file hash and line range so a reviewer can identify exactly which code was inspected.')
+    new_page(doc, 'Datasets and provenance')
+    paragraph(doc, 'The corpus contains 65 English records selected for Streamlit engineering questions. Its snapshot completed October 17 2026 Pacific and its API reference version is 1.66.0. On the October 25 submission date this is historical source material, not a claim that every record is current. The interface exposes age and version scope; refresh remains a maintainer action.')
+    table(doc, ['Source type', 'Records', 'Use'], [
+        ('Official documentation and API records', '38', 'Documented behavior and API context'),
+        ('Public GitHub issue reports', '24', 'Attributed observations and reproduction details'),
+        ('Contribution and template records', '2', 'Reporting guidance'),
+        ('Bounded release excerpt', '1', 'Version context'),
+        ('Total', '65', 'Curated allowlist with dates, hashes, pins, and licenses'),
+    ], [3.0, .8, 3.06])
+    paragraph(doc, 'The reproducible ingestion script normalizes Markdown, MDX, generated API docstrings, and public issue text while retaining technical prose, code, headings, and source links. It removes display wrappers, boilerplate, and obvious contact or credential strings. Full commit pins, source hashes, allowlists, and licenses are retained in data/manifest.json and data/licenses.')
+    heading(doc, 'Evidence and evaluation inputs', 2)
+    paragraph(doc, 'Keenable snippets and fetched pages retain their distinct evidence types and retrieval times. GitHub PR patches are tied to observed base and head commits. Supplied code and opt-in repository reads preserve exact text, paths or labels, line ranges, hashes, and timestamps; a later working-tree change creates another source snapshot.')
+    paragraph(doc, 'The executable dataset evaluation/week3-cases.json contains three real code samples from reviews.py, freshness.py, and hosted_embeddings.py. Each exported run preserves original file and excerpt hashes and line ranges. Historical Week 2 retrieval experiments remain separate from Week 3 agent results.')
+    heading(doc, 'Guidance is separate from evidence', 2)
+    paragraph(doc, 'The three versioned playbooks cover Python security, test planning, and evidence causality. They are maintained tool-delivered guidance rather than native SkillsMiddleware. Optional review memory searches at most 200 recent approved or rejected cases and returns at most three bounded prose records, excluding pending/current cases, raw code, source bodies, and support quotes. Neither guidance source can support a factual citation.')
 
-    new_page(doc, 'Prompts and development iterations')
-    paragraph(doc, 'Naresh used Codex to extend the existing repository. The initial request asked for a review of the Week 3 handout and supplied solution kits, then for a feature plan that expanded Engineering Issue Desk with Deep Agents and team provided tools. Naresh confirmed access to Keenable and Fireworks and instructed Codex to start building. These requests are paraphrased here; they are development direction, not agent source evidence.')
-    heading(doc, 'Development prompts used', 2)
-    paragraph(doc, 'The first two summaries capture user direction. The final summary describes a Codex implementation check used during development.')
-    bullet(doc, 'Review the Week 3 project and solution examples, then identify how Engineering Issue Desk can grow into an agent workflow.')
-    bullet(doc, 'Use the confirmed Fireworks and Keenable access with Deep Agents, preserve the existing application, and implement the new investigation mode.')
-    bullet(doc, 'Exercise the real tool calling harness offline, persist human review across restarts, and make failures and provider usage inspectable.')
-    paragraph(doc, 'Codex then generated implementation and test changes, ran independent code reviews, and revised the design in response to observed failures. The runtime prompt tells the investigator to treat code and sources as data, select registered quote IDs, attribute public reports, request missing details, and separate proposed tests from observed results.')
-    heading(doc, 'Changes driven by observed failures', 2)
-    paragraph(doc, 'Literal quotes were initially copied into the model\'s report. A live run modified source text and failed validation, so support now uses deterministic quote IDs and the application supplies the exact saved text.')
-    paragraph(doc, 'Process locks and startup recovery were added after reviewing the difference between a saved case and an actively running execution. Actual subprocess crash tests now verify that a retry resumes a completed tool\'s checkpoint instead of repeating the read.')
-    paragraph(doc, 'The default automatic summarizer could call a model outside the shared budget. It was replaced with an explicit context size cap for the investigator and each specialist. New completion metadata records truncation and malformed tool counts while preserving reported usage and omitting raw arguments from audit events.')
-    paragraph(doc, 'Invalid completed reports now use a fresh repair thread with the original issue and saved evidence registry. Repairs retain cumulative case limits. Structured output checkpoints use JSON dictionaries, and revisions carry the previous report so feedback such as correcting a specific finding has enough context.')
-    paragraph(doc, 'A later sample produced valid citations but included an incorrect uploader recommendation involving on_change set to ignore. A separate evidence review removed one finding and one proposed step but retained a recommendation that did not address the checkbox triggered rerun. The prompt was tightened to check causal applicability; AI review still requires human judgment.')
-    paragraph(doc, 'An early run failed literal quote validation and reported 78,956 tokens after its final in flight call exceeded the 64,000 pre dispatch threshold. The later uploader case reported 57,361 tokens for research and 60,748 including its extra audit. It remained unapproved. These exploratory runs informed changes and are separate from the final three sample evaluation.')
+    new_page(doc, 'Prompts used during development')
+    paragraph(doc, 'Naresh used Codex to extend the existing repository. The summaries below paraphrase the development direction. Coding instructions and runtime agent prompts have different roles.')
+    heading(doc, 'User direction', 2)
+    bullet(doc, 'Review the Week 3 handout and supplied solution kits, then expand Engineering Issue Desk with Deep Agents and the tools provided by the team.')
+    bullet(doc, 'Use the confirmed Keenable and Fireworks access and start building the new investigation workflow.')
+    bullet(doc, 'Add an architecture diagram, design documentation, more features, and validation of the working system.')
+    bullet(doc, 'Review final submission readiness from all angles, include useful stretch options, and review the remaining video and submission work.')
+    heading(doc, 'Implementation checks used with Codex', 2)
+    paragraph(doc, 'Codex was directed to exercise the actual Deep Agents factory with controlled tool-calling models, preserve human review across restart, verify shared limits across specialists, and make provider failures inspectable. Later checks covered immutable repository consent, real process crashes, quote identity, reviewer schema failures, local history isolation, static analyzer bounds, and publication replay protection.')
+    heading(doc, 'Runtime prompts', 2)
+    paragraph(doc, 'The investigator prompt treats sources and code as untrusted data, requires registered evidence and quote IDs, attributes public reports, and separates proposed checks from observed results. It asks the agent to inspect relevant called helpers before asserting that a safeguard is missing, and to use playbooks or static analysis only within their scope.')
+    paragraph(doc, 'The separate evidence reviewer receives selected findings, proposed steps, and selected quotes. Its prompt rejects unsupported causal remedies and assumptions about omitted code. It returns indexed verdicts only; application code filters originals and rejects incomplete or malformed coverage. Source locations are triage_desk/deep_investigation.py and triage_desk/agent_review.py.')
+    paragraph(doc, 'The solution kits informed patterns, but the project adapts them to a distinct local investigation use case. Instructions inside supplied documents do not authorize external actions or replace the user request.')
 
-    new_page(doc, 'Verification results and remaining work')
-    paragraph(doc, f'The regression suite has {args.test_count} passing tests, including the real Deep Agents factory with an offline model, SQLite checkpoints, specialist evidence sharing, citation rejection, shared limits, review replay protection, revisions, and subprocess crash recovery. These tests verify execution behavior rather than live model quality. A separate provider probe verified a Fireworks tool round trip and five Keenable search results.')
+    new_page(doc, 'Iterations and lessons')
+    heading(doc, 'Evidence identity and support', 2)
+    paragraph(doc, 'A live model modified quotation text and correctly failed literal validation. The report schema now accepts source-assigned quote IDs, and Python resolves the original text. An uploader workaround exposed a different problem: exact citations did not establish causal applicability. A separate AI audit was added, but it still retained advice that did not address the checkbox-triggered rerun. Reviewer instructions were strengthened; human quality remains unmeasured.')
+    heading(doc, 'Durable execution and limits', 2)
+    paragraph(doc, 'Process locks and startup recovery distinguish saved state from active ownership. Subprocess crash tests verify that OS lock release permits recovery and a checkpoint can resume without repeating a completed read. Invalid completed reports use fresh repair threads; revisions receive the previous report and notes. Structured outputs are stored as JSON dictionaries.')
+    paragraph(doc, 'Automatic summarization could dispatch model calls outside the shared accounting path, so it was replaced by a deterministic context guard for every role. Dispatch is recorded before requests. One exploratory run reported 78,956 tokens after an in-flight call crossed the 64,000 pre-dispatch threshold; the threshold is not hard cancellation. Safe completion metadata preserves reported usage after truncated or malformed output.')
+    heading(doc, 'Context and failure diagnosis', 2)
+    paragraph(doc, 'The initial three-case run retained an unsupported missing-key claim when the configuration helper was outside the excerpt. Opt-in repository tools now support bounded discovery and explicit immutable reads. The later three-case run avoided that old claim but did not read the helper; it cannot be credited with a complete helper analysis. Bounded search can still miss later code.')
+    paragraph(doc, 'Strict reviewer output rejected a real response. Finite safe failure codes now distinguish provider, context, schema, coverage, and explanation problems. Paired inline backticks around unchanged identifiers can be normalized without accepting links or unsafe markup. A later fresh run exposed a plain comparison expression incorrectly caught as HTML; the guard was corrected and regression tested. Review-only recovery resumed the saved case without repeating research.')
+    heading(doc, 'Stretch features preserve authority', 2)
+    paragraph(doc, 'Maintained playbooks provide procedures on demand. Local review history is an opt-in hint, not factual ground truth or Mem0. Bandit returns attributed flags from fixed static rules rather than a verified exploit. Publication requires a distinct approved-case preview and explicit confirmation; the agent cannot trigger it. These additions have separate checks; their availability does not imply use in the three-case evaluation.')
+
+    new_page(doc, 'Verification and recorded results')
+    paragraph(doc, f'The final offline regression suite passed {args.test_count} tests. Controlled models exercise the real Deep Agents tool loop, specialist evidence sharing, checkpoints, review, repairs, revisions, failure paths, and shared limits. Feature-specific checks cover repository boundaries, local guidance, the real static analyzer, and publication state guards. Offline behavior is separate from live answer quality.')
     paragraph(doc, metric_summary(metrics))
-    table(doc, ['Recorded Week 3 case', 'Observed result'], metric_rows(metrics), [2.0, 4.86])
-    paragraph(doc, 'All three drafts passed literal citation checks, including the failed W3-02 draft. W3-02 stopped because its evidence review response failed validation. No evaluation report was human approved. This static code run used three saved evidence reads; it did not exercise delegation or Keenable, whose connectivity was tested separately.')
-    paragraph(doc, 'W3-03 retained unsupported claims about a missing empty key check and an error body leak. The configuration helper was outside the supplied excerpt, and the visible exception path sanitized provider content. This concrete false positive shows that an AI audit can miss scope and causal applicability. Human quality scores remain unmeasured.')
-    heading(doc, 'Known limits', 2)
-    bullet(doc, 'Review is static. Proposed tests were not executed, and incomplete public evidence cannot establish a private fix or duplicate.')
-    bullet(doc, 'The case limits are 18 model calls, 28 tools, two revisions, and two repairs. The 64,000 reported token threshold and 180 second active invocation deadline are checked before dispatch; an in flight request can finish beyond them. Missing usage is unknown.')
-    heading(doc, 'Submission requirements', 2)
-    paragraph(doc, 'Submit a Google Doc, a video of five minutes or less, and a GitHub code link. Builder eligibility closes October 25 2026; certification closes November 11 2026. The demo guide targets 4 minutes 45 seconds. The video and final Week 3 repository push remain outstanding submission actions.')
+    paragraph(doc, 'The observed model roles were nine investigator calls and three independent reviews. Tool dispatches were two saved-evidence reads, one repository inventory, and three repository reads, including one rejected line range followed by smaller reads. No repository search, helper read, Keenable, delegation, playbook, history, or Bandit call occurred in this three-case run.')
+    table(doc, ['Latest recorded case', 'Observed result'], metric_rows(metrics), [2.0, 4.86])
+    paragraph(doc, 'The verified latest run retained two freshness findings in one case, while the other two cases retained no factual findings. Exact quote integrity passed for the nonempty report; it is not applicable to empty reports. The reviewer can be overconservative, so an empty result is not a demonstrated accuracy success. The freshness report recognizes that a timestamp equal to the current time is accepted.')
+    paragraph(doc, 'The latest report file is ' + str(args.metrics_json.relative_to(ROOT) if args.metrics_json.is_relative_to(ROOT) else args.metrics_json) + '. Human quality fields remain unscored, and no evaluation case was automatically approved. Actual tool use and usage come from that report; availability does not mean a feature was invoked.')
+    new_page(doc, 'Preserved runs and validation limits')
+    table(doc, ['Preserved observation', 'Result and scope'], [
+        ('Initial three-code run', '2 of 3 handoffs; 9 model calls, 3 saved-evidence reads, 44,382 reported tokens. All three drafts had exact citations, including the failed reviewer draft.'),
+        ('Repository-context run', '3 of 3 handoffs; 12 model calls, 6 tools, 70,046 reported tokens. It listed/read repository files, but used no search, helper read, Keenable, or delegation.'),
+        ('Separate checkpoint retry', 'One reviewer call, zero tools, 2,716 reported tokens; pending handoff, no repeated investigator call or approval.'),
+        ('Separate extension exercise', 'One freshness case: 6 model calls, 4 tools, 34,120 reported tokens. Playbook loading and real Bandit ran; one finding and two test proposals remained pending review.'),
+        ('Separate connectivity and reads', 'Fireworks tool round trip and five Keenable search results; direct snapshot, page, issue, and commit-pinned patch reads validated separately.'),
+    ], [1.8, 5.06])
+    paragraph(doc, 'The extension exercise opted into memory, but did not call history lookup; positive recall is covered offline. The historical runs remain unchanged. Several implementation and prompt conditions changed between runs, so their handoff counts do not isolate a causal quality improvement. The October 23 freshness report described a strictly earlier timestamp although equality is accepted; that wording was not carried forward as a verified conclusion. The hosted embedding sample did not establish a defect. AI filtering and exact citations do not replace human inspection.')
+
+    paragraph(doc, 'A fresh October 25 run reached only two of three handoffs after valid comparison text was rejected as HTML. That failure remains exported in evaluation/week3-final-results. The corrected guard was regression tested; a separate review-only retry used one reviewer call, zero tools, and 3,144 reported tokens before the new verified run was recorded.')
+    table(doc, ['Check', 'What it establishes', 'What remains unverified'], [
+        ('603 offline tests', 'Controlled workflow and boundary behavior', 'General live answer quality'),
+        ('Three live cases', 'Saved handoff completion and observed calls', 'Human usefulness or accuracy'),
+        ('Extension exercise', 'Actual playbook and Bandit tool use', 'Live positive history recall'),
+        ('55 publisher tests', 'Controlled target, revision, body, replay and HTTP guards', 'Real GitHub POST and write-token operation'),
+    ], [1.3, 2.8, 2.76])
+    paragraph(doc, 'The frozen source environment check found 117 packages current. Supported execution is from the repository checkout with uv; default wheel build discovery is not configured. The source ZIP includes maintained playbooks and a per-file hash manifest, while credentials, private cases, checkpoints, caches, and environments are excluded. Qualitative inspection notes are in evaluation/week3-verified-results/engineering-review.md; they are Codex-assisted observations, not user approval. A full database restore rehearsal and production deployment were not performed.')
+
+    new_page(doc, 'Stretch options and submission readiness')
+    paragraph(doc, 'The handout contains no official extra-credit feature list or scoring schedule. These are project stretch options. Their implemented scope and verification must be distinguished from untested external operations.')
+    table(doc, ['Stretch option', 'Implemented boundary', 'Readiness evidence'], [
+        ('On-demand playbooks', 'Three versioned and hashed maintained bundles; not native SkillsMiddleware or evidence', 'Catalog/tool tests and one separate observed live load'),
+        ('Reviewed-case memory', 'Default-off, immutable opt-in; bounded local literal prose lookup', 'Isolation/filter tests; not Mem0 or semantic retrieval'),
+        ('Static analysis', 'Real Bandit, eight fixed rules, registered code, isolated parser worker', 'Real analyzer tests and separate live call; human context required'),
+        ('GitHub summary review', 'Approved-case preview, exact plan ID confirmation, current head/base check, atomic replay protection', 'Mocked HTTP/state tests only; no live POST or write token used'),
+    ], [1.4, 3.0, 2.46])
+    heading(doc, 'Remaining limits', 2)
+    paragraph(doc, 'Each case shares 18 model calls, 28 tool calls, two revisions, and two report repairs. The 64,000 reported-token threshold and 180-second active-invocation deadline are checked before dispatch; in-flight calls may finish beyond them. Missing usage remains unknown. A deterministic 80,000-character context guard replaces automatic summarization.')
+    paragraph(doc, 'This is a personal local workspace without hosted identity, tenant isolation, distributed execution, or encrypted case storage. Credential detection is heuristic. Source snapshots can be old and code excerpts incomplete. Static checks do not execute tests, and proposed fixes are not verified outcomes. Cross-case guidance is local literal recall; semantic memory and Mem0 remain unimplemented. Optional LangSmith configuration does not establish a live tracing validation.')
+    heading(doc, 'Required handoff', 2)
+    paragraph(doc, 'Submit a native Google Doc, a video of five minutes or less, and the public GitHub code link through https://forms.gle/waBYFkkf5xxmcouV9. The baseline Week 3 commit 6e87e4b is public and its GitHub CI passed. This final refresh must be pushed and its CI checked before calling the new version delivered. Native import and reviewer access must be confirmed separately.')
+    paragraph(doc, 'The user confirmed that no video has been recorded yet. The companion guide targets 4 minutes 45 seconds, including a genuine live interaction and a visibly identified saved-case fallback. Video recording, access checks, and course-form submission remain explicit final tasks.')
     return doc
 
 
@@ -332,52 +365,52 @@ def cue(doc, timing, screen, narration):
 
 
 def build_demo(args, metrics):
-    doc = base_doc('Engineering Issue Desk Week 3 Demo Guide', 'Naresh Ganji\nFour minutes and forty five seconds')
-    paragraph(doc, 'Record a concise walkthrough of the working investigation and human review flow. The target runtime is 4 minutes 45 seconds, leaving 15 seconds below the handout\'s five minute limit. This is a recording script and preparation guide; it does not claim a video has already been recorded.')
-    heading(doc, 'Before recording')
-    bullet(doc, 'Start the Streamlit app and confirm the Deep Investigation tab can open. Keep credentials and .env outside the recording surface.')
-    bullet(doc, 'Choose a small public issue question. Have one previously recorded real case ready as a latency fallback, with its actual date, findings, and review state visible.')
-    bullet(doc, 'Open the architecture diagram and recorded Week 3 results in separate tabs. Use a readable zoom level and test the microphone.')
-    bullet(doc, 'Avoid pre approving the selected case. The recording should show a real local review decision or explicitly show that the case remains pending.')
-    heading(doc, 'Suggested live input', 2)
-    paragraph(doc, 'My Streamlit CSV upload appears to reset after another widget changes. Investigate the documented rerun and session state behavior. Identify which version and minimal reproduction details are missing. Keep findings limited to what the saved sources directly support.')
-    paragraph(doc, 'Leave the version blank unless it is known. Add code only when it is the code actually being discussed. The run may choose different tools from a previous run; narrate observed events rather than promising a fixed sequence.')
-    cue(doc, 'Opening through 25 seconds', 'Show the issue workspace, then the Deep Investigation tab.',
-        'Engineering Issue Desk helps a developer investigate a Streamlit issue and prepare a report for review. Week 3 adds an agent that chooses research steps and can delegate specialist work. The engineer still decides whether the evidence supports the proposed conclusion.')
-    cue(doc, '25 seconds through 1 minute 5 seconds', 'Enter the suggested issue and start a genuine investigation. Keep the status panel visible.',
-        'The report starts an investigation rather than a single answer call. Fireworks powers the model, and Keenable supplies current public research when needed. The local knowledge base and public GitHub readers are also available. This run saves its sources and progress as it works.')
+    doc = base_doc('Engineering Issue Desk Week 3 Demo Guide',
+                   'Naresh Ganji\n' + args.verification_date + '\nFour minutes and forty five seconds')
+    paragraph(doc, 'Use this guide to record the Week 3 demo. No video has been recorded yet. The sequence targets 4 minutes 45 seconds, leaving 15 seconds below the handout limit; demonstrate a genuine final-app interaction and identify any previously saved case visibly.')
+    heading(doc, 'Prepare the recording')
+    bullet(doc, 'Run the local app, check the microphone, and use readable zoom. Keep .env, account panels, private history, and credentials outside the recording surface.')
+    bullet(doc, 'Open the current evaluation JSON by its explicit path and the Project guide diagram. The October 17 corpus is a dated snapshot; acknowledge any age warning.')
+    bullet(doc, 'Choose a small real-code case with its source visible. Have a genuine saved case ID ready for latency fallback. Recheck its current report and review state before recording; do not assume a retained claim is correct.')
+    bullet(doc, 'Leave review history off unless deliberately showing its consent and safe prose scope. Do not publish to GitHub during this demonstration; a local preview is enough to explain that separate capability.')
+    heading(doc, 'Suggested input', 2)
+    paragraph(doc, 'Statically review this small Python sample. Identify at most two claims supported by the registered code, distinguish observations from proposed checks, inspect relevant called helpers if related code is enabled, and pause for human review. Do not execute the sample or claim a reproduced failure.')
+    paragraph(doc, 'Use the actual 30-line freshness.py sample selected by evaluation/week3-cases.json. The verified saved fallback is case 8c857321-9d0f-414f-a811-d291947bc391; it has observed playbook and Bandit calls and remains pending human review. Enable related application code only when relevant and understood. Never claim a tool ran until the timeline shows it.')
+    cue(doc, 'Opening through 25 seconds', 'Show the app and Deep Investigation tab.',
+        'Engineering Issue Desk helps an engineer investigate a Streamlit issue or review a small code sample. The agent chooses research steps and can delegate, while the application preserves evidence and pauses for a human decision.')
+    cue(doc, '25 seconds through 1 minute 5 seconds', 'Supply the sample, show default-off options and start a real investigation. Keep progress visible.',
+        'Fireworks powers the investigator. Keenable and public GitHub readers are available when research needs them. Related repository code and prior reviewed guidance require explicit opt-in. This run records its actual tool calls, sources, and usage; it does not execute the supplied program.')
 
-    new_page(doc, 'Show the investigation and evidence')
-    cue(doc, '1 minute 5 seconds through 2 minutes 15 seconds', 'Show the live plan and completed tool events. Briefly open the architecture diagram while the run continues.',
-        'Deep Agents decides what to read next. It can ask documentation research, correctness and security, or test and reproduction specialists for help. Each role shares the same case evidence and usage allowance. LangGraph saves the research state and pauses for human review. The tools read public information; they do not execute my code or publish a GitHub issue. If a tool fails, that failure is recorded and the agent must use other evidence or say what is missing.')
-    cue(doc, '2 minutes 15 seconds through 3 minutes 25 seconds', 'Open the resulting report and one source record. Show a finding, its exact quote, and provenance. If the live run is still working, use the fallback below.',
-        'The application assigns quote IDs to saved source passages. The model selects those IDs, and the application supplies the original text. This prevents a paraphrase from being presented as an exact quotation. A separate model check reviews whether the evidence supports each finding before the report reaches human review. That extra check can still make mistakes. I inspect the actual passage, its date and version scope, and whether it just reports a public symptom or establishes documented behavior.')
-    heading(doc, 'If the provider run is slow', 2)
-    paragraph(doc, 'Say: This live investigation is still running. I will open a previously completed real case to demonstrate the report and review steps; its recorded events show what actually happened. Switch visibly to that saved case. Do not imply its result belongs to the new run or remove evidence of an error to suggest a successful run.')
-    heading(doc, 'If a tool or model fails', 2)
-    paragraph(doc, 'Show the saved failure and its recorded steps. Explain that retry resumes an unfinished checkpoint, while invalid completed reports can use a separate repair conversation with the same case evidence and cumulative limits. Demonstrate a retry only if the remaining recording time permits it; otherwise show a real saved case for the review interaction.')
-    paragraph(doc, 'Do not read raw provider content or private code aloud. A sanitized error and the visible saved timeline are enough to demonstrate the recovery behavior.')
+    new_page(doc, 'Show tool use and evidence')
+    cue(doc, '1 minute 5 seconds through 2 minutes 5 seconds', 'Show observed plan or tool events, then open the Project guide architecture while the run continues.',
+        'Deep Agents can load maintained playbooks, inspect bounded sources, and ask specialists for help. Fixed Bandit checks can parse registered Python code, but a static flag is not a verified vulnerability. The roles share one budget and source registry. LangGraph checkpoints preserve unfinished work and the human review interrupt.')
+    cue(doc, '2 minutes 5 seconds through 3 minutes 15 seconds', 'Open one report finding and its saved source, quote ID, line range/hash or dated provenance.',
+        'The model selects a saved source and quote ID, and Python supplies the exact original passage. A separate evidence reviewer can remove unsupported content before the handoff. Both checks have limits: an exact quotation can support the wrong causal conclusion, and an AI reviewer can miss that error. I check what the code actually shows and what it leaves unknown.')
+    heading(doc, 'If the live run is slow or fails', 2)
+    paragraph(doc, 'Say: This new investigation is still running, or failed at the recorded step. I will visibly open a previously saved real case to demonstrate the final report and review controls. Its case ID and timeline identify the earlier run. Do not present its result as the new run or conceal the failure.')
+    paragraph(doc, 'Explain that explicit retry resumes pending work without refunding calls. Invalid completed reports can use a fresh repair thread with the same evidence and allowance. Show only sanitized diagnostics; do not narrate raw provider output.')
+    heading(doc, 'Stretch features in one sentence', 2)
+    paragraph(doc, 'Playbooks supply maintained procedures, optional review memory supplies noncitable local guidance, Bandit supplies attributed static flags, and an approved-case publication preview requires another explicit confirmation. These are stretch options, not an official extra-credit checklist. Show only features actually present in the final build.')
 
-    new_page(doc, 'Complete human review and close')
-    cue(doc, '3 minutes 25 seconds through 4 minutes 20 seconds', 'Show missing information and proposed checks. Enter a genuine review note and approve or reject, or request a revision if the report needs correction. Reopen the saved case.',
-        'The proposed checks are not tests that this agent has executed. I can approve the local report, reject it, or request a revision with notes. Approval and rejection do not rerun the investigator and do not post anything externally. The case remains available after a restart, with its evidence and review decision. A revision gets the prior report and my feedback so it can address the specific problem. Persistent case state is implemented; Mem0 based recall across cases is future work.')
-    cue(doc, '4 minutes 20 seconds through 4 minutes 45 seconds', 'Show the recorded evaluation summary and the repository or writeup title.',
-        'Codex helped implement and test the tool loop, saved review, and failure recovery. Live testing led to quote IDs and a separate evidence check. That AI check still missed an incorrect recommendation, so human review remains essential. Automated tests verify workflow behavior; the quality target needs human evaluation.')
-    heading(doc, 'Evidence to mention accurately', 2)
-    paragraph(doc, f'The current regression suite contains {args.test_count} passing tests. Provider connectivity was verified with a Fireworks tool round trip and a Keenable search. Describe the recorded case outcomes below as handoffs pending human judgment; AI review does not establish human accuracy.')
-    table(doc, ['Recorded case', 'Result to describe'], metric_rows(metrics), [2.0, 4.86])
+    new_page(doc, 'Review and report the measured result')
+    cue(doc, '3 minutes 15 seconds through 4 minutes 10 seconds', 'Inspect proposed checks and missing details, enter a genuine note, then choose a decision appropriate to the evidence. Reopen the case.',
+        'These proposed tests have not been executed by the agent. I can approve the local report, reject it, or request a revision with notes and the prior report. Approval and rejection make no investigator call. A GitHub summary would need a separate preview, exact plan confirmation, and unchanged commits. This demonstration makes no external post. Saved checkpoints and optional local literal history are implemented; Mem0 is not.')
+    cue(doc, '4 minutes 10 seconds through 4 minutes 45 seconds', 'Select the exact latest recorded evaluation path, then show the repository and final writeup title.',
+        'Codex helped build and test the tool loop, state, and error recovery. Observed failures led to quote IDs, a separate evidence audit, and tighter context and budget rules. The recorded handoffs show workflow completion on these samples. Human usefulness and accuracy remain unmeasured, and the third sample did not establish a defect.')
+    heading(doc, 'Numbers to read accurately', 2)
+    summary = metrics['summary']
+    paragraph(doc, f'The final offline suite passed {args.test_count} tests. The latest run saved {summary["completed_handoffs"]} of {summary["scheduled_cases"]} handoffs with {summary["failed_cases"]} failures, {summary["model_calls"]} model calls, {summary["tool_calls"]} tools, and {summary["reported_tokens"]:,} reported tokens with complete usage. AI review removed {summary["ai_rejected_findings"]} findings and {summary["ai_rejected_next_steps"]} proposed steps. Exact-citation checks apply to retained factual findings; empty reports are not applicable, not accuracy successes. Human quality remains unscored.')
+    table(doc, ['Recorded case', 'Observed state'], metric_rows(metrics), [2.0, 4.86])
     heading(doc, 'After recording', 2)
-    bullet(doc, 'Check that the finished video is five minutes or less, readable, audible, and free of credentials.')
-    bullet(doc, 'Attach the native Google Doc, the recorded video link, and the pushed GitHub code link to the submission form.')
-    bullet(doc, 'Confirm link access from the intended reviewer account. Builder consideration closes October 25 2026; certification closes November 11 2026.')
-    paragraph(doc, 'The video recording and final Week 3 GitHub push are outstanding actions. This guide does not mark either action complete.')
+    paragraph(doc, 'Check that the finished video is five minutes or less, readable, audible, and free of private content. Confirm the final native Google Doc and public repository open for reviewers, check CI for the pushed commit, and submit those links plus the video through the course form. Builder eligibility ends October 25 2026; certification ends November 11 2026. This guide does not mark recording or submission complete.')
     return doc
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--metrics-json', type=Path, default=ROOT / 'evaluation/week3-results/report.json')
-    parser.add_argument('--test-count', type=int, default=401)
+    parser.add_argument('--metrics-json', type=Path, required=True)
+    parser.add_argument('--test-count', type=int, required=True)
+    parser.add_argument('--verification-date', default='October 25 2026')
     parser.add_argument('--runtime-root', type=Path, default=DEFAULT_RUNTIME)
     parser.add_argument('--skill-root', type=Path, default=DEFAULT_SKILL)
     parser.add_argument('--qa-dir', type=Path, default=ROOT / '.cache/week3-docs-qa')
@@ -390,6 +423,10 @@ def main():
     (ROOT / 'docs').mkdir(exist_ok=True)
     diagram = architecture(ROOT, args.qa_dir, args.runtime_root)
     metrics = read_metrics(args.metrics_json)
+    if not metrics or metrics.get('report_kind') != 'deep_agent_workflow':
+        raise SystemExit('Supply an existing recorded Deep Agents workflow report.')
+    if args.test_count < 1:
+        raise SystemExit('Supply the observed positive final test count.')
     documents = [(WRITEUP, build_writeup(args, diagram, metrics), 'writeup'),
                  (DEMO, build_demo(args, metrics), 'demo')]
     sanitizer = args.skill_root / 'scripts/google_docs_title_sanitize.py'

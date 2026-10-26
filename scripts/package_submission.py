@@ -13,7 +13,7 @@ from dotenv import dotenv_values
 
 ROOT_FILES = {'.env.example', '.gitignore', '.python-version', 'README.md', 'app.py',
               'pyproject.toml', 'requirements.txt', 'uv.lock'}
-SOURCE_DIRECTORIES = {'triage_desk', 'data', 'evaluation', 'scripts', 'tests', 'docs', '.github', '.streamlit'}
+SOURCE_DIRECTORIES = {'triage_desk', 'data', 'evaluation', 'scripts', 'tests', 'docs', 'agent_skills', '.github', '.streamlit'}
 PRIVATE_PARTS = {'.git', '.venv', '.cache', '__pycache__', '.pytest_cache', 'node_modules', 'artifacts'}
 
 

@@ -1,6 +1,6 @@
 # Engineering Issue Desk design
 
-Version date: October 23, 2026.
+Version date: October 25, 2026.
 
 The design favors an inspectable local investigation over unrestricted automation. An engineer should be able to identify what the agent read, what it inferred, what failed, and which decision was actually recorded. This document records the decisions behind the [architecture](ARCHITECTURE.md), including consequences that remain relevant when adding features.
 
@@ -28,7 +28,7 @@ The design favors an inspectable local investigation over unrestricted automatio
 
 **Reason.** A local workspace needs restart/resume, precise source snapshots, and simple backup. Semantic memory is a different operation: retrieving a prior conclusion does not reconstruct a pending tool call or human interrupt.
 
-**Consequence.** Mem0 is not part of the current implementation. Future resolution recall must scope projects, preserve approval/provenance/version context, and avoid treating an old answer as new source evidence. Two database files require a quiescent, consistent backup; they are not a distributed transaction or a hosted service.
+**Consequence.** Mem0 is not part of the current implementation. Optional cross-case recall now uses bounded literal prose lookup in the same local store; it preserves decision/version warnings and cannot supply factual evidence. Future semantic recall still needs project scope and evaluation. Two database files require a quiescent, consistent backup; they are not a distributed transaction or a hosted service.
 
 ## ADR 3 Save evidence before accepting citations
 
@@ -50,7 +50,7 @@ Verdict explanations remain plain text. Paired single inline backticks are norma
 
 ## ADR 5 Make research read only and keep write authority local
 
-**Decision.** Domain tools read the bundled corpus, approved public pages, and the fixed Streamlit GitHub repository. Agent scratch files use a virtual backend. Approval saves a local decision; no tool posts a GitHub issue or review.
+**Decision.** Domain tools read the bundled corpus, approved public pages, and the fixed Streamlit GitHub repository. Agent scratch files use a virtual backend. Approval saves a local decision; no agent tool posts a GitHub issue or review. A separate human-confirmed publisher is described in ADR 12.
 
 **Reason.** Investigation can proceed within a bounded read scope without granting credentials for external writes or a host shell. Human review is meaningful when the application enforces the resulting authority boundary.
 
@@ -87,6 +87,30 @@ Verdict explanations remain plain text. Paired single inline backticks are norma
 **Reason.** A concrete failure inferred missing behavior from an excerpt without its configuration helper. Finding related code can improve context, while silently exposing an entire working tree would grant more authority than a pasted sample. The application owns path validation, descriptor-based symlink/race defenses, credential guards, and byte/line/call bounds.
 
 **Consequence.** Search returns bounded leads, not evidence or an absence proof. Its character allowance is shared across file prefixes so one large early file does not consume all discovery context. Explicit reads create immutable hashed excerpts; the whole tree is not frozen. Current code may differ from later or earlier reads, credential detection is heuristic, and static inspection cannot establish runtime correctness. The extension adds neither Mem0, providers, code execution, nor publishing. Its live evaluation is separate from the frozen pre-extension run.
+
+## ADR 10 Deliver maintained procedures and local history as guidance
+
+**Decision.** Load one of three versioned playbooks through fixed tools when useful. Add prior approved/rejected prose lookup only with immutable case-level opt-in, and label both sources noncitable.
+
+**Reason.** Procedures can help focus a review without permanently loading every instruction. Prior decisions can warn about an old false positive, but approval records are neither source truth nor permission for another action.
+
+**Consequence.** The implementation does not claim native `SkillsMiddleware`, semantic retrieval, or Mem0. Bounded literal history can miss relevant records. Same-workspace consent and prose/credential guards reduce exposure but do not supply hosted tenant isolation or a complete secret classifier. Reused claims must acquire current evidence.
+
+## ADR 11 Parse registered code with a fixed static analyzer
+
+**Decision.** Expose only an evidence-ID argument for real Bandit checks using eight maintained rules. Run the trusted parser worker with fixed bounds, sanitized environment, temporary working directory, and no shell; register attributed results with parent hashes and line mapping.
+
+**Reason.** A static tool adds inspectable observations beyond model judgment without granting arbitrary commands or running the supplied program. Source-controlled suppression markers cannot silently disable the selected checks.
+
+**Consequence.** Static flags require context, can be false positives, and cannot establish exploitability or exhaustive correctness. Partial excerpts can be unparseable. The isolated worker is not a container sandbox; the application's boundary is parsing rather than executing untrusted code.
+
+## ADR 12 Keep external publication separate from investigation and approval
+
+**Decision.** Offer an immutable local preview only after case approval and public PR evidence validation. Publish a summary `COMMENT` only with exact plan-ID confirmation, a write-capable token, unchanged case/evidence hashes, fresh open-public-PR base/head checks, and atomic one-attempt plan claim.
+
+**Reason.** A human reviewing a local investigation has not necessarily approved a particular public message or target revision. Previewing the exact body creates a concrete second decision, and a stale PR must not receive a report presented as current.
+
+**Consequence.** The agent has no publisher tool. Local or historical private evidence cannot enter published supports. Ambiguous POST outcomes become `uncertain` and cannot auto-retry; replay prevention favors avoiding duplicates over automatic completion after a crash. Inline review, PR approval, and request-changes are not supported. Live publication remains unvalidated; tests use controlled HTTP responses.
 
 ## What the measurements mean
 

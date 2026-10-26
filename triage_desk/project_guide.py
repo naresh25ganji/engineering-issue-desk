@@ -13,6 +13,7 @@ _DOCUMENTS = {
     'Operations': 'OPERATIONS.md',
     'Validation': 'VALIDATION.md',
     'Week 3 submission': 'WEEK3_SUBMISSION.md',
+    'Submission readiness': 'SUBMISSION_READINESS.md',
 }
 _DIAGRAMS = {
     'System architecture': 'week3-system-architecture.svg',

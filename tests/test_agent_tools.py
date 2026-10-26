@@ -157,6 +157,46 @@ def test_fetch_uses_fixed_provider_and_literal_content_without_extraction_prompt
     assert result["evidence"][0]["evidence_type"] == "page_content"
 
 
+@pytest.mark.parametrize(('path', 'kind', 'source_type'), [
+    ('issues/123#issuecomment-456', 'issue', 'github_issue'),
+    ('pull/123/files', 'issue', 'github_pull_request'),
+    ('discussions/123', 'issue', 'github_discussion'),
+    ('blob/main/lib/streamlit/example.py', 'code', 'github_repository'),
+    ('', 'code', 'github_repository'),
+    ('releases/tag/1.50.0', 'release', 'github_release'),
+])
+@pytest.mark.parametrize('tool_name', ['search_web', 'fetch_web_page'])
+def test_keenable_github_authority_and_format_survive_saved_evidence(
+    make_tools, tmp_path, path, kind, source_type, tool_name,
+):
+    from triage_desk.agent_evidence import EvidenceRegistry
+    from triage_desk.cases import CaseStore
+
+    database = tmp_path / 'cases.sqlite'
+    store = CaseStore(database)
+    case_id = store.create_case('Inspect public repository evidence')['case_id']
+    registry = EvidenceRegistry(store, case_id)
+    url = 'https://github.com/streamlit/streamlit/' + path
+    text = 'Literal repository context; this does not establish a verified fix.'
+
+    def handler(request):
+        if request.url.path.endswith('/search'):
+            return httpx.Response(200, json={'results': [{'url': url, 'title': 'Repository page', 'snippet': text}]})
+        return httpx.Response(200, json={'url': url, 'title': 'Repository page', 'content': text})
+
+    tools, *_ = make_tools(handler, registry=registry, keenable_api_key='test-key')
+    arguments = {'query': 'widget report'} if tool_name == 'search_web' else {'url': url}
+    result = tools[tool_name].invoke(arguments)
+    assert result['status'] == 'ok'
+    saved = CaseStore(database).evidence(case_id)[0]
+    suffix = 'search_snippet' if tool_name == 'search_web' else 'page_content'
+    assert result['evidence'][0]['kind'] == saved['kind'] == kind
+    assert saved['kind'] != 'documentation'
+    assert saved['evidence_type'] == f'{source_type}_{suffix}'
+    assert saved['text'] == text and saved['url'] == url
+    assert 'attributed report' in result['notes'] or 'attributed reporting' in result['notes']
+
+
 def test_fetch_rejects_unapproved_returned_url(make_tools):
     tools, registry, *_ = make_tools(lambda _: httpx.Response(200, json={
         "url": "https://evil.example/redirect", "content": "Should not become evidence"}), keenable_api_key="test-key")
