@@ -17,7 +17,9 @@ Verified October 25, 2026, in the local Python 3.12 workspace. Checks establish 
 | Final Word artifacts | Nine writeup pages and three demo-guide pages; title sanitizer checks passed and all 12 final PNGs visually inspected | Six writeup tables and one architecture image; demo targets 4:45 and does not claim a recorded video |
 | Final native Google Doc | Private final import passed metadata/content readback; all nine exported native pages visually inspected against the local Word render | Page/section breaks, six tables, one image, headings and metrics retained; title wraps to two lines and body wraps differ without clipping or overlap |
 | Final diagrams and guide | Updated component/sequence SVGs rendered with bundled Sharp and visually inspected; current guide/readiness selector loaded in browser | Separate publication authority and guidance/evidence distinctions are shown; no provider call from opening authored docs |
-| Source/docs hygiene | Corpus check and `git diff --check` passed; local Markdown links resolved | Final source ZIP is rebuilt after artifacts freeze; private state and credentials remain excluded |
+| Source/docs hygiene | Corpus check and `git diff --check` passed; local Markdown links resolved | Final source ZIP contains 156 source assets and a per-file manifest; every hash matched, three playbooks are included, and private state/credentials are excluded |
+
+Implementation [7400304](https://github.com/naresh25ganji/engineering-issue-desk/commit/740030480909d1e38b4697dda6810dde5821b52d) is public; [Ubuntu CI](https://github.com/naresh25ganji/engineering-issue-desk/actions/runs/40247965771) passed. The form was read without submitting and confirms required name, email, repository URL, video Drive URL, and documentation Drive URL.
 
 ## Latest frozen live run
 
@@ -82,10 +84,10 @@ The original failed case's private state later advanced through the separately r
 
 Private SQLite backups were created before the additive case-option migration, and both backup databases passed `PRAGMA integrity_check`. They remain under ignored `.cache/backups/` and are excluded from the submission. A full restore rehearsal in a separate workspace was not performed; the [runbook](OPERATIONS.md#restore-rehearsal) describes that future check.
 
-## Limits that remain
+## Current limits after the final refresh
 
 - Human usefulness, faithfulness, citation entailment, and the proposed eight-of-ten success target remain unmeasured. AI review can accept incorrect claims or reject useful ones.
-- This is a personal local workspace with read-only research. Hosted identity, tenant isolation, distributed execution, encrypted case storage, semantic memory/Mem0, code execution, and GitHub publishing are not implemented.
+- This is a personal local workspace. Hosted identity, tenant isolation, distributed execution, encrypted case storage, semantic memory/Mem0, and supplied-code execution are not implemented. The separate confirmed GitHub summary publisher is implemented and tested with mocks; no live PR review was posted.
 - Credential-pattern guards are heuristic, and bounded prefix search can miss later code. Explicit reads identify the working-tree snapshot at read time; the repository is not frozen at case creation.
 - macOS/Linux file locking is required. Only this local Python 3.12 configuration was exercised; Python 3.13, Windows, multi-host storage, and production load were not validated.
-- The video, Week 3 GitHub push, reviewer access, and course-form submission remain separate tasks. The final Word/native Doc refresh and link access are tracked in the submission readiness matrix; earlier exports preserve historical observations.
+- The final implementation is public in [commit `7400304`](https://github.com/naresh25ganji/engineering-issue-desk/commit/740030480909d1e38b4697dda6810dde5821b52d); [GitHub CI](https://github.com/naresh25ganji/engineering-issue-desk/actions/runs/40247965771) passed all 603 tests on Ubuntu. Final Word/native Doc layout and content are verified. Video recording, intended reviewer access, and course-form submission remain separate tasks.

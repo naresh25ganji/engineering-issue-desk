@@ -9,9 +9,11 @@ Review date: October 25, 2026. This checklist distinguishes the required course 
 | Agentic task and end-to-end result | Deep Agents tool loop inside LangGraph, saved evidence, independent review, human interrupt, and real code-sample exports | Demonstrate a genuine final-app interaction and identify any saved-case fallback |
 | Google Doc | [Final private native Doc](https://docs.google.com/document/d/1ImRAJn28t61YaaqlSdyZIDpqb_UEK_oRYHHsDFbrWdI); final Word source and all nine converted pages visually verified, with six tables and one image | Confirm intended reviewer access to the private file |
 | Overview, datasets, coding prompts, iterations, and learnings | Explicit sections in the writeup; nine-field framework and source/version boundaries | Verify final feature list and observed metrics match the pushed build |
-| Video of five minutes or less | Three-page guide targets 4:45 | The user confirmed no existing video; record and check duration, audio, readability, and private content later |
-| GitHub code link | Public [repository](https://github.com/naresh25ganji/engineering-issue-desk); baseline `6e87e4b` and its [successful CI](https://github.com/naresh25ganji/engineering-issue-desk/actions/runs/40246144330) | Push the final refresh and verify its own CI before treating the new version as delivered |
+| Video of five minutes or less | Three-page guide targets 4:45 | The user confirmed no existing video; record, check duration/audio/readability, upload to Google Drive, and confirm video access |
+| GitHub code link | Public [implementation commit `7400304`](https://github.com/naresh25ganji/engineering-issue-desk/commit/740030480909d1e38b4697dda6810dde5821b52d) in the [repository](https://github.com/naresh25ganji/engineering-issue-desk) | [GitHub CI](https://github.com/naresh25ganji/engineering-issue-desk/actions/runs/40247965771) passed with 603 tests; code upload is complete |
 | Course submission | [Submission form](https://forms.gle/waBYFkkf5xxmcouV9) | Submit the final Doc, video, and code links; form submission has not been performed |
+
+The live form was read without submitting and requires five fields: Full Name, Email Address, GitHub Repository Link, Video Demo Drive Link, and Project Documentation Drive Link.
 
 Builder of the Week eligibility ends October 25, 2026. Certification completion ends November 11, 2026. The handout's instructions are requirements to review, not authorization to message others or submit a form automatically.
 
@@ -42,10 +44,10 @@ These options extend the chosen engineering investigation use case. Their presen
 | Privacy and packaging | Provider disclosures, private SQLite, heuristic credential filters, ZIP manifest | No secrets/caches/checkpoints in package; no hosted tenant isolation or encrypted state |
 | Deployment | Local loopback, Python version, macOS/Linux locks | Personal workspace; production load, multi-host operation, Windows, and hosted auth are unvalidated |
 | Measurement | Distinct frozen runs, failure denominator, raw outputs, AI versus human labels | No case automatically approved; no measured human accuracy or established third-sample defect |
-| Reviewer access | Final native Doc, public final commit, CI, video, form links | Confirm actual links after final generation and push; do not infer access from file existence |
+| Reviewer access | Final native Doc, public final commit, CI, video, form links | Final implementation and CI links are verified; confirm access to the private Doc and the future Drive video |
 
 ## Current verification boundary
 
-Final software validation passed 603 tests. The latest frozen run reached three of three saved handoffs with 12 model calls, six tools, and 70,003 reported tokens; only its nonempty report has an applicable exact-citation pass. A separate extension exercise observed playbook loading and real Bandit, while positive history lookup remains controlled-test evidence. Full details and preserved failures are in [VALIDATION.md](VALIDATION.md). Source-checkout execution is supported; default wheel packaging has not been configured. Final native import/readback and nine-page conversion QA are complete. Reviewer access, new GitHub push/CI, video, and form submission remain separate handoff tasks.
+Final software validation passed 603 tests. The latest frozen run reached three of three saved handoffs with 12 model calls, six tools, and 70,003 reported tokens; only its nonempty report has an applicable exact-citation pass. A separate extension exercise observed playbook loading and real Bandit, while positive history lookup remains controlled-test evidence. Full details and preserved failures are in [VALIDATION.md](VALIDATION.md). Source-checkout execution is supported; default wheel packaging has not been configured. Final native import/readback and nine-page conversion QA are complete. The implementation is pushed and its Ubuntu GitHub CI passed with 603 tests. Reviewer access, video recording, and form submission remain separate handoff tasks.
 
 The earlier two-of-three run and later three-of-three run remain separate historical observations. Neither establishes human accuracy or identifies which design change caused a difference. The October 17 corpus remains a dated snapshot; do not call every record current on October 25.

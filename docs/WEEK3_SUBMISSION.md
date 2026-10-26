@@ -17,11 +17,11 @@ Final software checks passed 603 tests. The [recorded validation](../evaluation/
 | Handout requirement | Prepared artifact | Remaining submission work |
 | --- | --- | --- |
 | Google Doc covering project overview, datasets, coding prompts, iterations, and learnings | [Final private native Doc](https://docs.google.com/document/d/1ImRAJn28t61YaaqlSdyZIDpqb_UEK_oRYHHsDFbrWdI), imported from final Word source; readback and all nine converted pages verified | Confirm intended reviewer access to the private document |
-| Video of five minutes or less | `docs/Engineering Issue Desk Week 3 Demo Guide.docx`: narration and screen cues targeting 4:45 | Record, check duration/audio, and obtain a video link |
-| GitHub code link | Public repository: https://github.com/naresh25ganji/engineering-issue-desk; baseline `6e87e4b` has successful CI | Push the final refresh and check its own CI |
-| Supporting project assets | Latest `evaluation/week3-verified-results/`, preserved historical reports, detailed diagrams, source ZIP manifest | Rebuild the package after final artifacts and include required links in the form |
+| Video of five minutes or less | `docs/Engineering Issue Desk Week 3 Demo Guide.docx`: narration and screen cues targeting 4:45 | Record, check duration/audio, upload to Google Drive, and confirm reviewer access to the video link |
+| GitHub code link | Public [implementation commit `7400304`](https://github.com/naresh25ganji/engineering-issue-desk/commit/740030480909d1e38b4697dda6810dde5821b52d) in the [repository](https://github.com/naresh25ganji/engineering-issue-desk) | [GitHub CI](https://github.com/naresh25ganji/engineering-issue-desk/actions/runs/40247965771) passed; use the public repository link in the form |
+| Supporting project assets | Latest `evaluation/week3-verified-results/`, preserved historical reports, detailed diagrams, source ZIP manifest | Final package includes the refreshed documents, three playbooks, and per-file hashes; include required links in the form |
 
-The handout lists October 25, 2026 for Builder of the Week eligibility and November 11, 2026 for certification. The course form is https://forms.gle/waBYFkkf5xxmcouV9. Neither a form submission nor a recorded video is claimed here.
+The handout lists October 25, 2026 for Builder of the Week eligibility and November 11, 2026 for certification. The course form is https://forms.gle/waBYFkkf5xxmcouV9. Neither a form submission nor a recorded video is claimed here. The live form was read without submitting: all five fields are required—Full Name, Email Address, GitHub Repository Link, Video Demo Drive Link, and Project Documentation Drive Link. Upload the recorded video to Drive and use the final native Doc link for documentation.
 
 The [initial native Doc](https://docs.google.com/document/d/1gOxafWnF3u6OI5Rp1OtHMQyF0VYTPsBnm_NzWH3Dzus) remains a historical archive of the first version, not the final submission link.
 
