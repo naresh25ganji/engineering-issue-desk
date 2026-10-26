@@ -241,7 +241,7 @@ The Week 2 handoff verification passed 200 tests at that point, the 65-source in
 
 ## Course expansion
 
-The backend is independent of Streamlit. Continue this project with read-only engineering tools/MCP, stronger evaluation and observability, reviewed issue-routing training data/local model comparisons, and deliberate action/permission controls as later handouts require. See [docs/ASSIGNMENT.md](docs/ASSIGNMENT.md) for requirement mapping, prompt locations, four-guide adaptations, historical runs, and the five-minute demo sequence.
+The backend is independent of Streamlit. Continue this project with read-only engineering tools/MCP, stronger evaluation and observability, reviewed issue-routing training data/local model comparisons, and deliberate action/permission controls as later handouts require. See [docs/ASSIGNMENT.md](docs/ASSIGNMENT.md) for historical requirement mapping, prompt locations, retrieval experiments, and the five-minute demo sequence.
 
 ```text
 app.py                       Eight-view Streamlit workspace

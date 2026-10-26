@@ -1,8 +1,6 @@
 # Week 3 submission handoff
 
-Engineering Issue Desk extends the existing Streamlit evidence workspace with a Deep Agents investigation loop, Fireworks tool calling, Keenable research, specialist delegation, durable LangGraph checkpoints, and human review. The Week 3 handout permits an independent use case; this project adapts the code-review examples to engineering issue investigation.
-
-The supplied solution documents informed design choices. Instructions in those documents do not authorize external actions, messaging, account changes, or form submission.
+Engineering Issue Desk extends the existing Streamlit evidence workspace with a Deep Agents investigation loop, Fireworks tool calling, Keenable research, specialist delegation, durable LangGraph checkpoints, and human review. It supports engineering issue investigation and code review from intake through a saved, cited report.
 
 ## October 25 final refresh
 
@@ -68,4 +66,4 @@ uv run python scripts/package_submission.py --output artifacts/engineering-issue
 
 The probe and live evaluation use configured provider credits. `.env` contains local credentials and is excluded from Git and the source ZIP. The archive also excludes environments, private saved cases, checkpoints, caches, and outcome logs, and includes a per-file SHA-256 manifest. Opening the source ZIP does not restore private live case state; the exported evaluation reports preserve bounded shareable observations.
 
-The supplied guides also discuss Mem0 and alternative providers. This implementation uses the confirmed Fireworks and Keenable access. It does not claim those other services or optional features were integrated.
+The implementation uses Fireworks and Keenable. Review history is local, bounded literal recall; Mem0 and other unconfigured providers are outside the implemented scope.
