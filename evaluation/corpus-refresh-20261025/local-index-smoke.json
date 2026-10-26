@@ -1,0 +1,14 @@
+{
+  "backend": "local FastEmbed BGE; no hosted provider or generation calls",
+  "core": {
+    "results": 6,
+    "fingerprint": "8335b3a407e9b712f08fcdf5a4081721f8ac3bce02b41bd0fb0b4f490fe387b8",
+    "index_origin": "computed"
+  },
+  "structured": {
+    "results": 6,
+    "fingerprint": "7ea59516da3aa500a1ed43971d4c76d78894e3dd1f5b52c71a558740e95409bf",
+    "index_origin": "computed"
+  },
+  "elapsed_seconds": 120.84
+}

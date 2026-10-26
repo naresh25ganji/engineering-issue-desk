@@ -6,9 +6,9 @@ Verified October 25, 2026, in the local Python 3.12 workspace. Checks establish 
 
 | Check | Observed result | Evidence and boundary |
 | --- | --- | --- |
-| Full regression suite | **603 passed**, 13.77 seconds | Actual Deep Agents harness, SQLite crashes/recovery, review/revision/repair, budgets, tools, UI/CLI, evaluation, and new extensions |
+| Full regression suite | **615 passed**, 12.85 seconds | Actual Deep Agents harness, SQLite crashes/recovery, review/revision/repair, budgets, tools, UI/CLI, evaluation, and new extensions |
 | Locked source environment | `uv sync --frozen --check` found 117 packages current | Source-checkout execution supported; default `uv build` package discovery is not configured, so no wheel/pip-install claim |
-| Corpus integrity | 65 records; SHA-256 unchanged | `3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503`; October 17 historical snapshot, not all current material |
+| Corpus integrity | 65 records refetched October 25 Pacific | `1473a7f6a9ebd5d0772c1e225f4223759bccff241c53cbbb95b07a3710ae2ec8`; recorded commit pins and API version retained |
 | Playbooks and literal review guidance | Fixed catalog/version/hash, path/credential controls, budgets, immutable consent and bounded projections | [Extension tests](../tests/test_review_extensions.py), graph/UI/CLI tests; positive rejected-history lookup exercised with a controlled model |
 | Real static analyzer | Actual Bandit worker, eight fixed rules, registered source only, bounds, parse failure and line/hash preservation | [Static tests](../tests/test_static_analysis.py); no supplied program or tests executed |
 | Confirmed summary publication | 55 controlled HTTP/state tests, including stale and mixed revisions and legacy code-page classification bypasses | [Publication tests](../tests/test_review_publication.py); no live POST, write token, inline review, or PR approval tested |
@@ -20,6 +20,12 @@ Verified October 25, 2026, in the local Python 3.12 workspace. Checks establish 
 | Source/docs hygiene | Corpus check and `git diff --check` passed; local Markdown links resolved | The source ZIP includes all submission source assets and a per-file manifest; every hash is verified after packaging, three playbooks are included, and private state/credentials are excluded |
 
 Implementation [7400304](https://github.com/naresh25ganji/engineering-issue-desk/commit/740030480909d1e38b4697dda6810dde5821b52d) is public; [Ubuntu CI](https://github.com/naresh25ganji/engineering-issue-desk/actions/runs/40247965771) passed. The form was read without submitting and confirms required name, email, repository URL, video Drive URL, and documentation Drive URL.
+
+## Corpus refresh follow-up
+
+A real full upstream fetch refreshed all 65 acquisition timestamps on October 25 Pacific. The sidebar was checked in Chrome: **65 sources · Oct 25, 2026 PT**, oldest age 0.0 days, and no stale-snapshot warning. Its date now follows the oldest source rather than the first record. The new `--refresh-all` mode has forced-fetch/cache-failure/CLI propagation regressions; the ordinary cache and offline-check behavior remain unchanged. See the [refresh record](../evaluation/corpus-refresh-20261025/refresh-summary.json).
+
+The original corpus hash and all prior evaluation exports remain frozen. The new acquisition changed one rendered issue state (17215, open to closed), without proving an upstream fix or upgrading Streamlit version scope. The [post-refresh keyword workflow](../evaluation/corpus-refresh-20261025/workflow-keyword/report.json) completed all 20 scheduled cases without errors, with zero provider calls and exact-reference checks passing. Fourteen expected-evidence cases retrieved a gold source; these source-selection checks are not answer-quality scores. The [local index smoke](../evaluation/corpus-refresh-20261025/local-index-smoke.json) rebuilt the changed base/structured identities and returned six hybrid results each, using local BGE only.
 
 ## Latest frozen live run
 

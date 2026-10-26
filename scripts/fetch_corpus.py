@@ -7,6 +7,7 @@ of a defect, a fix, or compatibility with another version. No comments, profiles
 attachments, private repositories, or academy solution code are downloaded.
 
 Run from the project root: python scripts/fetch_corpus.py
+Refetch every pinned and mutable source: python scripts/fetch_corpus.py --refresh-all
 Validate the checked-in snapshot offline: python scripts/fetch_corpus.py --check
 An optional GITHUB_TOKEN increases API rate limits; it is never persisted.
 
@@ -22,6 +23,7 @@ import argparse
 import concurrent.futures
 from collections import Counter
 from datetime import datetime, timezone
+from functools import partial
 import hashlib
 from html import unescape
 from html.parser import HTMLParser
@@ -157,13 +159,13 @@ def _cached_immutable(cache_path: Path, url: str) -> tuple[bytes, str]:
     return raw, fetched_at
 
 
-def fetch(url: str, *, immutable: bool = False) -> tuple[bytes, str]:
-    """Fetch allowlisted URLs; immutable cache hits preserve fetch time offline."""
+def fetch(url: str, *, immutable: bool = False, force_refetch: bool = False) -> tuple[bytes, str]:
+    """Keep cache age by default; explicit revalidation requires a successful GET."""
     allowed = ("https://raw.githubusercontent.com/streamlit/", "https://api.github.com/repos/streamlit/streamlit/")
     if not url.startswith(allowed):
         raise ValueError("URL is outside the official Streamlit source allowlist")
     cache_path = CACHE / sha256(url.encode())
-    if immutable and cache_path.exists():
+    if immutable and cache_path.exists() and not force_refetch:
         return _cached_immutable(cache_path, url)
     headers = {"User-Agent": "engineering-issue-desk-course-corpus/1.0", "Accept": "application/vnd.github+json"}
     token = os.environ.get("GITHUB_TOKEN", "")
@@ -315,10 +317,10 @@ def base_source(source_id: str, title: str, url: str, kind: str, text: str,
                 raw_sha256=sha256(raw), **extra)
 
 
-def get_document(spec: tuple[str, str]) -> dict:
+def get_document(spec: tuple[str, str], *, force_refetch: bool = False) -> dict:
     source_id, path = spec
     raw_url = f"https://raw.githubusercontent.com/streamlit/docs/{DOCS_COMMIT}/content/{path}"
-    raw, at = fetch(raw_url, immutable=True)
+    raw, at = fetch(raw_url, immutable=True, force_refetch=force_refetch)
     meta, body = strip_frontmatter(raw.decode("utf-8"))
     title = meta.get("title") or next((x.lstrip("# ") for x in body.splitlines() if x.startswith("# ")), path)
     slug = meta.get("slug")
@@ -349,9 +351,9 @@ def api_text(item: dict) -> str:
     return "\n\n".join(x for x in chunks if x)
 
 
-def get_api_documents() -> list[dict]:
+def get_api_documents(*, force_refetch: bool = False) -> list[dict]:
     raw_url = f"https://raw.githubusercontent.com/streamlit/docs/{DOCS_COMMIT}/python/streamlit.json"
-    raw, at = fetch(raw_url, immutable=True)
+    raw, at = fetch(raw_url, immutable=True, force_refetch=force_refetch)
     by_version = json.loads(raw)[API_VERSION]
     results = []
     for source_id, symbol, slug in API_DOCS:
@@ -401,9 +403,9 @@ def get_issue(number: int) -> dict:
                        retrieval_method=retrieval_method)
 
 
-def get_contributing(path: str, source_id: str, title: str) -> dict:
+def get_contributing(path: str, source_id: str, title: str, *, force_refetch: bool = False) -> dict:
     raw_url = f"https://raw.githubusercontent.com/streamlit/streamlit/{STREAMLIT_COMMIT}/{path}"
-    raw, at = fetch(raw_url, immutable=True)
+    raw, at = fetch(raw_url, immutable=True, force_refetch=force_refetch)
     text = clean_markdown(raw.decode()) if path.endswith(".md") else f"# {title}\n\n```yaml\n{sanitize(raw.decode())}\n```"
     return base_source(source_id, title,
                        f"https://github.com/streamlit/streamlit/blob/{STREAMLIT_COMMIT}/{path}",
@@ -412,10 +414,10 @@ def get_contributing(path: str, source_id: str, title: str) -> dict:
                        source_path=path, raw_url=raw_url)
 
 
-def get_release() -> dict:
+def get_release(*, force_refetch: bool = False) -> dict:
     path = "content/develop/quick-references/release-notes/2026.md"
     raw_url = f"https://raw.githubusercontent.com/streamlit/docs/{DOCS_COMMIT}/{path}"
-    raw, at = fetch(raw_url, immutable=True)
+    raw, at = fetch(raw_url, immutable=True, force_refetch=force_refetch)
     meta, body = strip_frontmatter(raw.decode())
     text = clean_markdown(body)
     truncated = len(text) > MAX_RELEASE_CHARS
@@ -431,14 +433,14 @@ def get_release() -> dict:
                        source_path=path, raw_url=raw_url, body_truncated=truncated)
 
 
-def get_licenses() -> dict[str, bytes]:
+def get_licenses(*, force_refetch: bool = False) -> dict[str, bytes]:
     files = {}
     for repo, commit, names in (("docs", DOCS_COMMIT, ("LICENSE", "NOTICE")),
                                ("streamlit", STREAMLIT_COMMIT, ("LICENSE", "NOTICES"))):
         for name in names:
             url = f"https://raw.githubusercontent.com/streamlit/{repo}/{commit}/{name}"
             try:
-                raw, _ = fetch(url, immutable=True)
+                raw, _ = fetch(url, immutable=True, force_refetch=force_refetch)
             except RuntimeError as exc:
                 # A repository can lack NOTICE; do not fabricate an upstream notice.
                 if name in ("NOTICE", "NOTICES") and "HTTP 404" in str(exc):
@@ -500,11 +502,16 @@ def check_snapshot(data_dir: Path) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Validate existing counts and hashes without network calls")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check", action="store_true", help="Validate existing counts and hashes without network calls")
+    mode.add_argument("--refresh-all", action="store_true",
+                      help="Refetch every source from upstream, including commit-pinned cached documents; preserve the selected commits and API version")
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data")
     parser.add_argument("--issue-snapshot-dir", type=Path,
                         help="Use previously fetched GitHub API search JSON files for the fixed issue allowlist (useful under API rate limits)")
     args = parser.parse_args()
+    if args.refresh_all and args.issue_snapshot_dir:
+        parser.error("--refresh-all cannot use historical --issue-snapshot-dir files")
     if args.check:
         print(json.dumps(check_snapshot(args.data_dir), indent=2))
         return 0
@@ -521,14 +528,14 @@ def main() -> int:
             raise ValueError("Issue snapshots do not contain the full allowlist: " + ", ".join(str(x) for x in sorted(missing)))
     started = utc_now()
     with concurrent.futures.ThreadPoolExecutor(max_workers=WORKERS) as pool:
-        docs = list(pool.map(get_document, DOCS))
-    api = get_api_documents()
+        docs = list(pool.map(partial(get_document, force_refetch=args.refresh_all), DOCS))
+    api = get_api_documents(force_refetch=args.refresh_all)
     with concurrent.futures.ThreadPoolExecutor(max_workers=WORKERS) as pool:
         issues = list(pool.map(get_issue, ISSUE_IDS))
-    contribution = [get_contributing("CONTRIBUTING.md", "contributing-guide", "Streamlit contributing guide"),
-                    get_contributing(".github/ISSUE_TEMPLATE/bug_report.yml", "contributing-bug-report", "Streamlit bug report template")]
-    sources = sorted(docs + api + issues + contribution + [get_release()], key=lambda x: x["source_id"])
-    licenses = get_licenses()
+    contribution = [get_contributing("CONTRIBUTING.md", "contributing-guide", "Streamlit contributing guide", force_refetch=args.refresh_all),
+                    get_contributing(".github/ISSUE_TEMPLATE/bug_report.yml", "contributing-bug-report", "Streamlit bug report template", force_refetch=args.refresh_all)]
+    sources = sorted(docs + api + issues + contribution + [get_release(force_refetch=args.refresh_all)], key=lambda x: x["source_id"])
+    licenses = get_licenses(force_refetch=args.refresh_all)
     sources_bytes = (json.dumps(sources, ensure_ascii=False, indent=2) + "\n").encode()
     manifest = {
         "schema_version": 1, "corpus": "Official Streamlit documentation and selected public issue reports",
@@ -536,6 +543,7 @@ def main() -> int:
         "docs_repository": "https://github.com/streamlit/docs", "docs_commit": DOCS_COMMIT,
         "streamlit_repository": "https://github.com/streamlit/streamlit", "streamlit_commit": STREAMLIT_COMMIT,
         "api_reference_version": API_VERSION, "source_count": len(sources),
+        "fetch_policy": "all_sources_refetched" if args.refresh_all else "immutable_cache_allowed",
         "counts": dict(Counter(x["kind"] for x in sources)),
         "issue_allowlist": ISSUE_IDS, "issue_states": dict(Counter(x["state"] for x in issues)),
         "selection": "Explicit curated allowlists in scripts/fetch_corpus.py; no live issue discovery in the app.",

@@ -1,0 +1,45 @@
+{
+  "refreshed_at": "2026-10-26T06:09:17.288620+00:00",
+  "mode": "all_sources_refetched",
+  "source_count": 65,
+  "previous_sources_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "sources_sha256": "1473a7f6a9ebd5d0772c1e225f4223759bccff241c53cbbb95b07a3710ae2ec8",
+  "oldest_snapshot_at": "2026-10-26T06:07:55Z",
+  "newest_snapshot_at": "2026-10-26T06:08:01Z",
+  "freshness": {
+    "status": "current",
+    "oldest_snapshot_at": "2026-10-26T06:07:55+00:00",
+    "age_days": 0.0,
+    "max_age_days": 7,
+    "missing_or_invalid_timestamps": 0,
+    "refresh_mode": "manual",
+    "note": "Snapshot age measures fetch time, not whether an upstream claim or version is still correct."
+  },
+  "pinned_docs_commit": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+  "pinned_streamlit_commit": "4278206f51bde8026a20c7d91c4ef473fece6c69",
+  "api_reference_version": "1.66.0",
+  "all_source_ids_preserved": true,
+  "text_changed_source_ids": [
+    "issue-17215"
+  ],
+  "raw_changed_source_count": 24,
+  "state_changes": [
+    {
+      "source_id": "issue-17215",
+      "before": "open",
+      "after": "closed"
+    }
+  ],
+  "note": "A successful fetch updates acquisition age, not version applicability or proof of an upstream fix. Existing case evidence and frozen evaluation exports retain their original snapshots.",
+  "validation": {
+    "offline_tests_passed": 615,
+    "offline_test_seconds": 12.85,
+    "keyword_workflow": "workflow-keyword/report.json",
+    "keyword_scheduled_cases": 20,
+    "keyword_completed_cases": 20,
+    "keyword_errors": 0,
+    "keyword_provider_calls": 0,
+    "local_index_checks": "local-index-smoke.json",
+    "browser": "65 sources \u00b7 Oct 25, 2026 PT; oldest age 0.0 days; no stale warning"
+  }
+}

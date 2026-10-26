@@ -1,14 +1,15 @@
 {
   "schema_version": 1,
   "corpus": "Official Streamlit documentation and selected public issue reports",
-  "started_at": "2026-10-18T01:25:49Z",
-  "completed_at": "2026-10-18T01:25:49Z",
+  "started_at": "2026-10-26T06:07:55Z",
+  "completed_at": "2026-10-26T06:08:02Z",
   "docs_repository": "https://github.com/streamlit/docs",
   "docs_commit": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
   "streamlit_repository": "https://github.com/streamlit/streamlit",
   "streamlit_commit": "4278206f51bde8026a20c7d91c4ef473fece6c69",
   "api_reference_version": "1.66.0",
   "source_count": 65,
+  "fetch_policy": "all_sources_refetched",
   "counts": {
     "contributing": 2,
     "documentation": 38,
@@ -42,8 +43,8 @@
     12800
   ],
   "issue_states": {
-    "open": 8,
-    "closed": 16
+    "open": 7,
+    "closed": 17
   },
   "selection": "Explicit curated allowlists in scripts/fetch_corpus.py; no live issue discovery in the app.",
   "limits": {
@@ -70,7 +71,7 @@
     "Corpus is a selected snapshot, not exhaustive coverage or a live bug database.",
     "Redaction is conservative pattern matching and is not a guarantee of PII detection."
   ],
-  "sources_sha256": "3caa3fbd41e436469b6bdc63f5435eb9ec8f5eecfa49064e02a77fedc618d503",
+  "sources_sha256": "1473a7f6a9ebd5d0772c1e225f4223759bccff241c53cbbb95b07a3710ae2ec8",
   "sources": [
     {
       "source_id": "contributing-bug-report",
@@ -398,7 +399,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/10615",
       "characters": 2456,
       "text_sha256": "1f46db4adb7decbb994669342de5c3ff3d1ae4ce9f39448f524dd93dca00baa3",
-      "raw_sha256": "9f16feb5ef53eb960013eb945fa5d6da46cdc070d1aaf43ce95ce5f4889523c0"
+      "raw_sha256": "5f1f99e4b07721178025a29b007df80dc2e24298354e1789191f4b1bbed68486"
     },
     {
       "source_id": "issue-11115",
@@ -406,7 +407,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/11115",
       "characters": 2135,
       "text_sha256": "0a7540ce6612f749b5de486827e2d5cd083c754423b40286f446f11f2af8491f",
-      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+      "raw_sha256": "d81eb83179b02f42f9bed00b2465c8d1d5978f5cef75633fa373a41538937333"
     },
     {
       "source_id": "issue-11396",
@@ -414,7 +415,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/11396",
       "characters": 1804,
       "text_sha256": "e15482d2b7f0c4b54ddd078769a5d1778cd8adccb2f87d4617239786f2dd1b57",
-      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+      "raw_sha256": "39f2ba7ff7b59de9221fe0a9599c2b685c5e80c2fecbeea6faabca996db47eaa"
     },
     {
       "source_id": "issue-11528",
@@ -422,7 +423,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/11528",
       "characters": 1679,
       "text_sha256": "22eb7f45a24038ef5d155c7530baf9ed89bd1f3b8639f72659a7c6b0c13123f4",
-      "raw_sha256": "9f16feb5ef53eb960013eb945fa5d6da46cdc070d1aaf43ce95ce5f4889523c0"
+      "raw_sha256": "64c2725b1c68a8cfebe704618d6ec268874eeb817b422035f7677cfc191c7144"
     },
     {
       "source_id": "issue-12146",
@@ -430,7 +431,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/12146",
       "characters": 2286,
       "text_sha256": "f10ef157fc67d73007f30ff6ab981c0af436f32f869c68fe83a71625c65d3128",
-      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+      "raw_sha256": "37b7a98ba011f6cb0dba7001f4e07d03647b18fb267555d1866e747f0f702a23"
     },
     {
       "source_id": "issue-12607",
@@ -438,7 +439,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/12607",
       "characters": 5151,
       "text_sha256": "9d0c259782ddf38276f7bb03787b0be046311b68e5085b0a1c1bd899c0a3d3f6",
-      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+      "raw_sha256": "c2fcd8f399d3472895608978c66c6c9e11a23bd8f8f1a3ac56c214bb609ddddf"
     },
     {
       "source_id": "issue-12800",
@@ -446,7 +447,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/12800",
       "characters": 4523,
       "text_sha256": "0451aacab1e0d7cb6fd8de6091fd2b096f0bf9b662a98263dc4208f1f7813c10",
-      "raw_sha256": "979a5814577593de8fd64d5b9e350e82ef764244ee2d0e3490f865160b5e7c46"
+      "raw_sha256": "4cdb9a9bf74ba20e8c31c34987e4a74de2af783e9fd263d1dd4df3bd44e8bb81"
     },
     {
       "source_id": "issue-12911",
@@ -454,7 +455,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/12911",
       "characters": 899,
       "text_sha256": "481a4366a1909e0989a37910d6d6f8ca387342da8c6186bf92fa78eaca65439e",
-      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+      "raw_sha256": "e7714585eaaf950ccab019dc4185b4c8e6b8dbc14fcf56c9ebe3a7e7cb3863ef"
     },
     {
       "source_id": "issue-13627",
@@ -462,7 +463,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/13627",
       "characters": 2041,
       "text_sha256": "223d5c94734f7e97f16287bbb16a19699914b73a0f5d16efcb90ff78f1cb72c4",
-      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+      "raw_sha256": "037a01cf1fd4460387cf98770907846a8913d7debefff62d7df4bfb3e5e98e49"
     },
     {
       "source_id": "issue-16341",
@@ -470,7 +471,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/16341",
       "characters": 1919,
       "text_sha256": "8ded8f59a555f65b5beb9e46f3201af02c638dd3e9947fcb01950f1c5a3cff3c",
-      "raw_sha256": "979a5814577593de8fd64d5b9e350e82ef764244ee2d0e3490f865160b5e7c46"
+      "raw_sha256": "79d08b3b2133ed391058d2ec5d8d427f8a59068b3450671ef48ad72c4a476c14"
     },
     {
       "source_id": "issue-16388",
@@ -478,7 +479,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/16388",
       "characters": 2219,
       "text_sha256": "682ee03911ab7c6aad6b1575085e992a6022e4f6688f224752652e64d15a5dbb",
-      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+      "raw_sha256": "508b9bda86f9b2a255e8e7a8aceb94dd4264acc70b22a197b2f34448bb6076d6"
     },
     {
       "source_id": "issue-17011",
@@ -486,7 +487,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/17011",
       "characters": 1959,
       "text_sha256": "cebb9cca45e901b5c1013929c91338bca5cba5da6a81695a0a394863aee7d16c",
-      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+      "raw_sha256": "19596d5a7b4e1d03ff1ae9553def4b8b05e4f36e7d407ea293c1de42ae375dfe"
     },
     {
       "source_id": "issue-17031",
@@ -494,7 +495,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/17031",
       "characters": 3526,
       "text_sha256": "65fa72bc13a521d6f0efc8eba2226675d7e766c13d1cedf089be82aa4f412c51",
-      "raw_sha256": "979a5814577593de8fd64d5b9e350e82ef764244ee2d0e3490f865160b5e7c46"
+      "raw_sha256": "9587264bb6e8d4e1db322babc37160e634aef3ec635985860808c8d5f00f9516"
     },
     {
       "source_id": "issue-17119",
@@ -502,7 +503,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/17119",
       "characters": 3295,
       "text_sha256": "f1acad40c42d5dd8b89938c0753045d73d3db3364dfe5ed40d25c0f581d9c450",
-      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+      "raw_sha256": "04d446c3351bd959aac642d290503c8384feececdeee5d0eb4c4a5c697f39ae3"
     },
     {
       "source_id": "issue-17175",
@@ -510,7 +511,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/17175",
       "characters": 2321,
       "text_sha256": "2ef2ee055639652c1b6947bb736d5259265d2b8a2ebb8f98c3ce73aa36332bf0",
-      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+      "raw_sha256": "2b4e8afc341fd4838a67c3793353d16d81a4305519611f4808a2b0f758f93ada"
     },
     {
       "source_id": "issue-17210",
@@ -518,15 +519,15 @@
       "url": "https://github.com/streamlit/streamlit/issues/17210",
       "characters": 4475,
       "text_sha256": "627ef0f9ffe5919704b21af6bad24c27106df781248334c1a7168395031f1385",
-      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+      "raw_sha256": "0494c594b6fab6ceda05ecfd2942c8bbc612e42a1ee0ce4980590a735588271c"
     },
     {
       "source_id": "issue-17215",
       "kind": "issue",
       "url": "https://github.com/streamlit/streamlit/issues/17215",
-      "characters": 7116,
-      "text_sha256": "be7e97b88fb22303e0255bcbc2fcef3e7d0b64ef211f33e552c7e2f3ad9dddee",
-      "raw_sha256": "cf4b8a3a7a86f7153678725a6124c5d38ce35a92613f1c5638961acebcc0091b"
+      "characters": 7118,
+      "text_sha256": "7be332ba76cd718fb6c6932afac9dfcde73e3e76ff35f2c669fb8fb37e9920bb",
+      "raw_sha256": "674b93f0e89ae22377dc3566bf8a1c82e04c54e1c91d5eb3700c0cc17f798597"
     },
     {
       "source_id": "issue-4164",
@@ -534,7 +535,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/4164",
       "characters": 3016,
       "text_sha256": "97e034ce5a01881b0ee1f4c1b6937dee82a88999bc585593534417a6f5f74257",
-      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+      "raw_sha256": "be9f1461a242d42012f2573a14ba0879154b9f2e3c4dfcceadc49f90ebc042e5"
     },
     {
       "source_id": "issue-4664",
@@ -542,7 +543,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/4664",
       "characters": 966,
       "text_sha256": "9ca38c083d03dec00c08f3c78e9205d1943af0d6adbd4f36fd567a5a8411f0d4",
-      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+      "raw_sha256": "9bbe16ed83b94f9370334238cbcecf66a496e3002d5a018e63e9d617018a0fc1"
     },
     {
       "source_id": "issue-5336",
@@ -550,7 +551,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/5336",
       "characters": 1251,
       "text_sha256": "0d1c3ed305877a5735a81c3ad721a839062996b54be08eb9e72f19babc71d18a",
-      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+      "raw_sha256": "9c5b682cfc8d2cdf620bea8cd6e97b287754641a0bf55683a25e37fdd449a410"
     },
     {
       "source_id": "issue-6920",
@@ -558,7 +559,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/6920",
       "characters": 1326,
       "text_sha256": "096dd0d30c2168894d101d896a0918f2b57a950cf26566571c28ca113fddee51",
-      "raw_sha256": "9f16feb5ef53eb960013eb945fa5d6da46cdc070d1aaf43ce95ce5f4889523c0"
+      "raw_sha256": "584d9d217ddfddaca5f15c60f47b044946ef6d303f112198a556a777c53ca95c"
     },
     {
       "source_id": "issue-7079",
@@ -566,7 +567,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/7079",
       "characters": 2759,
       "text_sha256": "73258ac6f1650ef0b062d0b9d04d3587ccb38db97826bb992418b05e3bff7660",
-      "raw_sha256": "67657d8125a889e04a0468301d1c2557d37a43a85871661ba14a4c11ac262e76"
+      "raw_sha256": "4f92acb595a54e4761d209b8dcb58c61da4e7bb1ccc78a42162d2129e215fdfe"
     },
     {
       "source_id": "issue-7216",
@@ -574,7 +575,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/7216",
       "characters": 2347,
       "text_sha256": "aa278ca136c9efb07b71a4af2b136b50d2f3395524a078e414f3fd068bbfbdba",
-      "raw_sha256": "8a632bca557df2beb9a35911f55decd21355a9341df53a9984a9e1e5d073ecd8"
+      "raw_sha256": "8d73233878480fa633104356faa615983c04076be39aefe59f534ff3966b8b44"
     },
     {
       "source_id": "issue-8534",
@@ -582,7 +583,7 @@
       "url": "https://github.com/streamlit/streamlit/issues/8534",
       "characters": 1824,
       "text_sha256": "89976014901def357f63e66ed3bcaa384f376267531a96a3a6cd2ea2a6fde267",
-      "raw_sha256": "2ac4c3253b60ca06fbfd942cad72c06b2b5a8935b70f2a69dadb6777593962bf"
+      "raw_sha256": "419c76af00ab2133301a358aac1b0257f1c4b33acb19e7d26a68006d7afcbf9d"
     },
     {
       "source_id": "release-notes-2026",

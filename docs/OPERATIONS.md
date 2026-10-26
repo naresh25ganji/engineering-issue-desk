@@ -31,6 +31,19 @@ The live baseline used `accounts/fireworks/models/gpt-oss-120b`. Account entitle
 
 GitHub reads pin `X-GitHub-Api-Version: 2026-03-10`, a supported version listed in the [official API version documentation](https://docs.github.com/en/rest/about-the-rest-api/api-versions). Live issue/PR reads are checked separately from model-generated investigations.
 
+## Refresh the knowledge snapshot
+
+The sidebar uses the oldest source timestamp. Ordinary ingestion reuses commit-pinned documentation, so running it again can leave an age warning even when issue reads are recent. To acquire every source again:
+
+```bash
+uv run python scripts/fetch_corpus.py --refresh-all
+uv run python scripts/fetch_corpus.py --check
+```
+
+Reload the app after completion. The **Refresh instructions** sidebar expander exposes this command. The full-refresh option bypasses immutable cache hits and records a new timestamp only after a successful upstream response. It cannot be combined with the offline check or historical issue-snapshot files. Commit pins and API version do not automatically advance; acquisition age is separate from version applicability or proof of a fix.
+
+The October 25 full refresh retained all 65 IDs and API 1.66.0. Issue 17215 changed from open to closed, which is an attributed state change, not proof of a fix. Saved case evidence and the three-code evaluation keep their original October 17 snapshot. Timestamp-only changes can reuse embeddings; changed passage text produces a new index identity. The local indexes are warmed separately for the refreshed corpus; no hosted embeddings or generation are required.
+
 ## Connectivity check
 
 This command intentionally spends a small amount of configured provider credit:
@@ -209,7 +222,7 @@ uv run python scripts/fetch_corpus.py --check
 
 See [VALIDATION.md](VALIDATION.md) for the final test count, live extension results, browser checks, and limitations recorded for this revision.
 
-Final software checks passed 603 tests and the source environment check found 117 packages current. Use a repository checkout with `uv`; default `uv build` discovery is not configured, so this runbook does not promise a working wheel or `pip install` distribution. The latest [verified report](../evaluation/week3-verified-results/report.json), separate [extension exercise](../evaluation/week3-verified-results/extension-exercise.json), and [Codex-assisted inspection](../evaluation/week3-verified-results/engineering-review.md) are distinct records. They do not establish human approval or accuracy.
+After the corpus-refresh follow-up, software checks passed 615 tests and the source environment check found 117 packages current. Use a repository checkout with `uv`; default `uv build` discovery is not configured, so this runbook does not promise a working wheel or `pip install` distribution. The latest [verified report](../evaluation/week3-verified-results/report.json), separate [extension exercise](../evaluation/week3-verified-results/extension-exercise.json), and [Codex-assisted inspection](../evaluation/week3-verified-results/engineering-review.md) are distinct records. They do not establish human approval or accuracy.
 
 The frozen [Week 3 report](../evaluation/week3-results/report.json) records three static code samples: two saved handoffs, one failed evidence-review response, nine model calls, three saved-evidence reads, and 44,382 reported tokens. Literal quotes passed for all three drafts, including the failed case. No human quality score was collected. It did not exercise repository context, delegation, or Keenable. See the [retained false positives](../evaluation/week3-results/engineering-review.md); exact references and an AI review are not a correctness guarantee.
 

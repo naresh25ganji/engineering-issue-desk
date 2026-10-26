@@ -10,7 +10,9 @@ The refreshed Word writeup and demo guide accompany the [architecture](ARCHITECT
 
 The final stretch options add on-demand maintained playbooks, optional local literal review guidance, real bounded Bandit checks, and a separate approved-case public PR summary preview/confirmation flow. The handout has no official extra-credit checklist or scores. The [verified live evaluation](../evaluation/week3-verified-results/report.html) reached human review for 3/3 cases; only the nonempty freshness report has an applicable exact-citation check. Human quality remains unscored. All earlier failed and successful exports remain separate observations.
 
-Final software checks passed 603 tests. The [recorded validation](../evaluation/week3-verified-results/validation.json) and [qualitative inspection](../evaluation/week3-verified-results/engineering-review.md) distinguish controlled evidence, live tool use, and unmeasured human outcomes. The separate extension exercise observed playbook/Bandit use; history lookup was not invoked live. No GitHub POST was performed.
+After the knowledge-refresh follow-up, software checks passed 615 tests. The [recorded validation](../evaluation/week3-verified-results/validation.json) and [qualitative inspection](../evaluation/week3-verified-results/engineering-review.md) distinguish controlled evidence, live tool use, and unmeasured human outcomes. The separate extension exercise observed playbook/Bandit use; history lookup was not invoked live. No GitHub POST was performed.
+
+The [October 25 corpus refresh](../evaluation/corpus-refresh-20261025/refresh-summary.json) acquired all 65 sources again, keeping commit pins and API version 1.66.0. The sidebar now reports the oldest October 25 fetch, with no stale warning. Frozen code-sample results still refer to the original evaluation snapshot.
 
 ## Required deliverables
 

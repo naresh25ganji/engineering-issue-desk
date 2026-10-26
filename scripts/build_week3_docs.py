@@ -274,7 +274,7 @@ def build_writeup(args, diagram, metrics):
     paragraph(doc, 'Deep Agents scratch files use a virtual StateBackend. The isolated analyzer is trusted fixed code; it parses saved source without running the supplied program. The investigator has no publication tool. Detailed component, trust-boundary, and sequence diagrams are available in the Project guide and repository docs.')
 
     new_page(doc, 'Datasets and provenance')
-    paragraph(doc, 'The corpus contains 65 English records selected for Streamlit engineering questions. Its snapshot completed October 17 2026 Pacific and its API reference version is 1.66.0. On the October 25 submission date this is historical source material, not a claim that every record is current. The interface exposes age and version scope; refresh remains a maintainer action.')
+    paragraph(doc, 'The corpus contains 65 English records for Streamlit engineering questions. All 65 were refetched from upstream on October 25 2026 Pacific with --refresh-all; documentation commits and API reference version 1.66.0 are unchanged. Fetch freshness does not verify version claims. Frozen agent evaluations used the October 17 snapshot; their outputs and hashes are preserved.')
     table(doc, ['Source type', 'Records', 'Use'], [
         ('Official documentation and API records', '38', 'Documented behavior and API context'),
         ('Public GitHub issue reports', '24', 'Attributed observations and reproduction details'),
@@ -334,7 +334,7 @@ def build_writeup(args, diagram, metrics):
 
     paragraph(doc, 'A fresh October 25 run reached only two of three handoffs after valid comparison text was rejected as HTML. That failure remains exported in evaluation/week3-final-results. The corrected guard was regression tested; a separate review-only retry used one reviewer call, zero tools, and 3,144 reported tokens before the new verified run was recorded.')
     table(doc, ['Check', 'What it establishes', 'What remains unverified'], [
-        ('603 offline tests', 'Controlled workflow and boundary behavior', 'General live answer quality'),
+        (f'{args.test_count} offline tests', 'Controlled workflow and boundary behavior', 'General live answer quality'),
         ('Three live cases', 'Saved handoff completion and observed calls', 'Human usefulness or accuracy'),
         ('Extension exercise', 'Actual playbook and Bandit tool use', 'Live positive history recall'),
         ('55 publisher tests', 'Controlled target, revision, body, replay and HTTP guards', 'Real GitHub POST and write-token operation'),
@@ -370,7 +370,7 @@ def build_demo(args, metrics):
     paragraph(doc, 'Use this guide to record the Week 3 demo. No video has been recorded yet. The sequence targets 4 minutes 45 seconds, leaving 15 seconds below the handout limit; demonstrate a genuine final-app interaction and identify any previously saved case visibly.')
     heading(doc, 'Prepare the recording')
     bullet(doc, 'Run the local app, check the microphone, and use readable zoom. Keep .env, account panels, private history, and credentials outside the recording surface.')
-    bullet(doc, 'Open the current evaluation JSON by its explicit path and the Project guide diagram. The October 17 corpus is a dated snapshot; acknowledge any age warning.')
+    bullet(doc, 'Open the evaluation JSON and Project guide diagram. Show the sidebar refresh date and actual oldest age: all 65 workspace sources were refetched October 25 Pacific. The frozen agent runs used the October 17 snapshot.')
     bullet(doc, 'Choose a small real-code case with its source visible. Have a genuine saved case ID ready for latency fallback. Recheck its current report and review state before recording; do not assume a retained claim is correct.')
     bullet(doc, 'Leave review history off unless deliberately showing its consent and safe prose scope. Do not publish to GitHub during this demonstration; a local preview is enough to explain that separate capability.')
     heading(doc, 'Suggested input', 2)

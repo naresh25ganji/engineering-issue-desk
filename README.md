@@ -92,7 +92,7 @@ Four stretch options extend the agent; the handout has no official extra-credit 
 
 A separate [live extension exercise](evaluation/week3-verified-results/extension-exercise.json) observed one playbook load and real Bandit call on the 30-line freshness sample, alongside one evidence list and one evidence read. It used six model calls, four tools, and 34,120 reported tokens and saved one finding plus two test proposals pending human review. These totals are outside the three-case denominator. Review memory was opted in but never invoked; positive history recall is covered by controlled harness tests.
 
-The [readiness matrix](docs/SUBMISSION_READINESS.md) and [validation record](docs/VALIDATION.md) distinguish implemented scope, controlled tests, actual live observations, and remaining deliverables. The October 17 corpus remains a dated snapshot on October 25; live evidence has separate acquisition timestamps.
+The [readiness matrix](docs/SUBMISSION_READINESS.md) and [validation record](docs/VALIDATION.md) distinguish implemented scope, controlled tests, actual live observations, and remaining deliverables. The live evaluation used the preserved October 17 corpus. A later [full upstream refresh](evaluation/corpus-refresh-20261025/refresh-summary.json) fetched all 65 sources on October 25 Pacific, preserving source IDs, commit pins, and API version 1.66.0. Fresh acquisition does not establish that every claim applies to another version.
 
 Final software verification passed **603 tests** in 13.77 seconds, the 65-source integrity check, and source-environment validation. The [machine-readable validation record](evaluation/week3-verified-results/validation.json) and [qualitative inspection](evaluation/week3-verified-results/engineering-review.md) preserve the exact boundary. The latter is Codex-assisted analysis, not human approval. Supported execution is a source checkout with `uv`; default wheel build discovery is not configured.
 
@@ -215,10 +215,11 @@ A user can label an investigation **Resolved from the evidence**, **Needs follow
 [data/manifest.json](data/manifest.json) and each source preserve allowlist, hashes, provenance, authority, snapshot, and version scope. The corpus has 38 documentation/API records, 24 public issue reports, two contribution records, and one bounded release excerpt. Source licenses and attribution are in `data/licenses/`.
 
 ```bash
-uv run python scripts/fetch_corpus.py
+uv run python scripts/fetch_corpus.py --refresh-all
+uv run python scripts/fetch_corpus.py --check
 ```
 
-Refresh is manual. Documentation/release pins do not automatically advance to the latest release. Cached immutable source timestamps retain their original fetch time; reading cache bytes does not make them fresh. The UI warns when the oldest valid source is at least seven days old and flags invalid timestamps as unknown. Review changed sources, validate hashes, rebuild matching indexes, and rerun evaluation before publishing a refreshed snapshot.
+Refresh is manual. Documentation/release pins do not automatically advance to the latest release. The normal command reuses pinned bytes with their original fetch timestamps. Use `--refresh-all` to make new upstream requests for every pinned and mutable source. A failed request does not renew the old cache entry. Historical `--issue-snapshot-dir` files cannot be combined with a full refresh. The UI warns when the oldest valid source is at least seven days old and flags invalid timestamps as unknown. Review changed sources, validate hashes, rebuild matching indexes, and rerun evaluation before publishing a refreshed snapshot.
 
 A rebuildable source ZIP with per-file SHA-256 manifest can be prepared with:
 

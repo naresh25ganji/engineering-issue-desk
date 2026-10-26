@@ -205,7 +205,8 @@ def main():
     sources = read_json(ROOT / 'data' / 'sources.json', [])
     manifest = read_json(ROOT / 'data' / 'manifest.json', {})
     configured = bool((os.getenv('TRIAGE_API_KEY') or os.getenv('NEBIUS_API_KEY')) and (os.getenv('TRIAGE_MODEL') or os.getenv('NEBIUS_MODEL')))
-    snapshot_raw = str(manifest.get('snapshot_at') or manifest.get('fetched_at') or manifest.get('generated_at') or (sources[0].get('snapshot_at') if sources else '') or '')
+    freshness = corpus_freshness(sources)
+    snapshot_raw = str(freshness.get('oldest_snapshot_at') or manifest.get('snapshot_at') or manifest.get('fetched_at') or manifest.get('generated_at') or '')
     try:
         snapshot = datetime.fromisoformat(snapshot_raw.replace('Z', '+00:00')).astimezone(ZoneInfo('America/Los_Angeles')).strftime('%b %d, %Y PT')
     except ValueError:
@@ -241,13 +242,15 @@ def main():
         st.divider()
         st.markdown('**Knowledge snapshot**')
         st.caption(f'{len(sources)} sources · {snapshot}')
-        freshness = corpus_freshness(sources)
         if freshness['status'] == 'stale':
             st.warning('This snapshot is over 7 days old. Refresh and review it before relying on version-specific guidance.')
         elif freshness['status'] == 'unknown':
             st.warning('Snapshot age cannot be verified for every source. Review source timestamps before relying on this snapshot.')
         else:
             st.caption(f"Oldest snapshot: {freshness['age_days']:.1f} days old. Manual refresh is due weekly.")
+        with st.expander('Refresh instructions'):
+            st.caption('Fetch every source again with this maintainer command, then reload the app. Commit pins and API version stay explicit; a new fetch date does not verify every upstream claim.')
+            st.code('uv run python scripts/fetch_corpus.py --refresh-all', language='bash')
         st.caption('A bounded source snapshot. Issue reports describe observed behavior; matches need human review.')
 
     st.markdown('<p class="eyebrow">ENGINEERING WORKSPACE / STREAMLIT</p>', unsafe_allow_html=True)
