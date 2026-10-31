@@ -1,0 +1,507 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Engineering workflow evaluation</title>
+<style>body{font:16px system-ui;max-width:1100px;margin:40px auto;padding:0 24px;line-height:1.5;color:#172033}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f8;padding:16px;border-radius:8px}article{border-top:1px solid #ccd3df;margin-top:28px}h1,h2{line-height:1.2}</style>
+<h1>Engineering workflow evaluation</h1>
+<p>Mode: live. Labels await human review. Automatic checks do not establish semantic accuracy.</p>
+<h2>Observed results</h2><pre>{
+  &quot;scheduled_cases&quot;: 1,
+  &quot;attempted_cases&quot;: 1,
+  &quot;completed_handoffs&quot;: 1,
+  &quot;failed_cases&quot;: 0,
+  &quot;not_run_cases&quot;: 0,
+  &quot;handoff_rate&quot;: 1.0,
+  &quot;contract_pass_rate&quot;: 0.0,
+  &quot;citation_integrity_passed_cases&quot;: 1,
+  &quot;citation_integrity_applicable_cases&quot;: 1,
+  &quot;human_accuracy&quot;: null,
+  &quot;human_citation_entailment&quot;: null,
+  &quot;human_rubric_pending_cases&quot;: 1,
+  &quot;accounting_unknown_error_rows&quot;: 0,
+  &quot;anchors_checked&quot;: 1,
+  &quot;anchors_covered&quot;: 1,
+  &quot;quoted_anchor_recall&quot;: 1.0,
+  &quot;latency_p95_seconds&quot;: 6.048913,
+  &quot;latency_measured_cases&quot;: 1,
+  &quot;model_calls&quot;: 3,
+  &quot;tool_calls&quot;: 1,
+  &quot;unfinished_call_records&quot;: 0,
+  &quot;model_calls_by_role&quot;: {
+    &quot;investigator&quot;: 2,
+    &quot;evidence_reviewer&quot;: 1
+  },
+  &quot;tool_calls_by_name&quot;: {
+    &quot;read_case_evidence&quot;: 1
+  },
+  &quot;errors_by_role_or_tool&quot;: {},
+  &quot;reported_token_usage&quot;: {
+    &quot;input_tokens&quot;: 12370,
+    &quot;output_tokens&quot;: 994,
+    &quot;total_tokens&quot;: 13364
+  },
+  &quot;model_calls_missing_usage_by_field&quot;: {
+    &quot;input_tokens&quot;: 0,
+    &quot;output_tokens&quot;: 0,
+    &quot;total_tokens&quot;: 0
+  },
+  &quot;reported_tokens&quot;: 13364,
+  &quot;usage_complete&quot;: true,
+  &quot;mean_reported_tokens&quot;: 13364.0,
+  &quot;targets&quot;: {
+    &quot;handoff_rate&quot;: {
+      &quot;operator&quot;: &quot;&gt;=&quot;,
+      &quot;target&quot;: 0.95,
+      &quot;measured&quot;: 1.0,
+      &quot;passed&quot;: true
+    },
+    &quot;contract_pass_rate&quot;: {
+      &quot;operator&quot;: &quot;&gt;=&quot;,
+      &quot;target&quot;: 0.9,
+      &quot;measured&quot;: 0.0,
+      &quot;passed&quot;: false
+    },
+    &quot;quoted_anchor_recall&quot;: {
+      &quot;operator&quot;: &quot;&gt;=&quot;,
+      &quot;target&quot;: 0.85,
+      &quot;measured&quot;: 1.0,
+      &quot;passed&quot;: true
+    },
+    &quot;latency_p95_seconds&quot;: {
+      &quot;operator&quot;: &quot;&lt;=&quot;,
+      &quot;target&quot;: 90,
+      &quot;measured&quot;: 6.048913,
+      &quot;passed&quot;: true
+    },
+    &quot;mean_reported_tokens&quot;: {
+      &quot;operator&quot;: &quot;&lt;=&quot;,
+      &quot;target&quot;: 20000,
+      &quot;measured&quot;: 13364.0,
+      &quot;passed&quot;: true
+    }
+  }
+}</pre>
+<h2>By use case</h2><pre>{
+  &quot;issue_investigation&quot;: {
+    &quot;scheduled_cases&quot;: 1,
+    &quot;attempted_cases&quot;: 1,
+    &quot;completed_handoffs&quot;: 1,
+    &quot;failed_cases&quot;: 0,
+    &quot;not_run_cases&quot;: 0,
+    &quot;handoff_rate&quot;: 1.0,
+    &quot;contract_pass_rate&quot;: 0.0,
+    &quot;citation_integrity_passed_cases&quot;: 1,
+    &quot;citation_integrity_applicable_cases&quot;: 1,
+    &quot;human_accuracy&quot;: null,
+    &quot;human_citation_entailment&quot;: null,
+    &quot;human_rubric_pending_cases&quot;: 1,
+    &quot;accounting_unknown_error_rows&quot;: 0,
+    &quot;anchors_checked&quot;: 1,
+    &quot;anchors_covered&quot;: 1,
+    &quot;quoted_anchor_recall&quot;: 1.0,
+    &quot;latency_p95_seconds&quot;: 6.048913,
+    &quot;latency_measured_cases&quot;: 1,
+    &quot;model_calls&quot;: 3,
+    &quot;tool_calls&quot;: 1,
+    &quot;unfinished_call_records&quot;: 0,
+    &quot;model_calls_by_role&quot;: {
+      &quot;investigator&quot;: 2,
+      &quot;evidence_reviewer&quot;: 1
+    },
+    &quot;tool_calls_by_name&quot;: {
+      &quot;read_case_evidence&quot;: 1
+    },
+    &quot;errors_by_role_or_tool&quot;: {},
+    &quot;reported_token_usage&quot;: {
+      &quot;input_tokens&quot;: 12370,
+      &quot;output_tokens&quot;: 994,
+      &quot;total_tokens&quot;: 13364
+    },
+    &quot;model_calls_missing_usage_by_field&quot;: {
+      &quot;input_tokens&quot;: 0,
+      &quot;output_tokens&quot;: 0,
+      &quot;total_tokens&quot;: 0
+    },
+    &quot;reported_tokens&quot;: 13364,
+    &quot;usage_complete&quot;: true,
+    &quot;mean_reported_tokens&quot;: 13364.0,
+    &quot;targets&quot;: {
+      &quot;handoff_rate&quot;: {
+        &quot;operator&quot;: &quot;&gt;=&quot;,
+        &quot;target&quot;: 0.95,
+        &quot;measured&quot;: 1.0,
+        &quot;passed&quot;: true
+      },
+      &quot;contract_pass_rate&quot;: {
+        &quot;operator&quot;: &quot;&gt;=&quot;,
+        &quot;target&quot;: 0.9,
+        &quot;measured&quot;: 0.0,
+        &quot;passed&quot;: false
+      },
+      &quot;quoted_anchor_recall&quot;: {
+        &quot;operator&quot;: &quot;&gt;=&quot;,
+        &quot;target&quot;: 0.85,
+        &quot;measured&quot;: 1.0,
+        &quot;passed&quot;: true
+      },
+      &quot;latency_p95_seconds&quot;: {
+        &quot;operator&quot;: &quot;&lt;=&quot;,
+        &quot;target&quot;: 90,
+        &quot;measured&quot;: 6.048913,
+        &quot;passed&quot;: true
+      },
+      &quot;mean_reported_tokens&quot;: {
+        &quot;operator&quot;: &quot;&lt;=&quot;,
+        &quot;target&quot;: 20000,
+        &quot;measured&quot;: 13364.0,
+        &quot;passed&quot;: true
+      }
+    }
+  }
+}</pre>
+<h2>Measurement limits</h2><ul>
+<li>All selected cases, including provider errors and unstarted cases, remain in rate denominators.</li>
+<li>Contract checks measure saved workflow identity, handoff, actual AI review, literal citations, count floors, and successful required tool calls; they are not semantic accuracy.</li>
+<li>Quoted anchor recall measures exact fixture substrings within valid registered support quotes. It is a provisional coverage proxy, not entailment or factual correctness.</li>
+<li>AI evidence review uses a separate model call and the stated prompt, not an independent human. Human rubrics and labels remain pending.</li>
+<li>No evaluation approves, publishes, merges, executes supplied code, or resumes a human decision. Reports remain awaiting human review.</li>
+<li>Token totals use observed provider usage. Incomplete usage cannot pass the token target; costs and missing tokens are never inferred.</li>
+<li>Latency includes service initialization and the complete case. Small samples and concurrent runs do not establish production latency guarantees.</li>
+<li>Remote tracing is disabled. Exports contain public bundled fixture text, generated reports, bounded source provenance and safe audit event fields; provider error bodies, raw tool arguments and unrelated full source bodies are excluded.</li>
+</ul>
+<article><h2>WF-02 · Configuration unavailable at request time</h2>
+<p>awaiting_review · issue_investigation</p>
+<p>A hosted query cannot obtain runtime configuration. Identify the exception translation visible in this helper and request the missing configuration details. Do not infer the provider is down.</p>
+<h3>Checks</h3><pre>{
+  &quot;identity_preserved&quot;: true,
+  &quot;persisted_handoff&quot;: true,
+  &quot;independent_review_completed&quot;: true,
+  &quot;min_findings_met&quot;: true,
+  &quot;min_next_steps_met&quot;: false,
+  &quot;required_tools_met&quot;: true,
+  &quot;quoted_anchor_recall&quot;: 1.0,
+  &quot;anchors_checked&quot;: 1,
+  &quot;anchors_covered&quot;: 1,
+  &quot;contract_passed&quot;: false
+}</pre>
+<h3>Saved report</h3><pre>{
+  &quot;findings&quot;: [
+    {
+      &quot;statement&quot;: &quot;The helper catches GenerationUnavailable and re‑raises it as EmbeddingUnavailable with a specific message indicating the hosted embedding configuration is unavailable.&quot;,
+      &quot;category&quot;: &quot;correctness&quot;,
+      &quot;severity&quot;: &quot;low&quot;,
+      &quot;support&quot;: [
+        {
+          &quot;evidence_id&quot;: &quot;ev_c7dd363cd748d07b116e4441f24973e1&quot;,
+          &quot;quote_id&quot;: &quot;ev_c7dd363cd748d07b116e4441f24973e1:q1&quot;,
+          &quot;quote&quot;: &quot;# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -&gt; str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\&quot;Hosted embedding configuration is unavailable; no local fallback was selected.\&quot;) from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\&quot;Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\&quot;)\n        return key\n&quot;
+        }
+      ]
+    }
+  ],
+  &quot;missing_information&quot;: [],
+  &quot;next_steps&quot;: [],
+  &quot;quality_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Code shows except GenerationUnavailable: raise EmbeddingUnavailable with the specified message.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Quote does not provide the missing configuration details; proposal cannot be verified from evidence.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 1,
+    &quot;removed_findings&quot;: 0,
+    &quot;removed_next_steps&quot;: 1,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;,
+    &quot;information_request_safety&quot;: {
+      &quot;policy_version&quot;: 1,
+      &quot;draft_converted&quot;: 0,
+      &quot;review_converted&quot;: 0,
+      &quot;converted_count&quot;: 0
+    }
+  }
+}</pre>
+<details><summary>Fixture, expectations and local audit trace</summary><pre>{
+  &quot;input&quot;: {
+    &quot;question&quot;: &quot;A hosted query cannot obtain runtime configuration. Identify the exception translation visible in this helper and request the missing configuration details. Do not infer the provider is down.&quot;,
+    &quot;version&quot;: &quot;&quot;,
+    &quot;context&quot;: &quot;# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -&gt; str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\&quot;Hosted embedding configuration is unavailable; no local fallback was selected.\&quot;) from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\&quot;Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\&quot;)\n        return key\n&quot;,
+    &quot;use_case&quot;: &quot;issue_investigation&quot;
+  },
+  &quot;fixture&quot;: {
+    &quot;path&quot;: &quot;evaluation/fixtures/workflows/embedding_endpoint.py&quot;,
+    &quot;sha256&quot;: &quot;196a0494b2df5a465a107431833a07bccf03642b71fdaa9946cd9e31dfa7b43e&quot;
+  },
+  &quot;expected&quot;: {
+    &quot;min_findings&quot;: 1,
+    &quot;min_next_steps&quot;: 1,
+    &quot;required_tools&quot;: [
+      &quot;read_case_evidence&quot;
+    ],
+    &quot;evidence_anchors&quot;: [
+      &quot;except GenerationUnavailable:&quot;
+    ],
+    &quot;behavior_notes&quot;: &quot;Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.&quot;,
+    &quot;human_rubric&quot;: [
+      &quot;Ground each factual observation in the supplied source and preserve its scope.&quot;,
+      &quot;Separate a proposed diagnostic or change from a verified fix or test result.&quot;,
+      &quot;Describe missing information needed to decide the user question.&quot;
+    ]
+  },
+  &quot;label_review&quot;: {
+    &quot;status&quot;: &quot;pending&quot;,
+    &quot;reviewer&quot;: null,
+    &quot;notes&quot;: &quot;&quot;
+  },
+  &quot;sources&quot;: [
+    {
+      &quot;evidence_id&quot;: &quot;ev_c7dd363cd748d07b116e4441f24973e1&quot;,
+      &quot;title&quot;: &quot;User supplied reproduction code&quot;,
+      &quot;url&quot;: &quot;&quot;,
+      &quot;kind&quot;: &quot;code&quot;,
+      &quot;origin&quot;: &quot;user_code&quot;,
+      &quot;evidence_type&quot;: &quot;&quot;,
+      &quot;filename&quot;: &quot;&quot;,
+      &quot;fetched_at&quot;: &quot;2026-10-30T22:31:02.596506+00:00&quot;,
+      &quot;snapshot_at&quot;: &quot;&quot;,
+      &quot;version_scope&quot;: &quot;&quot;,
+      &quot;commit_sha&quot;: &quot;&quot;,
+      &quot;sha256&quot;: &quot;196a0494b2df5a465a107431833a07bccf03642b71fdaa9946cd9e31dfa7b43e&quot;,
+      &quot;published_at&quot;: &quot;&quot;,
+      &quot;acquired_at&quot;: &quot;&quot;
+    }
+  ],
+  &quot;independent_ai_review&quot;: {
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;finding_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: true,
+        &quot;reason&quot;: &quot;Code shows except GenerationUnavailable: raise EmbeddingUnavailable with the specified message.&quot;
+      }
+    ],
+    &quot;next_step_verdicts&quot;: [
+      {
+        &quot;index&quot;: 0,
+        &quot;supported&quot;: false,
+        &quot;reason&quot;: &quot;Quote does not provide the missing configuration details; proposal cannot be verified from evidence.&quot;
+      }
+    ],
+    &quot;retained_findings&quot;: 1,
+    &quot;removed_findings&quot;: 0,
+    &quot;removed_next_steps&quot;: 1,
+    &quot;reviewer_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;,
+    &quot;information_request_safety&quot;: {
+      &quot;policy_version&quot;: 1,
+      &quot;draft_converted&quot;: 0,
+      &quot;review_converted&quot;: 0,
+      &quot;converted_count&quot;: 0
+    }
+  },
+  &quot;accounting&quot;: {
+    &quot;model_calls&quot;: 3,
+    &quot;tool_calls&quot;: 1,
+    &quot;model_calls_by_role&quot;: {
+      &quot;investigator&quot;: 2,
+      &quot;evidence_reviewer&quot;: 1
+    },
+    &quot;tool_calls_by_name&quot;: {
+      &quot;read_case_evidence&quot;: 1
+    },
+    &quot;errors_by_role_or_tool&quot;: {},
+    &quot;unfinished_call_records&quot;: 0,
+    &quot;reported_token_usage&quot;: {
+      &quot;input_tokens&quot;: 12370,
+      &quot;output_tokens&quot;: 994,
+      &quot;total_tokens&quot;: 13364
+    },
+    &quot;model_calls_missing_usage_by_field&quot;: {
+      &quot;input_tokens&quot;: 0,
+      &quot;output_tokens&quot;: 0,
+      &quot;total_tokens&quot;: 0
+    },
+    &quot;usage_complete&quot;: true,
+    &quot;note&quot;: &quot;Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred.&quot;
+  },
+  &quot;events&quot;: [
+    {
+      &quot;phase&quot;: &quot;configuration&quot;,
+      &quot;name&quot;: &quot;evidence_review_prompt&quot;,
+      &quot;status&quot;: &quot;selected&quot;,
+      &quot;event_id&quot;: 1,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:02.590942+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;stage&quot;,
+      &quot;name&quot;: &quot;investigation&quot;,
+      &quot;status&quot;: &quot;started&quot;,
+      &quot;revision&quot;: 0,
+      &quot;event_id&quot;: 2,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:02.595807+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;model&quot;,
+      &quot;name&quot;: &quot;investigator&quot;,
+      &quot;status&quot;: &quot;started&quot;,
+      &quot;call_id&quot;: &quot;870475e1cfe14f80aa9f240cc6a70dc5&quot;,
+      &quot;event_id&quot;: 3,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:03.773987+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;model_result&quot;,
+      &quot;name&quot;: &quot;investigator&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;call_id&quot;: &quot;870475e1cfe14f80aa9f240cc6a70dc5&quot;,
+      &quot;started_at&quot;: &quot;2026-10-30T22:31:03.774329+00:00&quot;,
+      &quot;usage&quot;: {
+        &quot;input_tokens&quot;: 4917,
+        &quot;output_tokens&quot;: 126,
+        &quot;total_tokens&quot;: 5043
+      },
+      &quot;usage_reported&quot;: true,
+      &quot;finish_reason&quot;: &quot;tool_calls&quot;,
+      &quot;returned_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;,
+      &quot;tool_call_count&quot;: 1,
+      &quot;invalid_tool_call_count&quot;: 0,
+      &quot;latency_ms&quot;: 831.96,
+      &quot;event_id&quot;: 4,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:04.605987+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;tool&quot;,
+      &quot;name&quot;: &quot;read_case_evidence&quot;,
+      &quot;status&quot;: &quot;started&quot;,
+      &quot;call_id&quot;: &quot;d610808a696e4d79b301f8beda3b3b4d&quot;,
+      &quot;event_id&quot;: 5,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:04.608077+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;tool_result&quot;,
+      &quot;name&quot;: &quot;read_case_evidence&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;call_id&quot;: &quot;d610808a696e4d79b301f8beda3b3b4d&quot;,
+      &quot;started_at&quot;: &quot;2026-10-30T22:31:04.608415+00:00&quot;,
+      &quot;latency_ms&quot;: 1.43,
+      &quot;event_id&quot;: 6,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:04.609376+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;model&quot;,
+      &quot;name&quot;: &quot;investigator&quot;,
+      &quot;status&quot;: &quot;started&quot;,
+      &quot;call_id&quot;: &quot;7738406312a641f1b135b5eb4c4914af&quot;,
+      &quot;event_id&quot;: 7,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:04.610993+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;model_result&quot;,
+      &quot;name&quot;: &quot;investigator&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;call_id&quot;: &quot;7738406312a641f1b135b5eb4c4914af&quot;,
+      &quot;started_at&quot;: &quot;2026-10-30T22:31:04.611234+00:00&quot;,
+      &quot;usage&quot;: {
+        &quot;input_tokens&quot;: 5422,
+        &quot;output_tokens&quot;: 342,
+        &quot;total_tokens&quot;: 5764
+      },
+      &quot;usage_reported&quot;: true,
+      &quot;finish_reason&quot;: &quot;tool_calls&quot;,
+      &quot;returned_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;,
+      &quot;tool_call_count&quot;: 1,
+      &quot;invalid_tool_call_count&quot;: 0,
+      &quot;latency_ms&quot;: 1752.99,
+      &quot;event_id&quot;: 8,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:06.364121+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;safety&quot;,
+      &quot;name&quot;: &quot;missing_information_requests_draft&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;converted_count&quot;: 0,
+      &quot;policy_version&quot;: 1,
+      &quot;event_id&quot;: 9,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:06.367064+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;stage&quot;,
+      &quot;name&quot;: &quot;evidence_validation&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;findings&quot;: 1,
+      &quot;event_id&quot;: 10,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:06.369168+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;stage&quot;,
+      &quot;name&quot;: &quot;evidence_review&quot;,
+      &quot;status&quot;: &quot;started&quot;,
+      &quot;event_id&quot;: 11,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:06.370067+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;model&quot;,
+      &quot;name&quot;: &quot;evidence_reviewer&quot;,
+      &quot;status&quot;: &quot;started&quot;,
+      &quot;call_id&quot;: &quot;3fc6566ccef341248c2a3d6983551156&quot;,
+      &quot;event_id&quot;: 12,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:06.377922+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;model_result&quot;,
+      &quot;name&quot;: &quot;evidence_reviewer&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;call_id&quot;: &quot;3fc6566ccef341248c2a3d6983551156&quot;,
+      &quot;started_at&quot;: &quot;2026-10-30T22:31:06.378211+00:00&quot;,
+      &quot;usage&quot;: {
+        &quot;input_tokens&quot;: 2031,
+        &quot;output_tokens&quot;: 526,
+        &quot;total_tokens&quot;: 2557
+      },
+      &quot;usage_reported&quot;: true,
+      &quot;finish_reason&quot;: &quot;tool_calls&quot;,
+      &quot;returned_model&quot;: &quot;accounts/fireworks/models/gpt-oss-120b&quot;,
+      &quot;tool_call_count&quot;: 1,
+      &quot;invalid_tool_call_count&quot;: 0,
+      &quot;latency_ms&quot;: 2206.15,
+      &quot;event_id&quot;: 13,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:08.584101+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;safety&quot;,
+      &quot;name&quot;: &quot;missing_information_requests_review&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;converted_count&quot;: 0,
+      &quot;policy_version&quot;: 1,
+      &quot;event_id&quot;: 14,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:08.585234+00:00&quot;
+    },
+    {
+      &quot;phase&quot;: &quot;stage&quot;,
+      &quot;name&quot;: &quot;evidence_review&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;retained_findings&quot;: 1,
+      &quot;removed_findings&quot;: 0,
+      &quot;removed_next_steps&quot;: 1,
+      &quot;event_id&quot;: 15,
+      &quot;created_at&quot;: &quot;2026-10-30T22:31:08.587069+00:00&quot;
+    }
+  ],
+  &quot;human_review&quot;: {
+    &quot;status&quot;: &quot;pending&quot;,
+    &quot;accuracy&quot;: null,
+    &quot;relevance&quot;: null,
+    &quot;citation_entailment&quot;: null,
+    &quot;rubric&quot;: [
+      &quot;Ground each factual observation in the supplied source and preserve its scope.&quot;,
+      &quot;Separate a proposed diagnostic or change from a verified fix or test result.&quot;,
+      &quot;Describe missing information needed to decide the user question.&quot;
+    ],
+    &quot;notes&quot;: &quot;&quot;
+  },
+  &quot;error&quot;: null
+}</pre></details></article>
+</html>

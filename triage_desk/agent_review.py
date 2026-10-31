@@ -147,6 +147,81 @@ _PROVENANCE_FIELDS = {
 }
 
 
+_DIAGNOSTIC_GUIDANCE = """
+For proposed diagnostics, judge whether the proposed observation can test a
+specific uncertainty or safeguard visible in the selected evidence. The quote
+does not need to prescribe that exact test or show that it already ran. A
+sentinel, negative input, additional fixture, or separate labeled live experiment
+can be a grounded diagnostic. Inspecting for a sentinel includes checking that
+it is absent; do not require the sentinel to appear for the test to be useful.
+Checking a missing prerequisite is a diagnostic, not an assertion that the
+prerequisite holds. Preserve the distinction between a proposed experiment and
+an asserted successful result or guaranteed remedy. Reject the latter without
+evidence for its outcome and mechanism.
+"""
+_BOUNDARY_GUIDANCE = """
+Before accepting a compound finding about conditions or limits, compare every
+qualifier against the literal branches. Check strict versus inclusive comparisons,
+equality at a boundary, empty inputs, and the precedence of error conditions.
+Terms such as earlier than, at most, only when, all, and otherwise have exact
+logical meaning. Do not silently repair the author's claim to a nearby correct
+statement in your reason. A single contradicted clause makes the original whole
+item unsupported even when its other clauses are true.
+"""
+_STATIC_SCOPE_GUIDANCE = """
+Evaluate a statement at its explicitly stated scope. A claim that a test asserts
+something or a fixture string says something is about that literal artifact; it
+does not certify external product behavior. Read assertions and string values
+as well as executable branches when that is the stated subject. Accept narrow
+logical consequences of selected assignments, validation gates, and assertions,
+including faithful paraphrases, without demanding identical wording in a comment.
+For example, records that pass the quoted validation can be described as accepted
+records. Such static reasoning establishes what the shown code expresses; it
+never establishes that tests passed, a live model judged correctly, or an omitted
+helper lacks a safeguard. Keep those broader claims unsupported.
+"""
+_RUBRIC_EXAMPLES = """
+Calibrate the rubric with these generic examples, which are not additional
+evidence for the submitted items:
+1. Evidence: a handler raises a fixed message instead of the exception text.
+   Proposal: inject a distinct test exception and inspect the public message
+   for its marker. Verdict: supported diagnostic, including checking absence.
+   Claim: that test already passed. Verdict: unsupported execution claim.
+2. Evidence: an offline model double returns a supplied verdict and the test
+   checks the filtered output. Proposal: evaluate semantic quality separately
+   with labeled live examples. Verdict: supported proposed measurement of the
+   visible mock-versus-live limitation; it asserts no achieved live quality.
+3. Evidence: assert secret_marker not in serialized_request.
+   Claim: the selected test asserts this marker is absent from the request.
+   Verdict: supported description of the assertion, without claiming it ran.
+4. Evidence: a fixture string says setting A affects only event A.
+   Claim: the selected fixture distinguishes event A from other triggers.
+   Verdict: supported description of that fixture. Claim: this proves setting A
+   fixes another event. Verdict: unsupported causal extrapolation.
+Apply the same distinction to the actual selected quotes. Evidence need not
+prescribe a proposed experiment verbatim. A test or fixture can be described
+literally without being certified as executed or as external documentation.
+"""
+
+
+def review_prompt(version: str = 'baseline') -> str:
+    """Return frozen baseline or cumulative experimental reviewer instructions.
+
+    Production keeps the baseline default until a prompt is explicitly promoted.
+    These variants are development experiments, not independent held-out results.
+    """
+    additions = {
+        'baseline': '',
+        'diagnostic': _DIAGNOSTIC_GUIDANCE,
+        'scope': _DIAGNOSTIC_GUIDANCE + _BOUNDARY_GUIDANCE,
+        'authority': _DIAGNOSTIC_GUIDANCE + _BOUNDARY_GUIDANCE + _STATIC_SCOPE_GUIDANCE,
+        'calibrated': _DIAGNOSTIC_GUIDANCE + _BOUNDARY_GUIDANCE + _STATIC_SCOPE_GUIDANCE + _RUBRIC_EXAMPLES,
+    }
+    if version not in additions:
+        raise ValueError('Unknown evidence-review prompt version.')
+    return _REVIEW_PROMPT + additions[version]
+
+
 def _quote_provenance(source: dict | None) -> dict:
     """Project bounded saved metadata, never a source body or caller quote spans."""
     if source is None:
@@ -241,7 +316,7 @@ def _output_failure(exc: AgentOutputError) -> str:
 
 
 def review_report(report: dict, model: BaseChatModel, budget: InvestigationBudget, *,
-                  context: dict | None = None) -> dict:
+                  context: dict | None = None, prompt_version: str = 'baseline') -> dict:
     """Filter an already citation-validated report using one independent model call.
 
     The returned report contains only original items and hydrated support quotes.
@@ -249,6 +324,7 @@ def review_report(report: dict, model: BaseChatModel, budget: InvestigationBudge
     Optional request context identifies the reported trigger and version; it is
     explicitly not factual evidence and contains no additional source body.
     """
+    prompt = review_prompt(prompt_version)
     try:
         try:
             filtered = deepcopy({name: report[name] for name in ('findings', 'next_steps', 'missing_information')})
@@ -264,7 +340,7 @@ def review_report(report: dict, model: BaseChatModel, budget: InvestigationBudge
         if len(serialized) > 80_000:
             raise ReviewUnavailable(code='context_limit')
         bound_model = model.bind_tools([EvidenceVerdicts.model_json_schema()], tool_choice='EvidenceVerdicts')
-        messages = [SystemMessage(content=_REVIEW_PROMPT), HumanMessage(content=serialized)]
+        messages = [SystemMessage(content=prompt), HumanMessage(content=serialized)]
         response = BudgetMiddleware(budget, 'evidence_reviewer').wrap_model_call(
             None, lambda _: ModelResponse(result=[bound_model.invoke(messages)]),
         )

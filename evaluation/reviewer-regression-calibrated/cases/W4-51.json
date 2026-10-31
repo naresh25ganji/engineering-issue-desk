@@ -1,0 +1,299 @@
+{
+  "id": "W4-51",
+  "scenario": "happy_path",
+  "title": "Coverage set validation",
+  "failure_mode": "Coverage set validation",
+  "source": {
+    "path": "evaluation/fixtures/workflows/verdict_coverage.py",
+    "start_line": 1,
+    "end_line": 15,
+    "sha256": "aa3beae84cb45418a761641936f5c04492b8b887eb61733d275f2c23ffebe2af",
+    "quote": "# Frozen source excerpt: triage_desk/agent_review.py:288-301\ndef _validate_verdicts(verdicts: list[EvidenceVerdict], count: int) -> list[dict]:\n    indices = [verdict.index for verdict in verdicts]\n    if len(indices) != count or set(indices) != set(range(count)):\n        raise ReviewUnavailable(code='incomplete_coverage')\n    normalized = []\n    for verdict in verdicts:\n        # Removing paired single-backtick delimiters changes presentation only.\n        # Check the resulting text so split/hidden URLs and HTML remain unsafe.\n        # Fences, doubled or unmatched delimiters remain and are rejected.\n        reason = _INLINE_CODE.sub(r'\\1', verdict.reason).strip()\n        if not reason or _REASON_UNSAFE.search(reason):\n            raise ReviewUnavailable(code='invalid_reason')\n        normalized.append({**verdict.model_dump(), 'reason': reason})\n    return sorted(normalized, key=lambda verdict: verdict['index'])\n",
+    "title": "verdict_coverage.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/verdict_coverage.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The verdict validator checks both the number of indices and equality with the expected range of indices.",
+        "expected_supported": true,
+        "rationale": "Both length and set conditions are visible in the guard."
+      },
+      {
+        "statement": "Any verdict list of the expected length passes coverage validation regardless of its indices.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose duplicate-index and wrong-index lists with the expected length.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.541242,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code checks len(indices)!=count OR set(indices)!=set(range(count)) before passing."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Validator also requires set(indices) match full range, so length alone does not guarantee pass."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed duplicate/wrong-index lists would be rejected by the same check, making it a valid diagnostic."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The verdict validator checks both the number of indices and equality with the expected range of indices.",
+        "support": [
+          {
+            "evidence_id": "W4-51-source",
+            "quote_id": "W4-51-quote",
+            "quote": "# Frozen source excerpt: triage_desk/agent_review.py:288-301\ndef _validate_verdicts(verdicts: list[EvidenceVerdict], count: int) -> list[dict]:\n    indices = [verdict.index for verdict in verdicts]\n    if len(indices) != count or set(indices) != set(range(count)):\n        raise ReviewUnavailable(code='incomplete_coverage')\n    normalized = []\n    for verdict in verdicts:\n        # Removing paired single-backtick delimiters changes presentation only.\n        # Check the resulting text so split/hidden URLs and HTML remain unsafe.\n        # Fences, doubled or unmatched delimiters remain and are rejected.\n        reason = _INLINE_CODE.sub(r'\\1', verdict.reason).strip()\n        if not reason or _REASON_UNSAFE.search(reason):\n            raise ReviewUnavailable(code='invalid_reason')\n        normalized.append({**verdict.model_dump(), 'reason': reason})\n    return sorted(normalized, key=lambda verdict: verdict['index'])\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose duplicate-index and wrong-index lists with the expected length."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-51",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "21a4e085-fdce-40a7-879b-5250de5e7c61",
+      "created_at": "2026-10-30T22:24:02.173240+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "965b33576bd84d26a5536e50abaad7ac",
+      "event_id": 2,
+      "case_id": "21a4e085-fdce-40a7-879b-5250de5e7c61",
+      "created_at": "2026-10-30T22:24:02.174821+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "965b33576bd84d26a5536e50abaad7ac",
+      "started_at": "2026-10-30T22:24:02.175191+00:00",
+      "usage": {
+        "input_tokens": 2148,
+        "output_tokens": 688,
+        "total_tokens": 2836
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3519.95,
+      "event_id": 3,
+      "case_id": "21a4e085-fdce-40a7-879b-5250de5e7c61",
+      "created_at": "2026-10-30T22:24:05.695777+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-51",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.541242,
+      "error": null,
+      "event_id": 4,
+      "case_id": "21a4e085-fdce-40a7-879b-5250de5e7c61",
+      "created_at": "2026-10-30T22:24:05.698492+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2148,
+      "output_tokens": 688,
+      "total_tokens": 2836
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "21a4e085-fdce-40a7-879b-5250de5e7c61",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

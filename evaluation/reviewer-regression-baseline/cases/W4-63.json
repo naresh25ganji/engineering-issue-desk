@@ -1,0 +1,299 @@
+{
+  "id": "W4-63",
+  "scenario": "edge",
+  "title": "Parameterized traversal tests are static fixtures",
+  "failure_mode": "Parameterized traversal tests are static fixtures",
+  "source": {
+    "path": "evaluation/fixtures/workflows/path_test_definitions.py",
+    "start_line": 1,
+    "end_line": 11,
+    "sha256": "a2ea63b9612e48360170a4a3a20d98565ecb58ad7e4ae57eae680b84b8510545",
+    "quote": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n",
+    "title": "path_test_definitions.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/path_test_definitions.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The parameterized path cases include a newline in a generation.py path.",
+        "expected_supported": true,
+        "rationale": "The escaped newline path is literal in the supplied test parameter list."
+      },
+      {
+        "statement": "Every production filesystem race has been reproduced by this parameterized test.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose checking the existing newline-path case before adding a redundant identical test.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.450188,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote contains 'triage_desk/generation.py\\n' confirming a newline in a path."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote lists test cases but does not show they reproduce every production filesystem race."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote confirms newline path case exists, so checking it before adding a duplicate test is justified."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The parameterized path cases include a newline in a generation.py path.",
+        "support": [
+          {
+            "evidence_id": "W4-63-source",
+            "quote_id": "W4-63-quote",
+            "quote": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose checking the existing newline-path case before adding a redundant identical test."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-63",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "d1a51dc2-7953-4771-ba44-676a0a35feba",
+      "created_at": "2026-10-30T22:23:06.710291+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "cc5426427a2d4ece8a246feed61b345e",
+      "event_id": 2,
+      "case_id": "d1a51dc2-7953-4771-ba44-676a0a35feba",
+      "created_at": "2026-10-30T22:23:06.711735+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "cc5426427a2d4ece8a246feed61b345e",
+      "started_at": "2026-10-30T22:23:06.712141+00:00",
+      "usage": {
+        "input_tokens": 1471,
+        "output_tokens": 573,
+        "total_tokens": 2044
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2426.48,
+      "event_id": 3,
+      "case_id": "d1a51dc2-7953-4771-ba44-676a0a35feba",
+      "created_at": "2026-10-30T22:23:09.139443+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-63",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.450188,
+      "error": null,
+      "event_id": 4,
+      "case_id": "d1a51dc2-7953-4771-ba44-676a0a35feba",
+      "created_at": "2026-10-30T22:23:09.142273+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1471,
+      "output_tokens": 573,
+      "total_tokens": 2044
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "d1a51dc2-7953-4771-ba44-676a0a35feba",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

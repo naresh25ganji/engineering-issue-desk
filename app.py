@@ -84,6 +84,14 @@ def report_summaries(value: dict, prefix: str = ''):
 
 def render_evaluation_summary(document: dict):
     """Display measured agent handoffs or the existing retrieval diagnostics."""
+    if document.get('report_kind') in {'use_case_workflow', 'use_case_comparison', 'evidence_integrity'}:
+        from triage_desk.workflow_evaluation_ui import render_engineering_evaluation
+        render_engineering_evaluation(document)
+        return
+    if document.get('report_kind') in {'week4_evidence_review', 'week4_paired_comparison'}:
+        from triage_desk.evaluation_ui import render_week4_evaluation
+        render_week4_evaluation(document)
+        return
     if document.get('report_kind') == 'deep_agent_workflow':
         summary = document.get('summary', {})
         st.markdown('**Deep Agents workflow run**')
@@ -256,8 +264,8 @@ def main():
     st.markdown('<p class="eyebrow">ENGINEERING WORKSPACE / STREAMLIT</p>', unsafe_allow_html=True)
     head, state = st.columns([4, 1])
     with head:
-        st.title('Investigate a Streamlit issue')
-        st.caption('Bring the symptoms. Find supporting evidence, capture missing details, and draft a clear handoff.')
+        st.title('Investigate engineering issues')
+        st.caption('Investigate behavior, triage incidents, review changes, and plan regression tests with supporting evidence.')
     with state:
         st.write('')
         st.badge('Evidence workspace', icon=':material/fact_check:', color='green')
@@ -447,7 +455,9 @@ def main():
 
     with evaluation_tab:
         st.subheader('Evaluate evidence and investigation handoffs')
-        st.caption('Compare retrieval diagnostics and observed Deep Agents runs. Citation integrity, saved handoffs, and human answer-quality judgments are measured separately.')
+        st.caption('Run workflow, reviewer, and citation evaluations. Inspect results by use case, with structural checks and human quality judgments shown separately.')
+        from triage_desk.evaluation_lab import render_evaluation_launcher, list_reports
+        suite_filter = render_evaluation_launcher(ROOT)
         from triage_desk.reviews import outcome_summary
         reviews = outcome_summary(ROOT / '.cache' / 'user-outcomes.jsonl')
         if reviews['reviewed_runs']:
@@ -455,9 +465,13 @@ def main():
             st.json(reviews)
         else:
             st.caption('No user outcome labels recorded. A first-contact resolution rate cannot be inferred from generated answers.')
-        reports = sorted(set((ROOT / 'evaluation').glob('*report*.json')) | set((ROOT / 'evaluation').glob('*/report.json')), key=lambda p: p.stat().st_mtime, reverse=True)
+        reports = list_reports(ROOT, suite_filter)
         if reports:
-            path = st.selectbox('Evaluation report', reports, format_func=lambda p: str(p.relative_to(ROOT)))
+            options = [str(path.relative_to(ROOT)) for path in reports]
+            if st.session_state.get('evaluation_report_path') not in options:
+                st.session_state.pop('evaluation_report_path', None)
+            selected = st.selectbox('Evaluation report', options, key='evaluation_report_path')
+            path = ROOT / selected
             document = read_json(path, {})
             render_evaluation_summary(document)
             if document.get('generation_requested'):
@@ -473,8 +487,8 @@ def main():
             if path.with_suffix('.html').exists():
                 st.download_button('Download readable evaluation report', path.with_suffix('.html').read_text(), file_name='evaluation-report.html', mime='text/html')
         else:
-            st.info('Run a retrieval benchmark or Deep Investigation evaluation to create a report.')
-        st.code('uv run python -m evaluation.run\nuv run python -m evaluation.agent_workflow --live --output-dir evaluation/week3-results-new', language='bash')
+            st.info('No recorded reports for this suite. Run an evaluation above or choose another suite.')
+        st.code('uv run python -m evaluation.use_cases run --output-dir .cache/workflow-inventory-new\nuv run python -m evaluation.use_cases run --live --workers 4 --review-prompt calibrated --output-dir evaluation/use-case-live-new\nuv run python -m evaluation.integrity --output-dir evaluation/integrity-results-new', language='bash')
         st.markdown('**Review dimensions:** source retrieval, citation validity, supported claims, saved human handoffs, answer relevance, observed calls, and latency. Automatic checks and AI review leave human quality judgments unscored.')
 
 

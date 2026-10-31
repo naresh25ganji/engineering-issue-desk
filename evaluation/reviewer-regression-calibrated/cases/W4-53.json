@@ -1,0 +1,297 @@
+{
+  "id": "W4-53",
+  "scenario": "happy_path",
+  "title": "Unapplied patch removes endpoint guard",
+  "failure_mode": "Unapplied patch removes endpoint guard",
+  "source": {
+    "path": "evaluation/fixtures/workflows/endpoint_guard.diff",
+    "start_line": 1,
+    "end_line": 12,
+    "sha256": "9bb2f72abea0accfc35cf9fd31c5277e9ab3654c1d5b343fdfbba45dbfed9fd1",
+    "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,8 +1,6 @@\n     def _runtime_key(self) -> str:\n         try:\n             key, _, base = _configuration()\n         except GenerationUnavailable:\n             raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n-        if _embedding_endpoint(base) != self.endpoint:\n-            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n         return key\n",
+    "title": "endpoint_guard.diff",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "unapplied_patch_from_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/endpoint_guard.diff"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The proposed diff removes the endpoint mismatch condition and its exception.",
+        "expected_supported": true,
+        "rationale": "The diff shows those lines deleted and explicitly labels the patch unapplied and unexecuted."
+      },
+      {
+        "statement": "The deployed application now accepts endpoint changes, as confirmed by an executed integration test.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a regression check for changing the configured endpoint after index construction.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.822613,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Diff shows removal of the if block and raise, confirming the condition and exception are removed."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote is a static, unapplied patch; no evidence of deployment or integration test execution."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "No evidence of an existing regression check; proposal is unsubstantiated by the provided code."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The proposed diff removes the endpoint mismatch condition and its exception.",
+        "support": [
+          {
+            "evidence_id": "W4-53-source",
+            "quote_id": "W4-53-quote",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,8 +1,6 @@\n     def _runtime_key(self) -> str:\n         try:\n             key, _, base = _configuration()\n         except GenerationUnavailable:\n             raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n-        if _embedding_endpoint(base) != self.endpoint:\n-            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n         return key\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-53",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "413aad67-7a1d-4994-96a0-8cf8e41bd156",
+      "created_at": "2026-10-30T22:24:04.220734+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "92ee99e3066b48bc9e0594ea372a00b9",
+      "event_id": 2,
+      "case_id": "413aad67-7a1d-4994-96a0-8cf8e41bd156",
+      "created_at": "2026-10-30T22:24:04.221996+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "92ee99e3066b48bc9e0594ea372a00b9",
+      "started_at": "2026-10-30T22:24:04.222381+00:00",
+      "usage": {
+        "input_tokens": 2067,
+        "output_tokens": 634,
+        "total_tokens": 2701
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2806.05,
+      "event_id": 3,
+      "case_id": "413aad67-7a1d-4994-96a0-8cf8e41bd156",
+      "created_at": "2026-10-30T22:24:07.028801+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-53",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": false,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": false,
+            "correct": false,
+            "error_type": "false_negative"
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 1,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.822613,
+      "error": null,
+      "event_id": 4,
+      "case_id": "413aad67-7a1d-4994-96a0-8cf8e41bd156",
+      "created_at": "2026-10-30T22:24:07.031379+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2067,
+      "output_tokens": 634,
+      "total_tokens": 2701
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": false,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": false,
+        "correct": false,
+        "error_type": "false_negative"
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 1,
+    "unknown_verdicts": 0
+  },
+  "case_id": "413aad67-7a1d-4994-96a0-8cf8e41bd156",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

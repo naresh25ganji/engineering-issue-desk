@@ -1,0 +1,299 @@
+{
+  "id": "W4-65",
+  "scenario": "known_failure",
+  "title": "Invented live-provider test execution",
+  "failure_mode": "Invented live-provider test execution",
+  "source": {
+    "path": "evaluation/fixtures/workflows/embedding_test_definitions.py",
+    "start_line": 1,
+    "end_line": 27,
+    "sha256": "6f4bf275ef68dd7df3e1044a325653ea8d5489203d9ee25ec11bca8ba5aecd90",
+    "quote": "# Frozen source excerpt: tests/test_hosted_embeddings.py:89-114\ndef test_serial_batches_are_bounded_and_coverage_is_complete(source_records, tmp_path, monkeypatch):\n    requests = install_http(monkeypatch, successful)\n    index = make_index(source_records, tmp_path)\n    vectors = index.embed_documents([f\"text-{i}\" for i in range(65)])\n    assert vectors.shape == (65, 4)\n    assert [len(r[\"json\"][\"input\"]) for r in requests] == [32, 32, 1]\n    assert [r[\"input_count\"] for r in index.calls] == [32, 32, 1]\n    assert sum(r[\"usage\"][\"total_tokens\"] for r in index.calls) == 54\n\n\n@pytest.mark.parametrize(\"data\", [\n    {}, {\"data\": []}, {\"data\": [{\"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 1, \"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [True, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [\"1\", 1, 1, 1]}]},\n])\ndef test_invalid_provider_response_never_becomes_a_vector(source_records, tmp_path, monkeypatch, data):\n    install_http(monkeypatch, lambda payload, number: Response(data))\n    index = make_index(source_records, tmp_path)\n    with pytest.raises(EmbeddingUnavailable): index.embed_query(\"query\")\n    assert index.calls[-1][\"status\"] == \"invalid_response\"\n    assert not index._query_cache\n",
+    "title": "embedding_test_definitions.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/embedding_test_definitions.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The serial-batch test defines assertions for input batch lengths of 32, 32, and 1.",
+        "expected_supported": true,
+        "rationale": "The assertion lists those batch lengths, while install_http supplies a test transport."
+      },
+      {
+        "statement": "These assertions prove a live provider was called successfully in this conversation.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Request an actual test run record before stating that the serial-batch test passed.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.05066,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows assert [len(...)] == [32,32,1] confirming the test defines those batch length assertions."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote uses a mocked install_http, not a live provider; assertions do not prove a real provider was called successfully."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Suggesting to obtain an actual test run record is a valid diagnostic to verify whether the test truly passed."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The serial-batch test defines assertions for input batch lengths of 32, 32, and 1.",
+        "support": [
+          {
+            "evidence_id": "W4-65-source",
+            "quote_id": "W4-65-quote",
+            "quote": "# Frozen source excerpt: tests/test_hosted_embeddings.py:89-114\ndef test_serial_batches_are_bounded_and_coverage_is_complete(source_records, tmp_path, monkeypatch):\n    requests = install_http(monkeypatch, successful)\n    index = make_index(source_records, tmp_path)\n    vectors = index.embed_documents([f\"text-{i}\" for i in range(65)])\n    assert vectors.shape == (65, 4)\n    assert [len(r[\"json\"][\"input\"]) for r in requests] == [32, 32, 1]\n    assert [r[\"input_count\"] for r in index.calls] == [32, 32, 1]\n    assert sum(r[\"usage\"][\"total_tokens\"] for r in index.calls) == 54\n\n\n@pytest.mark.parametrize(\"data\", [\n    {}, {\"data\": []}, {\"data\": [{\"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 1, \"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [True, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [\"1\", 1, 1, 1]}]},\n])\ndef test_invalid_provider_response_never_becomes_a_vector(source_records, tmp_path, monkeypatch, data):\n    install_http(monkeypatch, lambda payload, number: Response(data))\n    index = make_index(source_records, tmp_path)\n    with pytest.raises(EmbeddingUnavailable): index.embed_query(\"query\")\n    assert index.calls[-1][\"status\"] == \"invalid_response\"\n    assert not index._query_cache\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Request an actual test run record before stating that the serial-batch test passed."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-65",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "958f04e6-bfa1-4ec1-9df2-d58908b2c796",
+      "created_at": "2026-10-30T22:24:15.116497+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "09e2bd0f25f249eb845fb4c88b424668",
+      "event_id": 2,
+      "case_id": "958f04e6-bfa1-4ec1-9df2-d58908b2c796",
+      "created_at": "2026-10-30T22:24:15.117957+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "09e2bd0f25f249eb845fb4c88b424668",
+      "started_at": "2026-10-30T22:24:15.118410+00:00",
+      "usage": {
+        "input_tokens": 2451,
+        "output_tokens": 697,
+        "total_tokens": 3148
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3026.87,
+      "event_id": 3,
+      "case_id": "958f04e6-bfa1-4ec1-9df2-d58908b2c796",
+      "created_at": "2026-10-30T22:24:18.145025+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-65",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.05066,
+      "error": null,
+      "event_id": 4,
+      "case_id": "958f04e6-bfa1-4ec1-9df2-d58908b2c796",
+      "created_at": "2026-10-30T22:24:18.146109+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2451,
+      "output_tokens": 697,
+      "total_tokens": 3148
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "958f04e6-bfa1-4ec1-9df2-d58908b2c796",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

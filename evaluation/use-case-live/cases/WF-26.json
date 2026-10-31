@@ -1,0 +1,508 @@
+{
+  "id": "WF-26",
+  "eval_id": "WF-26",
+  "use_case": "change_review",
+  "title": "Path scope is not arbitrary host access",
+  "scenario": "edge",
+  "question": "Does this proposed patch by itself prove arbitrary host-file reads? Analyze exactly which final condition changes and which earlier path checks remain. Request omitted file-open context before making broader security claims.",
+  "input": {
+    "question": "Does this proposed patch by itself prove arbitrary host-file reads? Analyze exactly which final condition changes and which earlier path checks remain. Request omitted file-open context before making broader security claims.",
+    "version": "",
+    "context": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/repository_context.py\n+++ b/triage_desk/repository_context.py\n@@ -1,13 +1,13 @@\n     def _parts(self, path: str) -> tuple[str, ...]:\n         if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                 or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n             raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n         parts = tuple(path.split('/'))\n         if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                 or any(not part or part in {'.', '..'} for part in parts)\n                 or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                 or self._sensitive(path)):\n             raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n-        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n+        if not path.endswith('.py'):\n             raise RepositoryContextError('Only app.py and triage_desk Python source files are available.')\n         return parts\n",
+    "use_case": "change_review"
+  },
+  "input_sha256": "321dd0a1428e13ada8c2c663a392e53c42f6905073d0b41dc1ccb50367b456c7",
+  "case_definition_sha256": "6b66cd55b07bcfb323837ae274b198e6f087e0dbfe1e8c0bba5dd76336281ac9",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/repository_scope.diff",
+    "sha256": "a654954390bd68ece1f97bdcc268d22810377b96c5e9c1b25fa58f6876486fe5"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "PurePosixPath(path).is_absolute()"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "3d527c98-3670-451a-a1c3-34e3468657b7",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The patch replaces the original path validation that required the path to be either 'app.py' or a Python file under the 'triage_desk' package with a simpler check that only requires the path to end with '.py'.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_2a09cc1de0a58cde044026b2dcc35a10",
+            "quote_id": "ev_2a09cc1de0a58cde044026b2dcc35a10:q2",
+            "quote": "            raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n-        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n+        if not path.endswith('.py'):\n             raise RepositoryContextError('Only app.py and triage_desk Python source files are available.')\n         return parts\n"
+          }
+        ]
+      },
+      {
+        "statement": "All earlier path safety checks—type validation, length limit, disallowing backslashes and control characters, absolute‑path rejection, depth limit, disallowing empty, '.' or '..' components, exclusion of hidden or blacklisted parts, and the repository‑sensitive check—remain unchanged in the patched code.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_2a09cc1de0a58cde044026b2dcc35a10",
+            "quote_id": "ev_2a09cc1de0a58cde044026b2dcc35a10:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/repository_context.py\n+++ b/triage_desk/repository_context.py\n@@ -1,13 +1,13 @@\n     def _parts(self, path: str) -> tuple[str, ...]:\n         if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                 or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n             raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n         parts = tuple(path.split('/'))\n         if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                 or any(not part or part in {'.', '..'} for part in parts)\n                 or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                 or self._sensitive(path)):\n             raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n-        if path != 'app.py' and not (len(parts) >= 2"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "File‑open or read logic that consumes the path returned by RepositoryContext._parts, to assess if the relaxed '.py' check enables arbitrary host‑file reads."
+    ],
+    "next_steps": [
+      "Obtain the code that actually opens the file using the validated path to determine whether additional safeguards (e.g., directory confinement, realpath checks) are applied after this validation."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote shows original condition requiring 'app.py' or triage_desk .py replaced by simple endswith('.py') check."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote includes all earlier safety checks unchanged; diff only alters later condition."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Suggesting to locate file-open code to verify further safeguards is a valid diagnostic given current validation code."
+        }
+      ],
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows original condition requiring 'app.py' or triage_desk .py replaced by simple endswith('.py') check."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote includes all earlier safety checks unchanged; diff only alters later condition."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Suggesting to locate file-open code to verify further safeguards is a valid diagnostic given current validation code."
+      }
+    ],
+    "retained_findings": 2,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_2a09cc1de0a58cde044026b2dcc35a10",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:24:48.081476+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "a654954390bd68ece1f97bdcc268d22810377b96c5e9c1b25fa58f6876486fe5",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:24:48.076595+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:24:48.080853+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "c0f5ea45eba64913825e19a854514eeb",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:24:48.109477+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "c0f5ea45eba64913825e19a854514eeb",
+      "started_at": "2026-10-30T22:24:48.109748+00:00",
+      "usage": {
+        "input_tokens": 5003,
+        "output_tokens": 119,
+        "total_tokens": 5122
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 781.27,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:24:48.891087+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "bc9329a7397b44b489f41bc3bd449eb8",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:24:48.892891+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "bc9329a7397b44b489f41bc3bd449eb8",
+      "started_at": "2026-10-30T22:24:48.893176+00:00",
+      "latency_ms": 1.34,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:24:48.894112+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "97b72b8758ac4cb4a2ec2462ece939b8",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:24:48.895808+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "97b72b8758ac4cb4a2ec2462ece939b8",
+      "started_at": "2026-10-30T22:24:48.896153+00:00",
+      "usage": {
+        "input_tokens": 5771,
+        "output_tokens": 693,
+        "total_tokens": 6464
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3641.75,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:52.539047+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:52.551382+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:52.553862+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "f944ab3254fb41a68f2749a7d53091cc",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:52.569099+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "f944ab3254fb41a68f2749a7d53091cc",
+      "started_at": "2026-10-30T22:24:52.569655+00:00",
+      "usage": {
+        "input_tokens": 2460,
+        "output_tokens": 1073,
+        "total_tokens": 3533
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5329.51,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:24:57.899811+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:24:57.907848+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13234,
+      "output_tokens": 1885,
+      "total_tokens": 15119
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 9908.375,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 2,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-26",
+  "saved_use_case_id": "change_review",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-26",
+    "metadata": {
+      "use_case_id": "change_review",
+      "input_sha256": "321dd0a1428e13ada8c2c663a392e53c42f6905073d0b41dc1ccb50367b456c7",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:24:48.076595+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:24:48.080853+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "c0f5ea45eba64913825e19a854514eeb",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:24:48.109477+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "c0f5ea45eba64913825e19a854514eeb",
+        "started_at": "2026-10-30T22:24:48.109748+00:00",
+        "usage": {
+          "input_tokens": 5003,
+          "output_tokens": 119,
+          "total_tokens": 5122
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 781.27,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:24:48.891087+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "bc9329a7397b44b489f41bc3bd449eb8",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:24:48.892891+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "bc9329a7397b44b489f41bc3bd449eb8",
+        "started_at": "2026-10-30T22:24:48.893176+00:00",
+        "latency_ms": 1.34,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:24:48.894112+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "97b72b8758ac4cb4a2ec2462ece939b8",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:24:48.895808+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "97b72b8758ac4cb4a2ec2462ece939b8",
+        "started_at": "2026-10-30T22:24:48.896153+00:00",
+        "usage": {
+          "input_tokens": 5771,
+          "output_tokens": 693,
+          "total_tokens": 6464
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 3641.75,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:52.539047+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:52.551382+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:52.553862+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "f944ab3254fb41a68f2749a7d53091cc",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:52.569099+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "f944ab3254fb41a68f2749a7d53091cc",
+        "started_at": "2026-10-30T22:24:52.569655+00:00",
+        "usage": {
+          "input_tokens": 2460,
+          "output_tokens": 1073,
+          "total_tokens": 3533
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5329.51,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:24:57.899811+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 2,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:24:57.907848+00:00"
+      }
+    ]
+  }
+}

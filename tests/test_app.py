@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_workspace_loads_and_requires_a_report():
     app = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=20).run()
     assert not app.exception
-    assert 'Investigate a Streamlit issue' in app.title[0].value
+    assert 'Investigate engineering issues' in app.title[0].value
     next(b for b in app.button if b.label == 'Investigate report').click().run()
     assert not app.exception
     assert any('Enter a report' in w.value for w in app.warning)

@@ -1,0 +1,294 @@
+{
+  "id": "W4-11",
+  "scenario": "happy_path",
+  "title": "HTTP response boundary",
+  "failure_mode": "Visible checks versus omitted validations",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 105,
+    "end_line": 122,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "            with httpx.Client(timeout=httpx.Timeout(45, connect=10), follow_redirects=False) as client:\n                metadata[\"attempted\"] = True\n                self.calls.append(metadata)\n                response = client.post(self.endpoint, headers={\"Authorization\": f\"Bearer {key}\"},\n                                       json={\"model\": self.model_name, \"input\": texts, \"dimensions\": self.dimensions})\n                status = response.status_code\n                metadata[\"http_status\"] = status\n                if not 200 <= status < 300:\n                    metadata[\"status\"] = \"provider_http_error\"\n                    raise EmbeddingUnavailable(f\"Hosted embeddings returned HTTP {status}; no embedding results were accepted.\")\n                body = response.json()\n            if not isinstance(body, dict):\n                raise ValueError(\"Expected an embedding response object\")\n            metadata[\"returned_model\"] = _safe_model(body.get(\"model\"), key)\n            metadata[\"usage\"] = _usage_counts(body.get(\"usage\"))\n            data = body.get(\"data\")\n            if not isinstance(data, list) or len(data) != len(texts):\n                raise ValueError(\"Incomplete embedding response\")\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The selected request disables redirects and rejects non-2xx status codes before extracting embedding data.",
+        "expected_supported": true,
+        "rationale": "follow_redirects=False and the 200 <= status < 300 guard are selected."
+      },
+      {
+        "statement": "This excerpt proves that all returned embedding values are finite and have valid norms.",
+        "expected_supported": false,
+        "rationale": "The bounded excerpt ends at the data-list check and does not show value or norm validation."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose fake responses for an HTTP failure and a data list with the wrong number of items.",
+        "expected_supported": true,
+        "rationale": "Both checks target selected branches, with no external endpoint call required."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.120308,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code uses follow_redirects=False and raises on non-2xx before any embedding extraction."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote does not address embedding value finiteness or norm validity."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows error paths for HTTP failure and mismatched data length, making fake-response test appropriate."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The selected request disables redirects and rejects non-2xx status codes before extracting embedding data.",
+        "support": [
+          {
+            "evidence_id": "W4-11-source",
+            "quote_id": "W4-11-quote",
+            "quote": "            with httpx.Client(timeout=httpx.Timeout(45, connect=10), follow_redirects=False) as client:\n                metadata[\"attempted\"] = True\n                self.calls.append(metadata)\n                response = client.post(self.endpoint, headers={\"Authorization\": f\"Bearer {key}\"},\n                                       json={\"model\": self.model_name, \"input\": texts, \"dimensions\": self.dimensions})\n                status = response.status_code\n                metadata[\"http_status\"] = status\n                if not 200 <= status < 300:\n                    metadata[\"status\"] = \"provider_http_error\"\n                    raise EmbeddingUnavailable(f\"Hosted embeddings returned HTTP {status}; no embedding results were accepted.\")\n                body = response.json()\n            if not isinstance(body, dict):\n                raise ValueError(\"Expected an embedding response object\")\n            metadata[\"returned_model\"] = _safe_model(body.get(\"model\"), key)\n            metadata[\"usage\"] = _usage_counts(body.get(\"usage\"))\n            data = body.get(\"data\")\n            if not isinstance(data, list) or len(data) != len(texts):\n                raise ValueError(\"Incomplete embedding response\")\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose fake responses for an HTTP failure and a data list with the wrong number of items."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-11",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "a9716fbf-d3bd-48da-ad03-82f95b66d94a",
+      "created_at": "2026-10-30T22:02:33.871461+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "518ec97fd6da46f09f955bbc810b81af",
+      "event_id": 2,
+      "case_id": "a9716fbf-d3bd-48da-ad03-82f95b66d94a",
+      "created_at": "2026-10-30T22:02:33.873332+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "518ec97fd6da46f09f955bbc810b81af",
+      "started_at": "2026-10-30T22:02:33.873847+00:00",
+      "usage": {
+        "input_tokens": 1514,
+        "output_tokens": 703,
+        "total_tokens": 2217
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3092.98,
+      "event_id": 3,
+      "case_id": "a9716fbf-d3bd-48da-ad03-82f95b66d94a",
+      "created_at": "2026-10-30T22:02:36.966392+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-11",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.120308,
+      "error": null,
+      "event_id": 4,
+      "case_id": "a9716fbf-d3bd-48da-ad03-82f95b66d94a",
+      "created_at": "2026-10-30T22:02:36.967739+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1514,
+      "output_tokens": 703,
+      "total_tokens": 2217
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "a9716fbf-d3bd-48da-ad03-82f95b66d94a",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

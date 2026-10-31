@@ -1,0 +1,294 @@
+{
+  "id": "W4-25",
+  "scenario": "edge",
+  "title": "Two event sources in literal test fixture",
+  "failure_mode": "Shared topic mistaken for same event path",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 19,
+    "end_line": 21,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "DOCS = ('Selecting a checkbox triggers a rerun of the complete script. '\n        'Ignoring upload events affects only the uploader change events.')\nCODE = 'uploaded = st.file_uploader(\"CSV\", on_change=\"ignore\")\\nshow = st.checkbox(\"Show preview\")'\n"
+  },
+  "context": {
+    "question": "The preview disappears after I select the checkbox, not after I change the uploaded file.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The DOCS fixture says checkbox selection reruns the complete script and ignoring upload events affects only uploader change events.",
+        "expected_supported": true,
+        "rationale": "This claim is explicitly about the selected test string, not an assertion of external documentation authority."
+      },
+      {
+        "statement": "Ignoring uploader change events therefore prevents a checkbox-triggered rerun.",
+        "expected_supported": false,
+        "rationale": "The selected fixture distinguishes the checkbox trigger from uploader change events."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose testing checkbox and upload interactions separately and recording which event causes a rerun.",
+        "expected_supported": true,
+        "rationale": "This diagnoses the two selected event paths without claiming a fix."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.426731,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "DOCS variable contains the exact quoted text stating the two behaviors."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote does not assert that ignoring uploader events prevents a checkbox-triggered rerun; causal link absent."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposes a valid test to isolate checkbox vs upload events, matching the described behaviors."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The DOCS fixture says checkbox selection reruns the complete script and ignoring upload events affects only uploader change events.",
+        "support": [
+          {
+            "evidence_id": "W4-25-source",
+            "quote_id": "W4-25-quote",
+            "quote": "DOCS = ('Selecting a checkbox triggers a rerun of the complete script. '\n        'Ignoring upload events affects only the uploader change events.')\nCODE = 'uploaded = st.file_uploader(\"CSV\", on_change=\"ignore\")\\nshow = st.checkbox(\"Show preview\")'\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose testing checkbox and upload interactions separately and recording which event causes a rerun."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-25",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "83f00fd9-7ec5-48f1-9aef-16611083bafe",
+      "created_at": "2026-10-30T22:06:31.518661+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "179f2d81d49f44f98dccfad4239aa467",
+      "event_id": 2,
+      "case_id": "83f00fd9-7ec5-48f1-9aef-16611083bafe",
+      "created_at": "2026-10-30T22:06:31.519556+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "179f2d81d49f44f98dccfad4239aa467",
+      "started_at": "2026-10-30T22:06:31.519822+00:00",
+      "usage": {
+        "input_tokens": 1961,
+        "output_tokens": 667,
+        "total_tokens": 2628
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3412.98,
+      "event_id": 3,
+      "case_id": "83f00fd9-7ec5-48f1-9aef-16611083bafe",
+      "created_at": "2026-10-30T22:06:34.933232+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-25",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.426731,
+      "error": null,
+      "event_id": 4,
+      "case_id": "83f00fd9-7ec5-48f1-9aef-16611083bafe",
+      "created_at": "2026-10-30T22:06:34.935050+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1961,
+      "output_tokens": 667,
+      "total_tokens": 2628
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "83f00fd9-7ec5-48f1-9aef-16611083bafe",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

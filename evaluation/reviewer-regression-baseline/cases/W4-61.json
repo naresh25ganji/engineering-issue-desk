@@ -1,0 +1,299 @@
+{
+  "id": "W4-61",
+  "scenario": "edge",
+  "title": "Embedding tests contain nonfinite fixtures",
+  "failure_mode": "Embedding tests contain nonfinite fixtures",
+  "source": {
+    "path": "evaluation/fixtures/workflows/embedding_test_definitions.py",
+    "start_line": 1,
+    "end_line": 27,
+    "sha256": "6f4bf275ef68dd7df3e1044a325653ea8d5489203d9ee25ec11bca8ba5aecd90",
+    "quote": "# Frozen source excerpt: tests/test_hosted_embeddings.py:89-114\ndef test_serial_batches_are_bounded_and_coverage_is_complete(source_records, tmp_path, monkeypatch):\n    requests = install_http(monkeypatch, successful)\n    index = make_index(source_records, tmp_path)\n    vectors = index.embed_documents([f\"text-{i}\" for i in range(65)])\n    assert vectors.shape == (65, 4)\n    assert [len(r[\"json\"][\"input\"]) for r in requests] == [32, 32, 1]\n    assert [r[\"input_count\"] for r in index.calls] == [32, 32, 1]\n    assert sum(r[\"usage\"][\"total_tokens\"] for r in index.calls) == 54\n\n\n@pytest.mark.parametrize(\"data\", [\n    {}, {\"data\": []}, {\"data\": [{\"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 1, \"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [True, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [\"1\", 1, 1, 1]}]},\n])\ndef test_invalid_provider_response_never_becomes_a_vector(source_records, tmp_path, monkeypatch, data):\n    install_http(monkeypatch, lambda payload, number: Response(data))\n    index = make_index(source_records, tmp_path)\n    with pytest.raises(EmbeddingUnavailable): index.embed_query(\"query\")\n    assert index.calls[-1][\"status\"] == \"invalid_response\"\n    assert not index._query_cache\n",
+    "title": "embedding_test_definitions.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/embedding_test_definitions.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The parameterized test definition includes nan, inf, zero-vector, boolean-value, and string-value response fixtures.",
+        "expected_supported": true,
+        "rationale": "Those values and assertions occur in the supplied test definitions; they are not production observations."
+      },
+      {
+        "statement": "The fixture values are captured production embedding responses.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose verifying that each malformed fixture raises EmbeddingUnavailable and leaves the query cache empty.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.752807,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote's parametrize list contains nan, inf, zero-vector, boolean and string embeddings."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote defines fixtures in test code; no evidence they are captured from production."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Test asserts EmbeddingUnavailable and empty query cache for each malformed fixture."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The parameterized test definition includes nan, inf, zero-vector, boolean-value, and string-value response fixtures.",
+        "support": [
+          {
+            "evidence_id": "W4-61-source",
+            "quote_id": "W4-61-quote",
+            "quote": "# Frozen source excerpt: tests/test_hosted_embeddings.py:89-114\ndef test_serial_batches_are_bounded_and_coverage_is_complete(source_records, tmp_path, monkeypatch):\n    requests = install_http(monkeypatch, successful)\n    index = make_index(source_records, tmp_path)\n    vectors = index.embed_documents([f\"text-{i}\" for i in range(65)])\n    assert vectors.shape == (65, 4)\n    assert [len(r[\"json\"][\"input\"]) for r in requests] == [32, 32, 1]\n    assert [r[\"input_count\"] for r in index.calls] == [32, 32, 1]\n    assert sum(r[\"usage\"][\"total_tokens\"] for r in index.calls) == 54\n\n\n@pytest.mark.parametrize(\"data\", [\n    {}, {\"data\": []}, {\"data\": [{\"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 1, \"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [True, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [\"1\", 1, 1, 1]}]},\n])\ndef test_invalid_provider_response_never_becomes_a_vector(source_records, tmp_path, monkeypatch, data):\n    install_http(monkeypatch, lambda payload, number: Response(data))\n    index = make_index(source_records, tmp_path)\n    with pytest.raises(EmbeddingUnavailable): index.embed_query(\"query\")\n    assert index.calls[-1][\"status\"] == \"invalid_response\"\n    assert not index._query_cache\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose verifying that each malformed fixture raises EmbeddingUnavailable and leaves the query cache empty."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-61",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "76955935-d9a6-4aef-a6f4-b7ab5c24cb0a",
+      "created_at": "2026-10-30T22:23:05.477569+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "da1a2dabb7ff4b53aad38c01be449bbe",
+      "event_id": 2,
+      "case_id": "76955935-d9a6-4aef-a6f4-b7ab5c24cb0a",
+      "created_at": "2026-10-30T22:23:05.479618+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "da1a2dabb7ff4b53aad38c01be449bbe",
+      "started_at": "2026-10-30T22:23:05.480988+00:00",
+      "usage": {
+        "input_tokens": 1792,
+        "output_tokens": 728,
+        "total_tokens": 2520
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3726.19,
+      "event_id": 3,
+      "case_id": "76955935-d9a6-4aef-a6f4-b7ab5c24cb0a",
+      "created_at": "2026-10-30T22:23:09.205703+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-61",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.752807,
+      "error": null,
+      "event_id": 4,
+      "case_id": "76955935-d9a6-4aef-a6f4-b7ab5c24cb0a",
+      "created_at": "2026-10-30T22:23:09.207165+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1792,
+      "output_tokens": 728,
+      "total_tokens": 2520
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "76955935-d9a6-4aef-a6f4-b7ab5c24cb0a",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

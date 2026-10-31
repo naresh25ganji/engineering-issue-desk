@@ -1,0 +1,5 @@
+Synthetic operational log: controlled example, not a production incident.
+2026-10-28T19:00:00Z request=example-b component=hosted_embedding status=provider_http_error http_status=429
+2026-10-28T19:00:00Z request=example-b vectors_accepted=0 response_body_retained=false
+2026-10-28T19:00:02Z request=example-c component=hosted_embedding status=provider_http_error http_status=503
+2026-10-28T19:00:02Z request=example-c vectors_accepted=0 response_body_retained=false

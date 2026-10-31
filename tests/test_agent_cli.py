@@ -39,7 +39,8 @@ def test_list_and_show_use_saved_data_without_loading_credentials_or_corpus(tmp_
     monkeypatch.setattr(cli, 'InvestigationService', forbidden)
     assert cli.main(['--root', str(tmp_path), 'list']) == 0
     listed = json.loads(capsys.readouterr().out)
-    assert listed == [{'case_id': case['case_id'], 'status': 'new', 'error': '', 'findings_count': 0}]
+    assert listed == [{'case_id': case['case_id'], 'status': 'new', 'error': '', 'findings_count': 0,
+                       'use_case_id': 'issue_investigation', 'use_case_version': 1}]
     assert cli.main(['--root', str(tmp_path), 'show', case['case_id']]) == 0
     output = capsys.readouterr().out
     shown = json.loads(output)
@@ -110,6 +111,21 @@ def test_repository_context_is_enabled_only_by_explicit_cli_flag(tmp_path, monke
     assert cli.main(['--root', str(tmp_path), 'start', '--question', 'Inspect helpers', '--repository-context']) == 0
     assert ('start_options', {'repository_context': True}) in fake_service
     assert json.loads(capsys.readouterr().out)['status'] == 'awaiting_review'
+
+
+@pytest.mark.parametrize('use_case', ['incident_triage', 'change_review', 'test_planning'])
+def test_cli_dispatches_selected_engineering_workflow(tmp_path, monkeypatch, capsys, fake_service, use_case):
+    monkeypatch.setenv('FIREWORKS_API_KEY', 'fake-test-key')
+    monkeypatch.setenv('FIREWORKS_MODEL', 'fake-test-model')
+    assert cli.main(['--root', str(tmp_path), 'start', '--question', 'Analyze supplied context',
+                     '--use-case', use_case]) == 0
+    assert ('start_options', {'use_case': use_case}) in fake_service
+    assert json.loads(capsys.readouterr().out)['status'] == 'awaiting_review'
+
+
+def test_cli_rejects_unknown_workflow_before_dispatch():
+    with pytest.raises(SystemExit):
+        cli.build_parser().parse_args(['start', '--question', 'Analyze', '--use-case', 'unknown'])
 
 
 @pytest.mark.parametrize('command', [['start', '--question', 'Question'], ['retry', 'case-id'],

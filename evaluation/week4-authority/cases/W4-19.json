@@ -1,0 +1,294 @@
+{
+  "id": "W4-19",
+  "scenario": "happy_path",
+  "title": "Same-text provenance remains distinct in fixture",
+  "failure_mode": "Text equality does not merge authority",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 195,
+    "end_line": 225,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "def test_identical_quotes_from_different_authorities_keep_distinct_provenance(context):\n    registry = EvidenceRegistry(context[0], context[1])\n    issue = registry.register_source(\n        source_key='public-issue', title='A public reporter observation', text=DOCS,\n        url='https://github.com/streamlit/streamlit/issues/123', kind='issue', origin='live',\n        evidence_type='github_issue_search_snippet', version_scope='Reporter says 1.40.0',\n        fetched_at='2026-10-25T00:00:00Z', snapshot_at='', truncated=True,\n    )\n    report = deepcopy(context[2])\n    report['findings'][0]['support'].append({\n        'evidence_id': issue['evidence_id'], 'quote_id': issue['quote_spans'][0]['quote_id'], 'quote': DOCS,\n    })\n    # Only selected-source metadata is projected; even stray raw bodies/spans are omitted.\n    issue['text'] += ' OMITTED SOURCE BODY'\n    report['sources'].append(issue)\n    report['sources'].append({'evidence_id': 'uncited', 'title': 'OMITTED UNCITED SOURCE', 'text': 'OMITTED RAW BODY'})\n\n    model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],\n                                            'next_step_verdicts': [verdict(0), verdict(1)]})])\n    review_report(report, model, budget_for(context))\n    payload = json.loads(model.calls[0][1].content)\n    same_text = [item for item in payload['selected_quotes'] if item['quote'] == DOCS]\n    assert len(same_text) == 2\n    assert [item['provenance']['kind'] for item in same_text] == ['documentation', 'issue']\n    assert payload['findings'][0]['quote_indices'] == [0, 1]\n    provenance = same_text[1]['provenance']\n    assert provenance['evidence_type'] == 'github_issue_search_snippet'\n    assert provenance['version_scope'] == 'Reporter says 1.40.0'\n    assert provenance['fetched_at'] == '2026-10-25T00:00:00Z'\n    assert provenance['truncated'] is True\n    for omitted in ('OMITTED SOURCE BODY', 'OMITTED UNCITED SOURCE', 'OMITTED RAW BODY', 'quote_spans'):\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "This test registers an issue search snippet and asserts that identical quote text from documentation and issue sources retains two distinct provenance records.",
+        "expected_supported": true,
+        "rationale": "The issue metadata and two-quote provenance assertions are explicit."
+      },
+      {
+        "statement": "An issue search snippet becomes official documentation because its words match another source.",
+        "expected_supported": false,
+        "rationale": "The selected test requires distinct documentation and issue kinds despite identical text."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Keep an explicit provenance check when evaluating claims copied from a public issue snippet.",
+        "expected_supported": true,
+        "rationale": "The proposal preserves the distinction exercised by the selected fixture."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 7.118753,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code registers an issue snippet and asserts two entries with same quote but different provenance kinds, confirming distinct records."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code never claims the issue snippet becomes official documentation; it only keeps provenance separate."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Test includes explicit provenance checks, validating the proposed practice of checking provenance for copied issue snippets."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "This test registers an issue search snippet and asserts that identical quote text from documentation and issue sources retains two distinct provenance records.",
+        "support": [
+          {
+            "evidence_id": "W4-19-source",
+            "quote_id": "W4-19-quote",
+            "quote": "def test_identical_quotes_from_different_authorities_keep_distinct_provenance(context):\n    registry = EvidenceRegistry(context[0], context[1])\n    issue = registry.register_source(\n        source_key='public-issue', title='A public reporter observation', text=DOCS,\n        url='https://github.com/streamlit/streamlit/issues/123', kind='issue', origin='live',\n        evidence_type='github_issue_search_snippet', version_scope='Reporter says 1.40.0',\n        fetched_at='2026-10-25T00:00:00Z', snapshot_at='', truncated=True,\n    )\n    report = deepcopy(context[2])\n    report['findings'][0]['support'].append({\n        'evidence_id': issue['evidence_id'], 'quote_id': issue['quote_spans'][0]['quote_id'], 'quote': DOCS,\n    })\n    # Only selected-source metadata is projected; even stray raw bodies/spans are omitted.\n    issue['text'] += ' OMITTED SOURCE BODY'\n    report['sources'].append(issue)\n    report['sources'].append({'evidence_id': 'uncited', 'title': 'OMITTED UNCITED SOURCE', 'text': 'OMITTED RAW BODY'})\n\n    model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],\n                                            'next_step_verdicts': [verdict(0), verdict(1)]})])\n    review_report(report, model, budget_for(context))\n    payload = json.loads(model.calls[0][1].content)\n    same_text = [item for item in payload['selected_quotes'] if item['quote'] == DOCS]\n    assert len(same_text) == 2\n    assert [item['provenance']['kind'] for item in same_text] == ['documentation', 'issue']\n    assert payload['findings'][0]['quote_indices'] == [0, 1]\n    provenance = same_text[1]['provenance']\n    assert provenance['evidence_type'] == 'github_issue_search_snippet'\n    assert provenance['version_scope'] == 'Reporter says 1.40.0'\n    assert provenance['fetched_at'] == '2026-10-25T00:00:00Z'\n    assert provenance['truncated'] is True\n    for omitted in ('OMITTED SOURCE BODY', 'OMITTED UNCITED SOURCE', 'OMITTED RAW BODY', 'quote_spans'):\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Keep an explicit provenance check when evaluating claims copied from a public issue snippet."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-19",
+      "run_name": "20261030T220440Z-496c6334",
+      "prompt_version": "authority",
+      "prompt_hash": "29544ae366a35ea651617f74bd55c60d66876d4b2bf2e9ed83d85d965d37b3c1",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "85758cd3-c60f-428e-a6e4-d14dfe01b50b",
+      "created_at": "2026-10-30T22:04:53.624796+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "bf9b1df3c8014163993476388c52d811",
+      "event_id": 2,
+      "case_id": "85758cd3-c60f-428e-a6e4-d14dfe01b50b",
+      "created_at": "2026-10-30T22:04:53.625827+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "bf9b1df3c8014163993476388c52d811",
+      "started_at": "2026-10-30T22:04:53.626147+00:00",
+      "usage": {
+        "input_tokens": 2189,
+        "output_tokens": 865,
+        "total_tokens": 3054
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 7101.16,
+      "event_id": 3,
+      "case_id": "85758cd3-c60f-428e-a6e4-d14dfe01b50b",
+      "created_at": "2026-10-30T22:05:00.728400+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-19",
+      "run_name": "20261030T220440Z-496c6334",
+      "prompt_hash": "29544ae366a35ea651617f74bd55c60d66876d4b2bf2e9ed83d85d965d37b3c1",
+      "prompt_version": "authority",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 7.118753,
+      "error": null,
+      "event_id": 4,
+      "case_id": "85758cd3-c60f-428e-a6e4-d14dfe01b50b",
+      "created_at": "2026-10-30T22:05:00.731776+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2189,
+      "output_tokens": 865,
+      "total_tokens": 3054
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "85758cd3-c60f-428e-a6e4-d14dfe01b50b",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

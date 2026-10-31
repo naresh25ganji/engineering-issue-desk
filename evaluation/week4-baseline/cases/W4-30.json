@@ -1,0 +1,294 @@
+{
+  "id": "W4-30",
+  "scenario": "edge",
+  "title": "Uncited body exclusion is a mock payload assertion",
+  "failure_mode": "Payload projection scope",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 207,
+    "end_line": 226,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "    # Only selected-source metadata is projected; even stray raw bodies/spans are omitted.\n    issue['text'] += ' OMITTED SOURCE BODY'\n    report['sources'].append(issue)\n    report['sources'].append({'evidence_id': 'uncited', 'title': 'OMITTED UNCITED SOURCE', 'text': 'OMITTED RAW BODY'})\n\n    model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],\n                                            'next_step_verdicts': [verdict(0), verdict(1)]})])\n    review_report(report, model, budget_for(context))\n    payload = json.loads(model.calls[0][1].content)\n    same_text = [item for item in payload['selected_quotes'] if item['quote'] == DOCS]\n    assert len(same_text) == 2\n    assert [item['provenance']['kind'] for item in same_text] == ['documentation', 'issue']\n    assert payload['findings'][0]['quote_indices'] == [0, 1]\n    provenance = same_text[1]['provenance']\n    assert provenance['evidence_type'] == 'github_issue_search_snippet'\n    assert provenance['version_scope'] == 'Reporter says 1.40.0'\n    assert provenance['fetched_at'] == '2026-10-25T00:00:00Z'\n    assert provenance['truncated'] is True\n    for omitted in ('OMITTED SOURCE BODY', 'OMITTED UNCITED SOURCE', 'OMITTED RAW BODY', 'quote_spans'):\n        assert omitted not in model.calls[0][1].content\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The test appends omitted bodies and an uncited source, then asserts those sentinel bodies and quote_spans are absent from the reviewer payload.",
+        "expected_supported": true,
+        "rationale": "The added sentinels and omission assertions are selected."
+      },
+      {
+        "statement": "The test asserts that all raw source bodies are sent to the reviewer for complete context.",
+        "expected_supported": false,
+        "rationale": "The final loop asserts the opposite for omitted and uncited bodies."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Preserve the sentinel-body exclusion check when changing reviewer payload projection.",
+        "expected_supported": true,
+        "rationale": "The proposed guard is exactly the selected payload privacy contract."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 4.479757,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows test appends omitted bodies and asserts they are not in reviewer payload"
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote asserts omitted bodies are excluded, not that all raw bodies are sent"
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Evidence includes exclusion check, so preserving it when altering payload projection is appropriate"
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The test appends omitted bodies and an uncited source, then asserts those sentinel bodies and quote_spans are absent from the reviewer payload.",
+        "support": [
+          {
+            "evidence_id": "W4-30-source",
+            "quote_id": "W4-30-quote",
+            "quote": "    # Only selected-source metadata is projected; even stray raw bodies/spans are omitted.\n    issue['text'] += ' OMITTED SOURCE BODY'\n    report['sources'].append(issue)\n    report['sources'].append({'evidence_id': 'uncited', 'title': 'OMITTED UNCITED SOURCE', 'text': 'OMITTED RAW BODY'})\n\n    model = ReviewerModel(replies=[response({'finding_verdicts': [verdict(0), verdict(1)],\n                                            'next_step_verdicts': [verdict(0), verdict(1)]})])\n    review_report(report, model, budget_for(context))\n    payload = json.loads(model.calls[0][1].content)\n    same_text = [item for item in payload['selected_quotes'] if item['quote'] == DOCS]\n    assert len(same_text) == 2\n    assert [item['provenance']['kind'] for item in same_text] == ['documentation', 'issue']\n    assert payload['findings'][0]['quote_indices'] == [0, 1]\n    provenance = same_text[1]['provenance']\n    assert provenance['evidence_type'] == 'github_issue_search_snippet'\n    assert provenance['version_scope'] == 'Reporter says 1.40.0'\n    assert provenance['fetched_at'] == '2026-10-25T00:00:00Z'\n    assert provenance['truncated'] is True\n    for omitted in ('OMITTED SOURCE BODY', 'OMITTED UNCITED SOURCE', 'OMITTED RAW BODY', 'quote_spans'):\n        assert omitted not in model.calls[0][1].content\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Preserve the sentinel-body exclusion check when changing reviewer payload projection."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-30",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "1ce0dd6a-6169-439b-923f-8649b23fea3e",
+      "created_at": "2026-10-30T22:02:48.476814+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "3d5c57dd49bf4d388e7d4014c6290e51",
+      "event_id": 2,
+      "case_id": "1ce0dd6a-6169-439b-923f-8649b23fea3e",
+      "created_at": "2026-10-30T22:02:48.478139+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "3d5c57dd49bf4d388e7d4014c6290e51",
+      "started_at": "2026-10-30T22:02:48.478523+00:00",
+      "usage": {
+        "input_tokens": 1621,
+        "output_tokens": 982,
+        "total_tokens": 2603
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4461.19,
+      "event_id": 3,
+      "case_id": "1ce0dd6a-6169-439b-923f-8649b23fea3e",
+      "created_at": "2026-10-30T22:02:52.941627+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-30",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 4.479757,
+      "error": null,
+      "event_id": 4,
+      "case_id": "1ce0dd6a-6169-439b-923f-8649b23fea3e",
+      "created_at": "2026-10-30T22:02:52.944593+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1621,
+      "output_tokens": 982,
+      "total_tokens": 2603
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "1ce0dd6a-6169-439b-923f-8649b23fea3e",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

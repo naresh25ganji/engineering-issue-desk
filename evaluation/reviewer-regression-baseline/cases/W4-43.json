@@ -1,0 +1,299 @@
+{
+  "id": "W4-43",
+  "scenario": "happy_path",
+  "title": "Query cache recency update",
+  "failure_mode": "Query cache recency update",
+  "source": {
+    "path": "evaluation/fixtures/workflows/query_cache.py",
+    "start_line": 1,
+    "end_line": 17,
+    "sha256": "d4b3e52224dd2a12726f7f03bd9cbd4910032199a8d3ff848a2d7400e69d48d6",
+    "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n",
+    "title": "query_cache.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/query_cache.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "A query-cache hit moves its identity to the end of the ordered cache before returning.",
+        "expected_supported": true,
+        "rationale": "The membership branch calls move_to_end and returns before the _request call."
+      },
+      {
+        "statement": "A cache hit always sends another embedding request before returning.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a cache-hit test that records request count and the resulting cache order.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.583402,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code moves cache entry to end on hit before returning."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Cache hit returns cached value without making a request."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed test matches observed behavior of request count and cache ordering."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "A query-cache hit moves its identity to the end of the ordered cache before returning.",
+        "support": [
+          {
+            "evidence_id": "W4-43-source",
+            "quote_id": "W4-43-quote",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose a cache-hit test that records request count and the resulting cache order."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-43",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "aa50fcce-8ee3-44e2-9d00-9668762997ba",
+      "created_at": "2026-10-30T22:22:51.294148+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "2781b5138e4845cbb4725e2b7001c553",
+      "event_id": 2,
+      "case_id": "aa50fcce-8ee3-44e2-9d00-9668762997ba",
+      "created_at": "2026-10-30T22:22:51.297217+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "2781b5138e4845cbb4725e2b7001c553",
+      "started_at": "2026-10-30T22:22:51.297693+00:00",
+      "usage": {
+        "input_tokens": 1473,
+        "output_tokens": 584,
+        "total_tokens": 2057
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3262.21,
+      "event_id": 3,
+      "case_id": "aa50fcce-8ee3-44e2-9d00-9668762997ba",
+      "created_at": "2026-10-30T22:22:54.559330+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-43",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.583402,
+      "error": null,
+      "event_id": 4,
+      "case_id": "aa50fcce-8ee3-44e2-9d00-9668762997ba",
+      "created_at": "2026-10-30T22:22:54.560303+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1473,
+      "output_tokens": 584,
+      "total_tokens": 2057
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "aa50fcce-8ee3-44e2-9d00-9668762997ba",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

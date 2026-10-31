@@ -1,0 +1,2 @@
+id,use_case,scenario,status,handoff_observed,elapsed_ms,contract_passed,quoted_anchor_recall,reported_tokens,error
+WF-02,issue_investigation,happy_path,awaiting_review,True,6048.913,False,1.0,13364,

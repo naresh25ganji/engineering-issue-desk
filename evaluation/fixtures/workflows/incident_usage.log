@@ -1,0 +1,5 @@
+Synthetic operational log: controlled example, not a production incident.
+2026-10-28T20:00:00Z phase=model name=investigator status=started call_id=m1
+2026-10-28T20:00:02Z phase=model_result name=investigator status=completed call_id=m1 input_tokens=150 output_tokens=40 total_tokens=190
+2026-10-28T20:00:03Z phase=model name=correctness_security status=started call_id=m2
+2026-10-28T20:00:04Z phase=model_result name=correctness_security status=completed call_id=m2 usage=unavailable

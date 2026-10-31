@@ -1,0 +1,297 @@
+{
+  "id": "W4-46",
+  "scenario": "happy_path",
+  "title": "Recorded review coverage failure",
+  "failure_mode": "Recorded review coverage failure",
+  "source": {
+    "path": "evaluation/fixtures/workflows/incident_review.log",
+    "start_line": 1,
+    "end_line": 5,
+    "sha256": "a8157d637cf04cf64d1cd1c698e348261b4f6d85118eebd9c7e58d530fe4ff65",
+    "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T18:00:00Z case=example-a phase=stage name=investigation status=completed\n2026-10-28T18:00:03Z case=example-a phase=model name=evidence_reviewer status=started call_id=m2\n2026-10-28T18:00:05Z case=example-a phase=model_result name=evidence_reviewer status=error call_id=m2 error_type=ReviewUnavailable error_code=incomplete_coverage\n2026-10-28T18:00:05Z case=example-a status=failed report_approved=false\n",
+    "title": "incident_review.log",
+    "kind": "issue",
+    "origin": "snapshot",
+    "evidence_type": "synthetic_operational_log",
+    "filename": "evaluation/fixtures/workflows/incident_review.log"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The controlled log proves that all real production reviewers always return incomplete coverage.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      },
+      {
+        "statement": "The controlled log records an evidence_reviewer error with error_code incomplete_coverage.",
+        "expected_supported": true,
+        "rationale": "The synthetic log explicitly records that error for one controlled example only."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "State that the incident is fixed because the final log entry confirms successful approval.",
+        "expected_supported": false,
+        "rationale": "The asserted remedy, execution result, or cross-context guarantee is not established by the supplied evidence."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.814734,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote is synthetic, not production; does not prove all real reviewers always return incomplete_coverage."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote explicitly records an evidence_reviewer error with error_code=incomplete_coverage."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Final log entry shows status=failed and report_approved=false, not a successful approval."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The controlled log records an evidence_reviewer error with error_code incomplete_coverage.",
+        "support": [
+          {
+            "evidence_id": "W4-46-source",
+            "quote_id": "W4-46-quote",
+            "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T18:00:00Z case=example-a phase=stage name=investigation status=completed\n2026-10-28T18:00:03Z case=example-a phase=model name=evidence_reviewer status=started call_id=m2\n2026-10-28T18:00:05Z case=example-a phase=model_result name=evidence_reviewer status=error call_id=m2 error_type=ReviewUnavailable error_code=incomplete_coverage\n2026-10-28T18:00:05Z case=example-a status=failed report_approved=false\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-46",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "5c717fb0-4dbc-42d2-b520-d6d6d6b1c230",
+      "created_at": "2026-10-30T22:22:54.351379+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "c07e18377ea04dc3bad8afc47bbd3d8f",
+      "event_id": 2,
+      "case_id": "5c717fb0-4dbc-42d2-b520-d6d6d6b1c230",
+      "created_at": "2026-10-30T22:22:54.352260+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "c07e18377ea04dc3bad8afc47bbd3d8f",
+      "started_at": "2026-10-30T22:22:54.352508+00:00",
+      "usage": {
+        "input_tokens": 1403,
+        "output_tokens": 645,
+        "total_tokens": 2048
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2799.27,
+      "event_id": 3,
+      "case_id": "5c717fb0-4dbc-42d2-b520-d6d6d6b1c230",
+      "created_at": "2026-10-30T22:22:57.152413+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-46",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "predicted": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "predicted": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.814734,
+      "error": null,
+      "event_id": 4,
+      "case_id": "5c717fb0-4dbc-42d2-b520-d6d6d6b1c230",
+      "created_at": "2026-10-30T22:22:57.154651+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1403,
+      "output_tokens": 645,
+      "total_tokens": 2048
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "predicted": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "5c717fb0-4dbc-42d2-b520-d6d6d6b1c230",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

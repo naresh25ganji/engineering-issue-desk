@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import hashlib
+import io
 import json
 from pathlib import Path
 import zipfile
@@ -29,17 +30,30 @@ def build_archive(root: Path, output: Path) -> dict:
         relative = path.relative_to(root)
         if path == output or PRIVATE_PARTS.intersection(relative.parts):
             continue
-        allowed = (len(relative.parts) == 1 and relative.name in ROOT_FILES) or relative.parts[0] in SOURCE_DIRECTORIES
+        workbook = (relative.parts[:2] == ('outputs', 'week4') and len(relative.parts) == 3
+                    and relative.suffix.lower() == '.xlsx')
+        allowed = ((len(relative.parts) == 1 and relative.name in ROOT_FILES)
+                   or relative.parts[0] in SOURCE_DIRECTORIES or workbook)
         if not allowed or not path.is_file():
             continue
         if path.name.startswith('.env') and path.name != '.env.example':
             continue
-        if path.name == 'secrets.toml' or path.suffix.lower() in {'.log', '.pyc', '.zip'} or path.name == '.DS_Store':
+        fixture_log = relative.parts[:-1] == ('evaluation', 'fixtures', 'workflows') and path.suffix.lower() == '.log'
+        if (path.name == 'secrets.toml' or path.suffix.lower() in {'.pyc', '.zip'}
+                or path.suffix.lower() == '.log' and not fixture_log or path.name == '.DS_Store'):
             continue
         if path.is_symlink():
             raise ValueError(f'Refusing a symbolic link in source assets: {relative}')
         content = path.read_bytes()
-        if any(secret in content for secret in secrets):
+        contains_secret = any(secret in content for secret in secrets)
+        # Office files compress their XML; scanning only the outer ZIP bytes
+        # would miss a configured credential stored inside a workbook cell.
+        if secrets and path.suffix.lower() in {'.xlsx', '.docx', '.pptx'} and zipfile.is_zipfile(io.BytesIO(content)):
+            with zipfile.ZipFile(io.BytesIO(content)) as office:
+                contains_secret = contains_secret or any(
+                    any(secret in office.read(member) for secret in secrets)
+                    for member in office.namelist() if not member.endswith('/'))
+        if contains_secret:
             raise ValueError('A configured local credential appears in a candidate asset. No archive was written.')
         entries.append((relative.as_posix(), content))
     if not entries:

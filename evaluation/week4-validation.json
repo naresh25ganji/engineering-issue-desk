@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-10-30T22:08:49.359197+00:00",
+  "offline_tests": {
+    "command": "uv run pytest -q",
+    "passed": 723,
+    "failed": 0,
+    "seconds": 13.02
+  },
+  "app_actual_artifact_views": {
+    "paired_exceptions": 0,
+    "case_exceptions": 0,
+    "paired_cases_fixed": 7,
+    "paired_cases_regressed": 0
+  },
+  "offline_inventory": {
+    "scheduled": 40,
+    "model_calls": 0,
+    "metrics": "not_measured"
+  },
+  "workbook": {
+    "native_engine": "Bundled LibreOffice headless",
+    "formula_errors": [],
+    "source_excerpts_verified": 40,
+    "blank_human_label_rows_verified": 119,
+    "selected": "calibrated",
+    "baseline_exact": 0.8,
+    "improved_exact": 0.975,
+    "delta_percentage_points": 17.5,
+    "human_status": "Pending review",
+    "visual_sheets_reviewed": [
+      "Summary",
+      "Cases",
+      "Item review"
+    ],
+    "long_source_rows_reviewed": [
+      "W4-17",
+      "W4-19",
+      "W4-33"
+    ]
+  },
+  "experiment_scope": "Production evidence-review component only; five real 40-case v2 runs, not full-agent evaluation.",
+  "reference_labels": "119 AI-proposed item labels pending human review",
+  "post_experiment_fix": "Recovery preserves checkpoint threads with empty next but pending tasks; deterministic regression added. Not part of measured prompt deltas.",
+  "remaining": [
+    "Human review of reference labels",
+    "Record Loom",
+    "Held-out repeated-call evaluation before production prompt promotion",
+    "Course submission not performed"
+  ],
+  "files_sha256": {
+    "evaluation/week4.py": "ce01886f7753ca1282fa375c1775b2d328f702d9619f357a8e3adfe303100e10",
+    "evaluation/week4-cases.json": "49b5fa4b1c28b650bda580b24c8c2495317deb019afcbb673ffdfed2c86f098f",
+    "triage_desk/agent_review.py": "164d439c3f0bd1f17a3e3e7bf5efe88408110bc1e03e26375086d20552edb972",
+    "triage_desk/deep_investigation.py": "5e719551bf6891c9de5b9862c6d712d1d249d027108d765ace708b75a5d78e8c",
+    "outputs/week4/Engineering Issue Desk Week 4 Evaluation.xlsx": "fd536926a0ac83c0b13d0c296de9aac696d556c2d3cc01104ede1d2626b4bbaa"
+  }
+}

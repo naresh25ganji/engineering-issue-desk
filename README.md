@@ -1,6 +1,6 @@
 # Engineering Issue Desk
 
-Investigate Streamlit behavior and prepare a reviewable issue draft from a bounded snapshot of official documentation, release notes, contribution guidance, and public issue reports. Inspect exact supporting passages, identify missing local details, and keep source authority and version scope visible.
+Investigate engineering reports, triage supplied incident logs, review changes, and plan regression tests with exact source evidence and saved human review. The built-in knowledge base covers a bounded snapshot of Streamlit documentation, release notes, contribution guidance, and public issue reports. Supplied code, logs, and diffs provide case-specific context; source authority and version scope stay visible.
 
 This independent course project does not establish a private application's root cause, prove a duplicate, promise a fix, inspect arbitrary host files, or execute supplied programs. Week 3 adds a Deep Agents investigator with Fireworks, Keenable, saved cases, and resumable human review. The investigator cannot publish; an approved report can use a separate human-confirmed PR summary workflow.
 
@@ -17,6 +17,39 @@ uv run streamlit run app.py --server.address 127.0.0.1 --server.port 8502
 
 Open http://localhost:8502. The 65-source snapshot is included. Keyword evidence mode needs no model or provider key. Semantic/hybrid retrieval uses real local FastEmbed `BAAI/bge-small-en-v1.5` embeddings by default; prepare model files and indexes before a fully offline demonstration. First-use downloads/indexing can take much longer than a warm query. A failed model never silently selects a different retrieval mode.
 
+## Engineering workflows and expanded evaluations
+
+In **Deep Investigation**, choose **Issue investigation**, **Incident triage**, **Change review**, or **Test planning**. Each workflow has tailored input guidance and starter examples. **Try a sample with evidence** loads a frozen request plus code, logs, or a proposed diff without starting a model call. Saved cases preserve the selected workflow/version through restart, retry, and revision. Supplied logs remain reported incident evidence; code and diffs are inspected statically.
+
+The **Evaluation** tab can now launch and filter three suites: **40 full engineering workflows**, **30 fresh reviewer cases**, and **30 deterministic citation/report checks**. Select a suite, choose input validation or an explicit Fireworks model run, and inspect per-workflow metrics, failed cases, actual reports, reviewer decisions, and local traces. Input validation and citation checks require no provider call. The original Week 4 experiments remain available separately.
+
+Recorded results are **37/40 saved handoffs** and **26/40 structural contracts** for the full agent, **90% provisional-label agreement** on the fresh calibrated-reviewer cases, and **30/30 deterministic integrity checks**. The full-agent handoff and contract targets were not met. These metrics cover different layers and do not establish human accuracy; the labels and semantic rubrics still need review. The experiment used calibrated evidence review, while the interactive app keeps its baseline default. A follow-up guard prevents the observed configuration-key-value request in `missing_information` and preserves source quotes.
+
+Read the [workflow guide and measured failures](docs/ENGINEERING_WORKFLOWS.md), [full-agent report](evaluation/use-case-live/report.html), [fresh reviewer comparison](evaluation/reviewer-regression-comparison/comparison.html), and [integrity report](evaluation/integrity-results/report.html).
+
+```bash
+uv run python -m evaluation.use_cases run --output-dir .cache/workflow-inventory-new
+uv run python -m evaluation.use_cases run --live --review-prompt calibrated --workers 4 --output-dir evaluation/workflows-live-new
+uv run python -m evaluation.integrity --output-dir evaluation/integrity-new
+```
+
+## Week 4 reviewer evaluation
+
+Week 4 evaluates the **independent evidence-review component** of the Week 3 agent on 40 fixed repository-derived cases, with 119 finding/proposal labels. It measures exact case verdict agreement, rejection of unsupported items, retention of supported items, p95 latency, and reported tokens. It does not measure the entire investigator. The reference labels are AI-proposed and still need human review; their agreement scores are development diagnostics.
+
+Read the [evaluation framework and results](docs/WEEK4_EVALUATION.md), [frozen case dataset](evaluation/week4-cases.json), and [registered improvement hypotheses](evaluation/week4-hypotheses.json). The app's **Evaluation** tab displays run metrics, actual case evidence/verdicts, and paired fixes/regressions. The **Project guide** includes the Week 4 evaluation and demo guide. The runner makes real Fireworks calls only with `--live`, keeps expected labels out of model requests, saves each completed case for recovery, and exports readable HTML, JSON, scored CSV, and a separate human-label review CSV. LangSmith recording is disabled for this spreadsheet track.
+
+Five recorded runs on the corrected dataset improved exact agreement from **80% to 97.5%**, with seven case fixes and zero final regressions. The selected experimental prompt rejected all 43 unsupported items and retained 75/76 supported items. The [editable evaluation workbook](outputs/week4/Engineering%20Issue%20Desk%20Week%204%20Evaluation.xlsx) contains the cases, verdicts, rubric, and pending human labels. The [demo guide](docs/WEEK4_DEMO.md) covers the remaining recording. Final verification passed 723 tests, including a deterministic fix for a crash-recovery checkpoint race found during validation.
+
+```bash
+uv run python -m evaluation.week4 run --output-dir .cache/week4-inventory-new
+uv run python -m evaluation.week4 run --live --variant baseline --workers 4 --output-dir evaluation/week4-baseline-new
+uv run python -m evaluation.week4 run --live --variant calibrated --workers 4 --output-dir evaluation/week4-candidate-new
+uv run python -m evaluation.week4 compare --baseline evaluation/week4-baseline-new --improved evaluation/week4-candidate-new --output-dir evaluation/week4-comparison-new
+```
+
+Experimental `diagnostic`, `scope`, `authority`, and `calibrated` prompts are cumulative, and the production default remains the frozen `baseline`. New output directories preserve earlier runs; `--resume` reuses an interrupted run only when its dataset, cases, prompt, model, mode and optional price assumptions match. Dollar cost remains unknown unless explicit input/output token rates are supplied. Review the labels and record a Loom before submitting the project.
+
 The guided workflow defaults to structured passages. Fixed/structured indexes and optional hosted indexes are fingerprinted and cached separately in ignored `.cache/`; the bundled historical base-pipeline index does not replace those separate indexes. Changed corpus/model identities invalidate stale vectors.
 
 ## Eight working views
@@ -24,12 +57,12 @@ The guided workflow defaults to structured passages. Fixed/structured indexes an
 | View | What it provides |
 | --- | --- |
 | Investigate | Structured reporter details, cited or extracted evidence, related public reports, missing details, workflow trace, and downloadable draft/JSON |
-| Deep Investigation | Fireworks-powered planning and specialist delegation, Keenable/GitHub tools, immutable source evidence, saved cases, and approve/reject/revise review |
+| Deep Investigation | Four engineering workflows with examples and sample evidence, specialist delegation, immutable sources, saved cases, and approve/reject/revise review |
 | Chat | Follow-up investigations with at most the last three user requests used only to resolve explicit references; prior assistant answers are never source evidence |
 | Knowledge base | Inspect the included source text, upstream URL, snapshot, source type, and version scope |
 | Relationships | Explore a provenance-bearing graph of literal API mentions and explicit reported versions, kinds, and issue states |
 | Retrieval lab | Compare fixed and structured passages and optional real FlashRank reranking for the same query |
-| Evaluation | Inspect recorded experiment reports and separately labeled user outcome summaries |
+| Evaluation | Launch workflow/reviewer/integrity suites, filter case results and traces, compare runs, and inspect separately labeled user outcomes |
 | Project guide | View/download system and sequence diagrams, architecture, design decisions, operations, validation, and submission docs |
 
 The original investigation's LangGraph path is `prepare → retrieve → grade → analyze → handoff → finish`, with conditional clarification/abstention branches. LangChain Core `Document` and `RunnableLambda` carry evidence and wrap nodes. Each eligible request retrieves once. Guards can request local diagnostics before retrieval. This original path remains stateless; the new Deep Investigation path has separate durable checkpoints.

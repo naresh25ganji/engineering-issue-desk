@@ -1,0 +1,299 @@
+{
+  "id": "W4-45",
+  "scenario": "happy_path",
+  "title": "Public evidence digest check",
+  "failure_mode": "Public evidence digest check",
+  "source": {
+    "path": "evaluation/fixtures/workflows/public_evidence.py",
+    "start_line": 1,
+    "end_line": 19,
+    "sha256": "f3e3cace6b5d945e4d3ea4b65896d35c7334930ffc7bab0e466a1b0d88fb53db",
+    "quote": "# Frozen source excerpt: triage_desk/review_publication.py:56-73\ndef _public_source(source):\n    if source.get('origin') not in {'snapshot', 'live'} or source.get('kind') not in {\n        'documentation', 'issue', 'release', 'contributing', 'code',\n    }:\n        raise ValueError('Publication supports must contain public source evidence only.')\n    url = canonical_http_url(source.get('url', ''))\n    parts = urlsplit(url)\n    if (parts.scheme != 'https' or parts.hostname not in _PUBLIC_HOSTS\n            or parts.port not in (None, 443) or parts.query):\n        raise ValueError('Publication supports need approved public HTTPS source links.')\n    path = unquote(parts.path)\n    if (parts.hostname == 'github.com' and\n            (not (path == '/streamlit/streamlit' or path.startswith('/streamlit/streamlit/'))\n             or '\\\\' in path or any(part in {'.', '..'} for part in path.split('/')))):\n        raise ValueError('GitHub publication evidence is limited to streamlit/streamlit.')\n    if hashlib.sha256(source['text'].encode()).hexdigest() != source.get('sha256'):\n        raise ValueError('The registered public evidence failed its integrity check.')\n    return url\n",
+    "title": "public_evidence.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/public_evidence.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The publication helper compares the SHA-256 of source text with the saved sha256 value.",
+        "expected_supported": true,
+        "rationale": "The final hash comparison is independent of the preceding URL conditions."
+      },
+      {
+        "statement": "An approved hostname automatically skips source-text integrity validation.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a source record with an approved HTTPS URL and a deliberately mismatched saved digest.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.495668,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code hashes source['text'] and compares to source['sha256'] before returning."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code does not skip SHA-256 check for approved hostnames; integrity check always runs."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "A source with approved HTTPS URL and mismatched digest will cause the integrity check to raise, matching the code behavior."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The publication helper compares the SHA-256 of source text with the saved sha256 value.",
+        "support": [
+          {
+            "evidence_id": "W4-45-source",
+            "quote_id": "W4-45-quote",
+            "quote": "# Frozen source excerpt: triage_desk/review_publication.py:56-73\ndef _public_source(source):\n    if source.get('origin') not in {'snapshot', 'live'} or source.get('kind') not in {\n        'documentation', 'issue', 'release', 'contributing', 'code',\n    }:\n        raise ValueError('Publication supports must contain public source evidence only.')\n    url = canonical_http_url(source.get('url', ''))\n    parts = urlsplit(url)\n    if (parts.scheme != 'https' or parts.hostname not in _PUBLIC_HOSTS\n            or parts.port not in (None, 443) or parts.query):\n        raise ValueError('Publication supports need approved public HTTPS source links.')\n    path = unquote(parts.path)\n    if (parts.hostname == 'github.com' and\n            (not (path == '/streamlit/streamlit' or path.startswith('/streamlit/streamlit/'))\n             or '\\\\' in path or any(part in {'.', '..'} for part in path.split('/')))):\n        raise ValueError('GitHub publication evidence is limited to streamlit/streamlit.')\n    if hashlib.sha256(source['text'].encode()).hexdigest() != source.get('sha256'):\n        raise ValueError('The registered public evidence failed its integrity check.')\n    return url\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose a source record with an approved HTTPS URL and a deliberately mismatched saved digest."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-45",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "b9f5281b-07a7-432f-a7b0-8b68ea6755e7",
+      "created_at": "2026-10-30T22:22:53.857962+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "9e0dad731a1a4f14935011091ddeccab",
+      "event_id": 2,
+      "case_id": "b9f5281b-07a7-432f-a7b0-8b68ea6755e7",
+      "created_at": "2026-10-30T22:22:53.858964+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "9e0dad731a1a4f14935011091ddeccab",
+      "started_at": "2026-10-30T22:22:53.859232+00:00",
+      "usage": {
+        "input_tokens": 1564,
+        "output_tokens": 700,
+        "total_tokens": 2264
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3482.16,
+      "event_id": 3,
+      "case_id": "b9f5281b-07a7-432f-a7b0-8b68ea6755e7",
+      "created_at": "2026-10-30T22:22:57.341491+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-45",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.495668,
+      "error": null,
+      "event_id": 4,
+      "case_id": "b9f5281b-07a7-432f-a7b0-8b68ea6755e7",
+      "created_at": "2026-10-30T22:22:57.342743+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1564,
+      "output_tokens": 700,
+      "total_tokens": 2264
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "b9f5281b-07a7-432f-a7b0-8b68ea6755e7",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

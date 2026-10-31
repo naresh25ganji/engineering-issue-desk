@@ -1,0 +1,299 @@
+{
+  "id": "W4-41",
+  "scenario": "happy_path",
+  "title": "Runtime configuration exception translation",
+  "failure_mode": "Runtime configuration exception translation",
+  "source": {
+    "path": "evaluation/fixtures/workflows/embedding_endpoint.py",
+    "start_line": 1,
+    "end_line": 9,
+    "sha256": "196a0494b2df5a465a107431833a07bccf03642b71fdaa9946cd9e31dfa7b43e",
+    "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n",
+    "title": "embedding_endpoint.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/embedding_endpoint.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The helper translates GenerationUnavailable into an EmbeddingUnavailable error with a fixed configuration message.",
+        "expected_supported": true,
+        "rationale": "The quoted except block performs that exception translation."
+      },
+      {
+        "statement": "The provider has been confirmed unavailable by a successful network health check.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a controlled test in which _configuration raises GenerationUnavailable.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.306761,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code catches GenerationUnavailable and raises EmbeddingUnavailable with the quoted fixed message."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote contains no mention of a network health check confirming provider unavailability."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "A test that makes _configuration raise GenerationUnavailable can exercise and verify the observed translation behavior."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The helper translates GenerationUnavailable into an EmbeddingUnavailable error with a fixed configuration message.",
+        "support": [
+          {
+            "evidence_id": "W4-41-source",
+            "quote_id": "W4-41-quote",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose a controlled test in which _configuration raises GenerationUnavailable."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-41",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "6fae11bf-571a-4e70-887c-d9f600dff52b",
+      "created_at": "2026-10-30T22:23:56.232050+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "cf183c21c3504a5b98ad519dbb7ffea1",
+      "event_id": 2,
+      "case_id": "6fae11bf-571a-4e70-887c-d9f600dff52b",
+      "created_at": "2026-10-30T22:23:56.235905+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "cf183c21c3504a5b98ad519dbb7ffea1",
+      "started_at": "2026-10-30T22:23:56.236518+00:00",
+      "usage": {
+        "input_tokens": 2030,
+        "output_tokens": 601,
+        "total_tokens": 2631
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3010.33,
+      "event_id": 3,
+      "case_id": "6fae11bf-571a-4e70-887c-d9f600dff52b",
+      "created_at": "2026-10-30T22:23:59.245580+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-41",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.306761,
+      "error": null,
+      "event_id": 4,
+      "case_id": "6fae11bf-571a-4e70-887c-d9f600dff52b",
+      "created_at": "2026-10-30T22:23:59.248271+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2030,
+      "output_tokens": 601,
+      "total_tokens": 2631
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "6fae11bf-571a-4e70-887c-d9f600dff52b",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

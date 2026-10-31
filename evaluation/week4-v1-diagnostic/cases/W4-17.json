@@ -1,0 +1,292 @@
+{
+  "id": "W4-17",
+  "scenario": "happy_path",
+  "title": "Offline filtering contract",
+  "failure_mode": "Mock contract versus semantic evaluation",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 108,
+    "end_line": 139,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "        return response({\n            # Deliberately return out of order to verify original item ordering.\n            'finding_verdicts': [verdict(1, False, 'Ignoring upload changes does not affect the separate checkbox event.'),\n                                 verdict(0)],\n            'next_step_verdicts': [verdict(1, True, 'This diagnostic compares the two quoted event sources without claiming a fix.'),\n                                  verdict(0, False, 'The proposed change cannot prevent the independent checkbox rerun.')],\n        })\n\n    model = ReviewerModel(replies=[independent_verdict])\n    budget = budget_for(context)\n    result = review_report(context[2], model, budget)\n    assert result['report'] == {\n        'findings': [original['findings'][0]], 'next_steps': [original['next_steps'][1]],\n        'missing_information': original['missing_information'],\n    }\n    assert set(result['report']) == {'findings', 'next_steps', 'missing_information'}\n    assert result['quality_review']['status'] == 'completed'\n    assert result['quality_review']['retained_findings'] == 1\n    assert result['quality_review']['removed_findings'] == 1\n    assert result['quality_review']['removed_next_steps'] == 1\n    assert result['quality_review']['reviewer_model'] == 'offline-reviewer'\n    assert [row['index'] for row in result['quality_review']['finding_verdicts']] == [0, 1]\n    assert context[2] == original\n    support = result['report']['findings'][0]['support'][0]\n    assert support['evidence_id'] == original['findings'][0]['support'][0]['evidence_id']\n    assert support['quote_id'] == original['findings'][0]['support'][0]['quote_id']\n    assert support['quote'] == DOCS\n    assert len(model.calls) == 1\n    assert model.choices == ['EvidenceVerdicts']\n    assert model.schemas[0]['function']['name'] == 'EvidenceVerdicts'\n    assert budget.model_calls == 1\n    assert budget.tokens == 48\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "This offline test asserts that rejected original items are removed, retained items preserve their original support, and only one reviewer call occurs.",
+        "expected_supported": true,
+        "rationale": "The scripted verdict and assertions show removal, preserved support, and len(model.calls) == 1."
+      },
+      {
+        "statement": "These scripted verdicts prove that the live reviewer model can detect every wrong causal claim.",
+        "expected_supported": false,
+        "rationale": "The test supplies verdict booleans itself; it does not measure live semantic quality."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Use separate live labeled examples to measure semantic judgment in addition to this scripted contract test.",
+        "expected_supported": true,
+        "rationale": "The quoted scripted response establishes why semantic quality needs a distinct measurement."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 4.612097,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote includes asserts that removed_findings, retained_findings, and model.calls equal 1, confirming the offline test behavior described."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote does not demonstrate that the live reviewer model detects every wrong causal claim; no such evidence is present."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote contains no information about using separate live labeled examples; proposal is unsupported by the evidence."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "This offline test asserts that rejected original items are removed, retained items preserve their original support, and only one reviewer call occurs.",
+        "support": [
+          {
+            "evidence_id": "W4-17-source",
+            "quote_id": "W4-17-quote",
+            "quote": "        return response({\n            # Deliberately return out of order to verify original item ordering.\n            'finding_verdicts': [verdict(1, False, 'Ignoring upload changes does not affect the separate checkbox event.'),\n                                 verdict(0)],\n            'next_step_verdicts': [verdict(1, True, 'This diagnostic compares the two quoted event sources without claiming a fix.'),\n                                  verdict(0, False, 'The proposed change cannot prevent the independent checkbox rerun.')],\n        })\n\n    model = ReviewerModel(replies=[independent_verdict])\n    budget = budget_for(context)\n    result = review_report(context[2], model, budget)\n    assert result['report'] == {\n        'findings': [original['findings'][0]], 'next_steps': [original['next_steps'][1]],\n        'missing_information': original['missing_information'],\n    }\n    assert set(result['report']) == {'findings', 'next_steps', 'missing_information'}\n    assert result['quality_review']['status'] == 'completed'\n    assert result['quality_review']['retained_findings'] == 1\n    assert result['quality_review']['removed_findings'] == 1\n    assert result['quality_review']['removed_next_steps'] == 1\n    assert result['quality_review']['reviewer_model'] == 'offline-reviewer'\n    assert [row['index'] for row in result['quality_review']['finding_verdicts']] == [0, 1]\n    assert context[2] == original\n    support = result['report']['findings'][0]['support'][0]\n    assert support['evidence_id'] == original['findings'][0]['support'][0]['evidence_id']\n    assert support['quote_id'] == original['findings'][0]['support'][0]['quote_id']\n    assert support['quote'] == DOCS\n    assert len(model.calls) == 1\n    assert model.choices == ['EvidenceVerdicts']\n    assert model.schemas[0]['function']['name'] == 'EvidenceVerdicts'\n    assert budget.model_calls == 1\n    assert budget.tokens == 48\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-17",
+      "run_name": "20261030T220035Z-c74386df",
+      "prompt_version": "diagnostic",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "4aab1600-1915-4fe9-a7b7-0ab6b1648c08",
+      "created_at": "2026-10-30T22:00:59.178863+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "5ada1847fb194dadb76daebe34e12963",
+      "event_id": 2,
+      "case_id": "4aab1600-1915-4fe9-a7b7-0ab6b1648c08",
+      "created_at": "2026-10-30T22:00:59.179735+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "5ada1847fb194dadb76daebe34e12963",
+      "started_at": "2026-10-30T22:00:59.179973+00:00",
+      "usage": {
+        "input_tokens": 1869,
+        "output_tokens": 643,
+        "total_tokens": 2512
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4601.7,
+      "event_id": 3,
+      "case_id": "4aab1600-1915-4fe9-a7b7-0ab6b1648c08",
+      "created_at": "2026-10-30T22:01:03.781530+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-17",
+      "run_name": "20261030T220035Z-c74386df",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "prompt_version": "diagnostic",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": false,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": false,
+            "correct": false,
+            "error_type": "false_negative"
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 1,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 4.612097,
+      "error": null,
+      "event_id": 4,
+      "case_id": "4aab1600-1915-4fe9-a7b7-0ab6b1648c08",
+      "created_at": "2026-10-30T22:01:03.782237+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1869,
+      "output_tokens": 643,
+      "total_tokens": 2512
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": false,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": false,
+        "correct": false,
+        "error_type": "false_negative"
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 1,
+    "unknown_verdicts": 0
+  },
+  "case_id": "4aab1600-1915-4fe9-a7b7-0ab6b1648c08",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

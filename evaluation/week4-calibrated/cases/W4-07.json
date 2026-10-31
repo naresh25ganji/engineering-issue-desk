@@ -1,0 +1,294 @@
+{
+  "id": "W4-07",
+  "scenario": "happy_path",
+  "title": "Freshness status and factual scope",
+  "failure_mode": "Fetch recency versus source correctness",
+  "source": {
+    "path": "triage_desk/freshness.py",
+    "start_line": 15,
+    "end_line": 30,
+    "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+    "quote": "    for source in sources:\n        try:\n            snapshot = datetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise ValueError('Invalid snapshot time')\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n    oldest = min(snapshots) if snapshots else None\n    age_days = (now - oldest).total_seconds() / 86400 if oldest else None\n    status = 'unknown' if missing or not oldest else 'stale' if age_days >= max_age_days else 'current'\n    return {'status': status, 'oldest_snapshot_at': oldest.isoformat() if oldest else None,\n            'age_days': round(age_days, 2) if age_days is not None else None,\n            'max_age_days': max_age_days, 'missing_or_invalid_timestamps': missing,\n            'refresh_mode': 'manual',\n            'note': 'Snapshot age measures fetch time, not whether an upstream claim or version is still correct.'}\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "A nonzero missing count takes precedence over age and selects unknown status.",
+        "expected_supported": true,
+        "rationale": "The first status condition is missing or not oldest."
+      },
+      {
+        "statement": "A current status verifies that every upstream claim and version remains correct.",
+        "expected_supported": false,
+        "rationale": "The returned note expressly limits the measure to snapshot fetch age."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a test with one old valid snapshot and one invalid timestamp to check that unknown takes priority over stale.",
+        "expected_supported": true,
+        "rationale": "It checks the selected status ordering, with the invalid count supplied as the test condition."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.243093,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code sets status to 'unknown' if missing is truthy, overriding age checks, confirming precedence."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code notes snapshot age doesn't verify upstream claims; it does not assert 'current' verifies correctness."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed test directly checks that a missing/invalid timestamp yields 'unknown' over 'stale', matching code logic."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "A nonzero missing count takes precedence over age and selects unknown status.",
+        "support": [
+          {
+            "evidence_id": "W4-07-source",
+            "quote_id": "W4-07-quote",
+            "quote": "    for source in sources:\n        try:\n            snapshot = datetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise ValueError('Invalid snapshot time')\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n    oldest = min(snapshots) if snapshots else None\n    age_days = (now - oldest).total_seconds() / 86400 if oldest else None\n    status = 'unknown' if missing or not oldest else 'stale' if age_days >= max_age_days else 'current'\n    return {'status': status, 'oldest_snapshot_at': oldest.isoformat() if oldest else None,\n            'age_days': round(age_days, 2) if age_days is not None else None,\n            'max_age_days': max_age_days, 'missing_or_invalid_timestamps': missing,\n            'refresh_mode': 'manual',\n            'note': 'Snapshot age measures fetch time, not whether an upstream claim or version is still correct.'}\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose a test with one old valid snapshot and one invalid timestamp to check that unknown takes priority over stale."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-07",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "ff6df0eb-aec8-401f-aa24-7678ad7bc4c3",
+      "created_at": "2026-10-30T22:06:13.803006+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "6304a477937c42b7a2fe2c08058e0983",
+      "event_id": 2,
+      "case_id": "ff6df0eb-aec8-401f-aa24-7678ad7bc4c3",
+      "created_at": "2026-10-30T22:06:13.805245+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "6304a477937c42b7a2fe2c08058e0983",
+      "started_at": "2026-10-30T22:06:13.805614+00:00",
+      "usage": {
+        "input_tokens": 2152,
+        "output_tokens": 722,
+        "total_tokens": 2874
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3222.88,
+      "event_id": 3,
+      "case_id": "ff6df0eb-aec8-401f-aa24-7678ad7bc4c3",
+      "created_at": "2026-10-30T22:06:17.028054+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-07",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.243093,
+      "error": null,
+      "event_id": 4,
+      "case_id": "ff6df0eb-aec8-401f-aa24-7678ad7bc4c3",
+      "created_at": "2026-10-30T22:06:17.029097+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2152,
+      "output_tokens": 722,
+      "total_tokens": 2874
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "ff6df0eb-aec8-401f-aa24-7678ad7bc4c3",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

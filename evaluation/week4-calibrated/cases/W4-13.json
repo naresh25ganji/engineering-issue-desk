@@ -1,0 +1,294 @@
+{
+  "id": "W4-13",
+  "scenario": "happy_path",
+  "title": "Generic embedding failure messages",
+  "failure_mode": "Safe static error formatting",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 150,
+    "end_line": 159,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "        except EmbeddingUnavailable:\n            if metadata[\"status\"] == \"not_attempted\":\n                metadata[\"status\"] = \"configuration_error\"\n            raise\n        except (httpx.HTTPError, OSError, ValueError, TypeError, KeyError, OverflowError) as exc:\n            metadata[\"status\"] = \"provider_error\" if isinstance(exc, (httpx.HTTPError, OSError)) else \"invalid_response\"\n            metadata[\"failure_type\"] = type(exc).__name__\n            raise EmbeddingUnavailable(f\"Hosted embedding request failed ({type(exc).__name__}); no embedding results were accepted.\") from None\n        finally:\n            metadata[\"latency_ms\"] = round((time.perf_counter() - started) * 1000, 3)\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "Selected HTTP, OS, parsing, and numeric failures are re-raised as EmbeddingUnavailable with the exception class name rather than the original exception text.",
+        "expected_supported": true,
+        "rationale": "The handler stores type(exc).__name__ and formats that class into a fixed message."
+      },
+      {
+        "statement": "The exception handler deliberately inserts the raw provider error body into the raised error message.",
+        "expected_supported": false,
+        "rationale": "The visible raised message contains only a fixed description and exception type."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a fake HTTP error containing a sentinel provider message and inspect the raised message for that sentinel.",
+        "expected_supported": true,
+        "rationale": "This diagnostic checks the selected error-message mechanism without asserting its observed result."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 6.165805,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code catches HTTPError, OSError, ValueError, TypeError, KeyError, OverflowError and raises EmbeddingUnavailable with only the exception class name, not original text."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Raised message does not include raw provider error body; only a generic string with class name."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Diagnostic can create a fake HTTP error with sentinel and verify that the raised EmbeddingUnavailable message lacks the sentinel, matching observed behavior."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "Selected HTTP, OS, parsing, and numeric failures are re-raised as EmbeddingUnavailable with the exception class name rather than the original exception text.",
+        "support": [
+          {
+            "evidence_id": "W4-13-source",
+            "quote_id": "W4-13-quote",
+            "quote": "        except EmbeddingUnavailable:\n            if metadata[\"status\"] == \"not_attempted\":\n                metadata[\"status\"] = \"configuration_error\"\n            raise\n        except (httpx.HTTPError, OSError, ValueError, TypeError, KeyError, OverflowError) as exc:\n            metadata[\"status\"] = \"provider_error\" if isinstance(exc, (httpx.HTTPError, OSError)) else \"invalid_response\"\n            metadata[\"failure_type\"] = type(exc).__name__\n            raise EmbeddingUnavailable(f\"Hosted embedding request failed ({type(exc).__name__}); no embedding results were accepted.\") from None\n        finally:\n            metadata[\"latency_ms\"] = round((time.perf_counter() - started) * 1000, 3)\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose a fake HTTP error containing a sentinel provider message and inspect the raised message for that sentinel."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-13",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "8ad3b3a1-38c6-4713-8467-fe4cb9ef9dd6",
+      "created_at": "2026-10-30T22:06:19.361287+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "458ad37ccf9c444080f4a0c591f091cf",
+      "event_id": 2,
+      "case_id": "8ad3b3a1-38c6-4713-8467-fe4cb9ef9dd6",
+      "created_at": "2026-10-30T22:06:19.362283+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "458ad37ccf9c444080f4a0c591f091cf",
+      "started_at": "2026-10-30T22:06:19.362542+00:00",
+      "usage": {
+        "input_tokens": 2093,
+        "output_tokens": 1191,
+        "total_tokens": 3284
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 6154.87,
+      "event_id": 3,
+      "case_id": "8ad3b3a1-38c6-4713-8467-fe4cb9ef9dd6",
+      "created_at": "2026-10-30T22:06:25.517233+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-13",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 6.165805,
+      "error": null,
+      "event_id": 4,
+      "case_id": "8ad3b3a1-38c6-4713-8467-fe4cb9ef9dd6",
+      "created_at": "2026-10-30T22:06:25.517889+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2093,
+      "output_tokens": 1191,
+      "total_tokens": 3284
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "8ad3b3a1-38c6-4713-8467-fe4cb9ef9dd6",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

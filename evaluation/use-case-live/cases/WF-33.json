@@ -1,0 +1,552 @@
+{
+  "id": "WF-33",
+  "eval_id": "WF-33",
+  "use_case": "test_planning",
+  "title": "Restart reservation coverage",
+  "scenario": "happy_path",
+  "question": "Assess the test definition for a dispatched model call without a terminal record. Propose related restart-boundary tests and describe only assertions present in this excerpt.",
+  "input": {
+    "question": "Assess the test definition for a dispatched model call without a terminal record. Propose related restart-boundary tests and describe only assertions present in this excerpt.",
+    "version": "",
+    "context": "# Frozen source excerpt: tests/test_agent_budget.py:40-62\ndef test_restart_counts_dispatched_calls_even_if_process_did_not_record_result(saved_case):\n    store, case_id = saved_case\n    store.add_event(case_id, {'phase': 'model', 'name': 'investigator', 'status': 'started'})\n    restarted = InvestigationBudget(store, case_id, max_model_calls=1)\n    with pytest.raises(BudgetExceeded):\n        BudgetMiddleware(restarted).wrap_model_call(None, response)\n\n\ndef test_parallel_tool_reservations_never_exceed_shared_limit(saved_case):\n    store, case_id = saved_case\n    budget = InvestigationBudget(store, case_id, max_tool_calls=3)\n\n    def execute(_):\n        try:\n            with budget.tool_call('read_case_evidence'):\n                return True\n        except BudgetExceeded:\n            return False\n\n    with ThreadPoolExecutor(max_workers=6) as pool:\n        results = list(pool.map(execute, range(12)))\n    assert sum(results) == 3\n    assert sum(e['phase'] == 'tool' for e in store.events(case_id)) == 3\n",
+    "use_case": "test_planning"
+  },
+  "input_sha256": "3a1960a407e0edaed029ca7594ffcd91cd1659a77f48dd3a03cdab377159a34b",
+  "case_definition_sha256": "b99f8717d98c4769073a00ccd030af1db76e4de2cf5dd7e32311135887a843e0",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/budget_test_definitions.py",
+    "sha256": "ad5e58e82b4ee54ea1d203dd9a8d3403642cfbb6d43067a96e31ab5ec067b3af"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "max_model_calls=1"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "5aaaae0f-1748-4d8a-a243-bc8ab09c2da8",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The test `test_restart_counts_dispatched_calls_even_if_process_did_not_record_result` expects a `BudgetExceeded` exception when a model call is wrapped after a 'model' started event has been recorded and the budget limit is 1.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_e6e8cc4afaa074d99d2f86252481ceeb",
+            "quote_id": "ev_e6e8cc4afaa074d99d2f86252481ceeb:q1",
+            "quote": "# Frozen source excerpt: tests/test_agent_budget.py:40-62\ndef test_restart_counts_dispatched_calls_even_if_process_did_not_record_result(saved_case):\n    store, case_id = saved_case\n    store.add_event(case_id, {'phase': 'model', 'name': 'investigator', 'status': 'started'})\n    restarted = InvestigationBudget(store, case_id, max_model_calls=1)\n    with pytest.raises(BudgetExceeded):\n        BudgetMiddleware(restarted).wrap_model_call(None, response)\n\n\ndef test_parallel_tool_reservations_never_exceed_shared_limit(saved_case):\n    store, case_id = saved_case\n    budget = InvestigationBudget(store, case_id, max_tool_calls=3)\n\n    def execute(_):\n        try:\n            with budget.tool_call('read_case_evidence'):\n                return True\n        except BudgetExceeded:\n            return False\n\n    with ThreadPoolExecutor(max_workers=6) as pool:\n        results = list(pool.map(execute, range(12)))\n    assert sum(results) == 3\n    assert sum(e['phase'] == 'tool' for e in"
+          }
+        ]
+      },
+      {
+        "statement": "In `test_parallel_tool_reservations_never_exceed_shared_limit`, the assertion `assert sum(results) == 3` verifies that only three tool calls succeed out of twelve concurrent attempts.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_e6e8cc4afaa074d99d2f86252481ceeb",
+            "quote_id": "ev_e6e8cc4afaa074d99d2f86252481ceeb:q2",
+            "quote": "lExecutor(max_workers=6) as pool:\n        results = list(pool.map(execute, range(12)))\n    assert sum(results) == 3\n    assert sum(e['phase'] == 'tool' for e in store.events(case_id)) == 3\n"
+          }
+        ]
+      },
+      {
+        "statement": "The same test asserts `assert sum(e['phase'] == 'tool' for e in store.events(case_id)) == 3` to confirm that exactly three tool events are recorded in the store.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_e6e8cc4afaa074d99d2f86252481ceeb",
+            "quote_id": "ev_e6e8cc4afaa074d99d2f86252481ceeb:q2",
+            "quote": "lExecutor(max_workers=6) as pool:\n        results = list(pool.map(execute, range(12)))\n    assert sum(results) == 3\n    assert sum(e['phase'] == 'tool' for e in store.events(case_id)) == 3\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "Details about the `response` argument used in the `BudgetMiddleware.wrap_model_call` call are not present in the excerpt, which may affect test reproducibility."
+    ],
+    "next_steps": [
+      "Create a test that verifies a restarted InvestigationBudget correctly counts a dispatched model call when the previous process did not record a terminal 'finished' or 'failed' status, ensuring the budget is still enforced.",
+      "Add a restart-boundary test where a model call is partially completed (e.g., started but no result stored) before a restart, then confirm that a subsequent call respects the remaining budget.",
+      "Design a test that simulates a crash after a model call starts and before it records any result, then after restart, attempts another model call and checks that the BudgetExceeded exception is raised if the max calls limit is reached."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote shows test adds a started model event, sets max_model_calls=1, and expects BudgetExceeded when wrap_model_call is invoked."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote contains assert sum(results) == 3 confirming three successful tool calls out of twelve attempts."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Quote includes assert sum(e['phase'] == 'tool' for e in store.events(case_id)) == 3 verifying three tool events recorded."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Existing test already verifies restarted budget counts a dispatched model call without terminal record; proposal is a valid diagnostic."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote demonstrates a restart-boundary scenario; proposing similar test aligns with observed behavior."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Quote simulates crash-like condition; proposed test matches evidence and can check BudgetExceeded after restart."
+        }
+      ],
+      "retained_findings": 3,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows test adds a started model event, sets max_model_calls=1, and expects BudgetExceeded when wrap_model_call is invoked."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote contains assert sum(results) == 3 confirming three successful tool calls out of twelve attempts."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Quote includes assert sum(e['phase'] == 'tool' for e in store.events(case_id)) == 3 verifying three tool events recorded."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Existing test already verifies restarted budget counts a dispatched model call without terminal record; proposal is a valid diagnostic."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote demonstrates a restart-boundary scenario; proposing similar test aligns with observed behavior."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Quote simulates crash-like condition; proposed test matches evidence and can check BudgetExceeded after restart."
+      }
+    ],
+    "retained_findings": 3,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_e6e8cc4afaa074d99d2f86252481ceeb",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:25:07.798703+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "ad5e58e82b4ee54ea1d203dd9a8d3403642cfbb6d43067a96e31ab5ec067b3af",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:25:07.794348+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:25:07.798012+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "7293453f9b3e418a913ef0d2535056d4",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:25:07.902578+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "7293453f9b3e418a913ef0d2535056d4",
+      "started_at": "2026-10-30T22:25:07.902860+00:00",
+      "usage": {
+        "input_tokens": 4984,
+        "output_tokens": 113,
+        "total_tokens": 5097
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 873.33,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:25:08.777247+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "895837b5e8cc40cea196ccbad95d2e94",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:25:08.783511+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "895837b5e8cc40cea196ccbad95d2e94",
+      "started_at": "2026-10-30T22:25:08.784331+00:00",
+      "latency_ms": 4.18,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:25:08.787052+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "31077a284ff64dd4aed019a030798dc0",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:25:08.791896+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "31077a284ff64dd4aed019a030798dc0",
+      "started_at": "2026-10-30T22:25:08.792620+00:00",
+      "usage": {
+        "input_tokens": 5705,
+        "output_tokens": 953,
+        "total_tokens": 6658
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4422.25,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:25:13.213585+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 3,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:25:13.217885+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:25:13.218712+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "7e75eb61a0354c23a82c9844dd6f8959",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:25:13.225479+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "7e75eb61a0354c23a82c9844dd6f8959",
+      "started_at": "2026-10-30T22:25:13.225845+00:00",
+      "usage": {
+        "input_tokens": 2556,
+        "output_tokens": 1578,
+        "total_tokens": 4134
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 7326.8,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:25:20.553597+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 3,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:25:20.562304+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13245,
+      "output_tokens": 2644,
+      "total_tokens": 15889
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 12839.045,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 3,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-33",
+  "saved_use_case_id": "test_planning",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-33",
+    "metadata": {
+      "use_case_id": "test_planning",
+      "input_sha256": "3a1960a407e0edaed029ca7594ffcd91cd1659a77f48dd3a03cdab377159a34b",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:25:07.794348+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:25:07.798012+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "7293453f9b3e418a913ef0d2535056d4",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:25:07.902578+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "7293453f9b3e418a913ef0d2535056d4",
+        "started_at": "2026-10-30T22:25:07.902860+00:00",
+        "usage": {
+          "input_tokens": 4984,
+          "output_tokens": 113,
+          "total_tokens": 5097
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 873.33,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:25:08.777247+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "895837b5e8cc40cea196ccbad95d2e94",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:25:08.783511+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "895837b5e8cc40cea196ccbad95d2e94",
+        "started_at": "2026-10-30T22:25:08.784331+00:00",
+        "latency_ms": 4.18,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:25:08.787052+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "31077a284ff64dd4aed019a030798dc0",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:25:08.791896+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "31077a284ff64dd4aed019a030798dc0",
+        "started_at": "2026-10-30T22:25:08.792620+00:00",
+        "usage": {
+          "input_tokens": 5705,
+          "output_tokens": 953,
+          "total_tokens": 6658
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 4422.25,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:25:13.213585+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 3,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:25:13.217885+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:25:13.218712+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "7e75eb61a0354c23a82c9844dd6f8959",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:25:13.225479+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "7e75eb61a0354c23a82c9844dd6f8959",
+        "started_at": "2026-10-30T22:25:13.225845+00:00",
+        "usage": {
+          "input_tokens": 2556,
+          "output_tokens": 1578,
+          "total_tokens": 4134
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 7326.8,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:25:20.553597+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 3,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:25:20.562304+00:00"
+      }
+    ]
+  }
+}

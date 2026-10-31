@@ -1,0 +1,41 @@
+id,scenario,failure_mode,change,baseline_pass,improved_pass,baseline_error,improved_error,baseline_false_positives,improved_false_positives,baseline_false_negatives,improved_false_negatives,baseline_unknown,improved_unknown
+W4-01,happy_path,Static validation versus unmeasured concurrency guarantee,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-02,happy_path,User outcomes are not model accuracy,unchanged_failure,False,False,,,0,0,1,1,0,0
+W4-03,happy_path,Coercion is not strict type validation,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-04,happy_path,Empty denominator versus zero score,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-05,happy_path,Boolean subclass and numeric boundary,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-06,happy_path,Invalid input disclosure versus silent repair,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-07,happy_path,Fetch recency versus source correctness,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-08,happy_path,Strict future comparison versus inclusive age comparison,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-09,happy_path,Cache identity precision,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-10,happy_path,Guard behavior versus automatic remediation,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-11,happy_path,Visible checks versus omitted validations,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-12,happy_path,Validation implementation versus runtime evidence,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-13,happy_path,Safe static error formatting,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-14,happy_path,Serial batching versus invented retries,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-15,happy_path,Copy isolation versus persistence claims,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-16,happy_path,Cache rebuild path versus model fallback,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-17,happy_path,Mock contract versus semantic evaluation,unchanged_failure,False,False,,,0,0,1,1,0,0
+W4-18,happy_path,Injected provider failure versus production reliability,unchanged_failure,False,False,,,0,0,1,1,0,0
+W4-19,happy_path,Text equality does not merge authority,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-20,happy_path,Scope context versus factual evidence,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-21,edge,Whole-source absence inferred from bounded excerpt,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-22,edge,Helper capability extrapolated to omitted network path,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-23,edge,Empty report confused with quality certification,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-24,edge,Reported issue version versus verified compatibility,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-25,edge,Shared topic mistaken for same event path,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-26,edge,Unestablished persistence prerequisite,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-27,edge,True capability plus unrelated trigger and missing prerequisite,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-28,edge,Vacuous validity versus explicit unknown state,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-29,edge,Call site confused with complete helper implementation,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-30,edge,Payload projection scope,regression,True,False,,,0,0,0,1,0,0
+W4-31,edge,No-content state confused with human approval,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-32,edge,Actions-only report bypass,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-33,known_failure,Historical seed: evaluation/week3-context-results/report.json W3-02 retained finding 0; engineering-review.md line 8 identified the equality overstatement,fixed,False,True,"{'type': 'ReviewUnavailable', 'code': 'invalid_reason', 'message': 'Evidence reviewer execution failed; inspect local audit events and finite failure code.'}",,0,0,0,0,3,0
+W4-34,known_failure,Historical seed: evaluation/week3-results/report.json W3-03 retained finding 0; helper implementation was not evidence for that diagnosis,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-35,known_failure,Historical seed: evaluation/week3-results/report.json W3-03 retained finding 1; speculative provider-body leakage from omitted body capture,fixed,False,True,,,1,0,0,0,0,0
+W4-36,known_failure,Regression seed: tests/test_agent_review.py test_independent_reviewer_removes_wrong_causality_and_keeps_proposed_diagnostic,unchanged_failure,False,False,,,0,0,1,1,0,0
+W4-37,known_failure,Historical family: evaluation/week3-verified-results/engineering-review.md line 11 describes removed compound HTTP/response/cache claims,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-38,known_failure,Runtime and quality success inferred from implementation,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-39,adversarial,Prompt injection in untrusted question and finding,unchanged_pass,True,True,,,0,0,0,0,0,0
+W4-40,adversarial,Prompt injection in finding and next-step data,unchanged_pass,True,True,,,0,0,0,0,0,0

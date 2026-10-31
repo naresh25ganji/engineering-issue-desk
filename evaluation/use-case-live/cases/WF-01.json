@@ -1,0 +1,496 @@
+{
+  "id": "WF-01",
+  "eval_id": "WF-01",
+  "use_case": "issue_investigation",
+  "title": "Endpoint change after index creation",
+  "scenario": "happy_path",
+  "question": "An index was constructed, then its configured provider endpoint changed. Inspect the supplied helper and explain what it checks before the next request; propose a focused diagnostic without making an API call.",
+  "input": {
+    "question": "An index was constructed, then its configured provider endpoint changed. Inspect the supplied helper and explain what it checks before the next request; propose a focused diagnostic without making an API call.",
+    "version": "",
+    "context": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n",
+    "use_case": "issue_investigation"
+  },
+  "input_sha256": "2fcc9c1c0e0c399cf26d75d0994946b242c6e45a4bcfe95eb73303e867c20db1",
+  "case_definition_sha256": "7f8213e5588b877efe88b496c82e61415407c76ff4c88c5183bd8c75b7372710",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/embedding_endpoint.py",
+    "sha256": "196a0494b2df5a465a107431833a07bccf03642b71fdaa9946cd9e31dfa7b43e"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "if _embedding_endpoint(base) != self.endpoint:"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "c240c290-ee37-40a7-b45a-25b3af0c2aa6",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The _runtime_key helper raises EmbeddingUnavailable if the current embedding endpoint differs from the endpoint stored in the index, indicating the endpoint was changed after index construction.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_1af16ea78b98848e9b63e75f06f718f9",
+            "quote_id": "ev_1af16ea78b98848e9b63e75f06f718f9:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "Exact values of the configured embedding endpoint before and after the change, to compare against self.endpoint."
+    ],
+    "next_steps": [
+      "Log or print the values of self.endpoint and the result of _embedding_endpoint(base) to verify they match, confirming whether the endpoint change is detected."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Code shows _runtime_key raises EmbeddingUnavailable when _embedding_endpoint(base) != self.endpoint, matching the claim."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": false,
+          "reason": "Quote does not confirm that calling _runtime_key avoids external API calls; the claim lacks evidence."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Logging self.endpoint and _embedding_endpoint(base) values can verify the mismatch observed in the code."
+        }
+      ],
+      "retained_findings": 1,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code shows _runtime_key raises EmbeddingUnavailable when _embedding_endpoint(base) != self.endpoint, matching the claim."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote does not confirm that calling _runtime_key avoids external API calls; the claim lacks evidence."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Logging self.endpoint and _embedding_endpoint(base) values can verify the mismatch observed in the code."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 0,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_1af16ea78b98848e9b63e75f06f718f9",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:23:47.005071+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "196a0494b2df5a465a107431833a07bccf03642b71fdaa9946cd9e31dfa7b43e",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:23:46.989523+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:23:47.002781+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "23f39227322f4fc1a0b48d0497fffca9",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:23:47.963353+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "23f39227322f4fc1a0b48d0497fffca9",
+      "started_at": "2026-10-30T22:23:47.972267+00:00",
+      "usage": {
+        "input_tokens": 4861,
+        "output_tokens": 136,
+        "total_tokens": 4997
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 948.39,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:23:48.905204+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "739eeb206de043a79f4168ef3f9ce833",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:23:48.911247+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "739eeb206de043a79f4168ef3f9ce833",
+      "started_at": "2026-10-30T22:23:48.912115+00:00",
+      "latency_ms": 4.0,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:23:48.914961+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "62fc87c71eeb40aa9aeb86883bf9c0e8",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:23:48.918860+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "62fc87c71eeb40aa9aeb86883bf9c0e8",
+      "started_at": "2026-10-30T22:23:48.919429+00:00",
+      "usage": {
+        "input_tokens": 5375,
+        "output_tokens": 506,
+        "total_tokens": 5881
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2657.19,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:23:51.575941+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 1,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:23:51.581552+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:23:51.582587+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "aad8ab499e6940b9bc677fe3f96f54b9",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:23:51.590761+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "aad8ab499e6940b9bc677fe3f96f54b9",
+      "started_at": "2026-10-30T22:23:51.591089+00:00",
+      "usage": {
+        "input_tokens": 2094,
+        "output_tokens": 1153,
+        "total_tokens": 3247
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4896.39,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:23:56.487218+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 1,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:23:56.490176+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12330,
+      "output_tokens": 1795,
+      "total_tokens": 14125
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 9693.547,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 1,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-01",
+  "saved_use_case_id": "issue_investigation",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-01",
+    "metadata": {
+      "use_case_id": "issue_investigation",
+      "input_sha256": "2fcc9c1c0e0c399cf26d75d0994946b242c6e45a4bcfe95eb73303e867c20db1",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:23:46.989523+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:23:47.002781+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "23f39227322f4fc1a0b48d0497fffca9",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:23:47.963353+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "23f39227322f4fc1a0b48d0497fffca9",
+        "started_at": "2026-10-30T22:23:47.972267+00:00",
+        "usage": {
+          "input_tokens": 4861,
+          "output_tokens": 136,
+          "total_tokens": 4997
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 948.39,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:23:48.905204+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "739eeb206de043a79f4168ef3f9ce833",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:23:48.911247+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "739eeb206de043a79f4168ef3f9ce833",
+        "started_at": "2026-10-30T22:23:48.912115+00:00",
+        "latency_ms": 4.0,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:23:48.914961+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "62fc87c71eeb40aa9aeb86883bf9c0e8",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:23:48.918860+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "62fc87c71eeb40aa9aeb86883bf9c0e8",
+        "started_at": "2026-10-30T22:23:48.919429+00:00",
+        "usage": {
+          "input_tokens": 5375,
+          "output_tokens": 506,
+          "total_tokens": 5881
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 2657.19,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:23:51.575941+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 1,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:23:51.581552+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:23:51.582587+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "aad8ab499e6940b9bc677fe3f96f54b9",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:23:51.590761+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "aad8ab499e6940b9bc677fe3f96f54b9",
+        "started_at": "2026-10-30T22:23:51.591089+00:00",
+        "usage": {
+          "input_tokens": 2094,
+          "output_tokens": 1153,
+          "total_tokens": 3247
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 4896.39,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:23:56.487218+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 1,
+        "removed_findings": 0,
+        "removed_next_steps": 1,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:23:56.490176+00:00"
+      }
+    ]
+  }
+}

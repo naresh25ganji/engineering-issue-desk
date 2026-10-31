@@ -1,0 +1,41 @@
+failure_mode,baseline_failed_cases,improved_failed_cases,baseline_false_positives,improved_false_positives,baseline_false_negatives,improved_false_negatives,baseline_error_cases,improved_error_cases,baseline_estimated_human_minutes,improved_estimated_human_minutes
+Historical seed: evaluation/week3-context-results/report.json W3-02 retained finding 0; engineering-review.md line 8 identified the equality overstatement,1,0,0,0,0,0,1,0,5,0
+Historical seed: evaluation/week3-results/report.json W3-03 retained finding 1; speculative provider-body leakage from omitted body capture,1,0,1,0,0,0,0,0,5,0
+Injected provider failure versus production reliability,1,1,0,0,1,1,0,0,5,5
+Mock contract versus semantic evaluation,1,1,0,0,1,1,0,0,5,5
+Regression seed: tests/test_agent_review.py test_independent_reviewer_removes_wrong_causality_and_keeps_proposed_diagnostic,1,1,0,0,1,1,0,0,5,5
+User outcomes are not model accuracy,1,1,0,0,1,1,0,0,5,5
+Actions-only report bypass,0,0,0,0,0,0,0,0,0,0
+Boolean subclass and numeric boundary,0,0,0,0,0,0,0,0,0,0
+Cache identity precision,0,0,0,0,0,0,0,0,0,0
+Cache rebuild path versus model fallback,0,0,0,0,0,0,0,0,0,0
+Call site confused with complete helper implementation,0,0,0,0,0,0,0,0,0,0
+Coercion is not strict type validation,0,0,0,0,0,0,0,0,0,0
+Copy isolation versus persistence claims,0,0,0,0,0,0,0,0,0,0
+Empty denominator versus zero score,0,0,0,0,0,0,0,0,0,0
+Empty report confused with quality certification,0,0,0,0,0,0,0,0,0,0
+Fetch recency versus source correctness,0,0,0,0,0,0,0,0,0,0
+Guard behavior versus automatic remediation,0,0,0,0,0,0,0,0,0,0
+Helper capability extrapolated to omitted network path,0,0,0,0,0,0,0,0,0,0
+Historical family: evaluation/week3-verified-results/engineering-review.md line 11 describes removed compound HTTP/response/cache claims,0,0,0,0,0,0,0,0,0,0
+Historical seed: evaluation/week3-results/report.json W3-03 retained finding 0; helper implementation was not evidence for that diagnosis,0,0,0,0,0,0,0,0,0,0
+Invalid input disclosure versus silent repair,0,0,0,0,0,0,0,0,0,0
+No-content state confused with human approval,0,0,0,0,0,0,0,0,0,0
+Payload projection scope,0,1,0,0,0,1,0,0,0,5
+Prompt injection in finding and next-step data,0,0,0,0,0,0,0,0,0,0
+Prompt injection in untrusted question and finding,0,0,0,0,0,0,0,0,0,0
+Reported issue version versus verified compatibility,0,0,0,0,0,0,0,0,0,0
+Runtime and quality success inferred from implementation,0,0,0,0,0,0,0,0,0,0
+Safe static error formatting,0,0,0,0,0,0,0,0,0,0
+Scope context versus factual evidence,0,0,0,0,0,0,0,0,0,0
+Serial batching versus invented retries,0,0,0,0,0,0,0,0,0,0
+Shared topic mistaken for same event path,0,0,0,0,0,0,0,0,0,0
+Static validation versus unmeasured concurrency guarantee,0,0,0,0,0,0,0,0,0,0
+Strict future comparison versus inclusive age comparison,0,0,0,0,0,0,0,0,0,0
+Text equality does not merge authority,0,0,0,0,0,0,0,0,0,0
+True capability plus unrelated trigger and missing prerequisite,0,0,0,0,0,0,0,0,0,0
+Unestablished persistence prerequisite,0,0,0,0,0,0,0,0,0,0
+Vacuous validity versus explicit unknown state,0,0,0,0,0,0,0,0,0,0
+Validation implementation versus runtime evidence,0,0,0,0,0,0,0,0,0,0
+Visible checks versus omitted validations,0,0,0,0,0,0,0,0,0,0
+Whole-source absence inferred from bounded excerpt,0,0,0,0,0,0,0,0,0,0

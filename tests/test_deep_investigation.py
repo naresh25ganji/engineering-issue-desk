@@ -112,6 +112,95 @@ def settings(**overrides):
     return AgentSettings(api_key='offline-test-key', model='offline-tool-model', **overrides)
 
 
+@pytest.mark.parametrize('use_case,context,origin,kind,evidence_type', [
+    ('incident_triage', '2026-10-30 10:05 UTC: operator reported three timeout errors.',
+     'user_context', 'issue', 'incident_notes'),
+    ('change_review', 'def upload_allowed(size):\n    return size <= 100\n', 'user_code', 'code', ''),
+    ('test_planning', 'def upload_allowed(size):\n    return 0 <= size <= 100\n', 'user_code', 'code', ''),
+])
+def test_saved_engineering_workflow_survives_failure_retry_and_revision(
+        tmp_path, use_case, context, origin, kind, evidence_type):
+    from triage_desk.use_cases import get_use_case
+
+    def empty_report(_messages):
+        return tool_call('InvestigationReport', {
+            'findings': [], 'next_steps': [], 'missing_information': ['Confirm the expected outcome.']})
+
+    model = ScriptedToolModel(replies=[RuntimeError('Simulated provider interruption'), empty_report, empty_report])
+    first = service(tmp_path, model)
+    failed = first.start('Analyze only the supplied context; do not treat this request as proof.',
+                         code_context=context, use_case=use_case)
+    assert failed['status'] == 'failed'
+    assert (failed['use_case_id'], failed['use_case_version']) == (use_case, 1)
+    restarted = service(tmp_path, model)
+    pending = restarted.retry(failed['case_id'])
+    assert pending['status'] == 'awaiting_review', restarted.store.events(failed['case_id'])
+    revised = service(tmp_path, model).resume(failed['case_id'], 'revise', notes='Clarify the missing expected outcome.')
+    assert revised['status'] == 'awaiting_review'
+    assert revised['use_case_id'] == use_case and revised['use_case_version'] == 1
+    assert set(revised['report']) == {'findings', 'next_steps', 'missing_information', 'sources', 'quality_review'}
+    evidence = first.store.evidence(failed['case_id'])
+    assert len(evidence) == 1, 'The question is request context, never an independently citable fact.'
+    assert evidence[0]['text'] == context
+    assert (evidence[0]['origin'], evidence[0]['kind'], evidence[0]['evidence_type']) == (origin, kind, evidence_type)
+    for calls in model.calls:
+        system_text = (calls[0].content if isinstance(calls[0].content, str)
+                       else '\n'.join(block['text'] for block in calls[0].content if block.get('type') == 'text'))
+        assert get_use_case(use_case).instructions in system_text
+        seed = next(json.loads(message.content) for message in calls if isinstance(message, HumanMessage))
+        assert (seed['use_case_id'], seed['use_case_version']) == (use_case, 1)
+        assert seed['untrusted_request'] == failed['question']
+        evidence_field = 'user_context_evidence' if use_case == 'incident_triage' else 'user_code_evidence'
+        assert seed[evidence_field] == [evidence[0]['evidence_id']]
+    revision_seed = next(json.loads(message.content) for message in model.calls[-1] if isinstance(message, HumanMessage))
+    assert revision_seed['revision'] == 1 and revision_seed['previous_report'] == pending['report']
+
+
+def test_unknown_workflow_is_rejected_before_any_case_or_provider_call(tmp_path):
+    model = ScriptedToolModel(replies=[])
+    engine = service(tmp_path, model)
+    with pytest.raises(ValueError, match='Unknown engineering use case'):
+        engine.start('Investigate', use_case='unknown')
+    assert engine.store.list_cases() == [] and model.calls == []
+
+
+def test_retry_never_silently_replaces_an_unknown_saved_workflow(tmp_path):
+    import sqlite3
+
+    model = ScriptedToolModel(replies=[])
+    engine = service(tmp_path, model)
+    saved = engine.store.create_case('Saved workflow unavailable', use_case_id='incident_triage')
+    engine.store.update_case(saved['case_id'], status='failed')
+    with sqlite3.connect(engine.store.path) as connection:
+        connection.execute('UPDATE cases SET use_case_id=? WHERE case_id=?', ('unknown', saved['case_id']))
+    with pytest.raises(ValueError, match='Unknown engineering use case'):
+        engine.retry(saved['case_id'])
+    assert engine.store.get_case(saved['case_id'])['status'] == 'failed'
+    assert model.calls == []
+
+
+def test_explicit_review_prompt_version_preserves_request_context_and_records_configuration(tmp_path):
+    from triage_desk.agent_review import review_prompt
+
+    model = ScriptedToolModel(replies=[tool_call('search_knowledge_base', {'query': 'reruns'}), cite_kb, verdicts()])
+    engine = InvestigationService(tmp_path, SnapshotDesk(), settings(), model_factory=lambda _: model,
+                                  reviewer_prompt_version='calibrated')
+    pending = engine.start('Explain this reported widget rerun.', version='1.50')
+    assert pending['status'] == 'awaiting_review', engine.store.events(pending['case_id'])
+    assert model.calls[-1][0].content == review_prompt('calibrated')
+    reviewer_input = json.loads(model.calls[-1][1].content)
+    assert reviewer_input['untrusted_request_context'] == {
+        'available': True, 'is_factual_evidence': False,
+        'question': 'Explain this reported widget rerun.', 'reported_version': '1.50'}
+    configuration = next(event for event in engine.store.events(pending['case_id'])
+                         if event['name'] == 'evidence_review_prompt')
+    assert configuration['reviewer_prompt_version'] == 'calibrated'
+    with pytest.raises(ValueError, match='built-in reviewer'):
+        InvestigationService(tmp_path, None, reviewer=lambda *args: {}, reviewer_prompt_version='calibrated')
+    with pytest.raises(ValueError, match='Unknown evidence-review prompt version'):
+        InvestigationService(tmp_path, None, reviewer_prompt_version='unknown')
+
+
 def service(root: Path, model: ScriptedToolModel, *, desk=None, agent_settings=None):
     def checked(report, reviewer_model, budget):
         # The independent reviewer has its own strict provider-contract tests.
@@ -668,6 +757,58 @@ raise AssertionError("The offline repair process should have crashed")
     assert len([event for event in events_after if event['phase'] == 'model']) == 5
     assert len([event for event in events_after if event['phase'] == 'repair']) == 1
     assert len([event for event in events_after if event['phase'] == 'tool']) == 2
+
+
+def test_repair_live_snapshot_with_empty_next_and_pending_tasks_resumes_saved_tools(tmp_path, monkeypatch):
+    """A checkpoint transition can hide next without making the thread terminal."""
+    import triage_desk.deep_investigation as module
+
+    def invalid_report(messages):
+        source_from_messages(messages)
+        return tool_call('InvestigationReport', report_payload('ev_invented'), 'invalid-transition')
+
+    model = ScriptedToolModel(replies=[
+        tool_call('search_knowledge_base', {'query': 'pending checkpoint transition'}),
+        invalid_report, read_registered_evidence, RuntimeError('pause the repair'), cite_read_evidence,
+    ])
+    engine = service(tmp_path, model)
+    first = engine.start('Uploaded CSV resets after widget interaction.')
+    assert first['status'] == 'failed'
+    paused = engine.retry(first['case_id'])
+    assert paused['status'] == 'failed'
+    before = engine.store.events(first['case_id'])
+    assert sum(event['phase'] == 'repair' for event in before) == 1
+    assert sum(event['phase'] == 'tool' for event in before) == 2
+
+    original = module.build_deep_investigator
+    snapshots = []
+
+    class PendingTransitionAgent:
+        def __init__(self, agent):
+            self.agent = agent
+
+        def get_state(self, config):
+            state = self.agent.get_state(config)
+            if config['configurable']['thread_id'].endswith(':repair:1') and state.tasks:
+                # Reproduce the live-snapshot view seen when completed task
+                # writes are durable but their successor checkpoint is not.
+                snapshots.append(state)
+                return state._replace(next=())
+            return state
+
+        def stream(self, *args, **kwargs):
+            return self.agent.stream(*args, **kwargs)
+
+    monkeypatch.setattr(module, 'build_deep_investigator',
+                        lambda *args, **kwargs: PendingTransitionAgent(original(*args, **kwargs)))
+    repaired = service(tmp_path, model).retry(first['case_id'])
+    assert snapshots, 'The regression must exercise empty next with pending tasks.'
+    assert repaired['status'] == 'awaiting_review', engine.store.events(first['case_id'])
+    assert len(model.calls) == 5
+    events = engine.store.events(first['case_id'])
+    assert sum(event['phase'] == 'repair' for event in events) == 1
+    assert sum(event['phase'] == 'tool' for event in events) == 2
+    assert repaired['report']['findings'][0]['support'][0]['quote'] == PASSAGE
 
 
 def test_on_demand_playbook_and_opt_in_history_use_real_harness_and_single_tool_counts(tmp_path):

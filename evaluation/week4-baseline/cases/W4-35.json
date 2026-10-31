@@ -1,0 +1,302 @@
+{
+  "id": "W4-35",
+  "scenario": "known_failure",
+  "title": "Historical speculative raw-body leak",
+  "failure_mode": "Historical seed: evaluation/week3-results/report.json W3-03 retained finding 1; speculative provider-body leakage from omitted body capture",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 150,
+    "end_line": 159,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "        except EmbeddingUnavailable:\n            if metadata[\"status\"] == \"not_attempted\":\n                metadata[\"status\"] = \"configuration_error\"\n            raise\n        except (httpx.HTTPError, OSError, ValueError, TypeError, KeyError, OverflowError) as exc:\n            metadata[\"status\"] = \"provider_error\" if isinstance(exc, (httpx.HTTPError, OSError)) else \"invalid_response\"\n            metadata[\"failure_type\"] = type(exc).__name__\n            raise EmbeddingUnavailable(f\"Hosted embedding request failed ({type(exc).__name__}); no embedding results were accepted.\") from None\n        finally:\n            metadata[\"latency_ms\"] = round((time.perf_counter() - started) * 1000, 3)\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The request metadata records only high‑level status flags; however, the code does not capture or redact the raw HTTP response body on error, which could inadvertently expose provider‑specific error messages if later logged.",
+        "expected_supported": false,
+        "rationale": "The excerpt wraps selected failures with a fixed message and exception class; non-capture of a body does not establish that the body can leak."
+      },
+      {
+        "statement": "The handler records failure_type as the exception class name.",
+        "expected_supported": true,
+        "rationale": "metadata failure_type is assigned type(exc).__name__."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose injecting a provider exception with a sentinel body and inspect the public error and stored call metadata.",
+        "expected_supported": true,
+        "rationale": "This is a focused diagnostic for the uncertain leakage claim and does not claim a leak or a successful result."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.68722,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code only sets status flags and never captures raw HTTP response body, matching claim."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "metadata[\"failure_type\"] is assigned type(exc).__name__, confirming recording of exception class name."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote shows no way to inject a provider exception with a sentinel body or to inspect such metadata; proposal lacks evidence."
+      }
+    ],
+    "retained_findings": 2,
+    "removed_findings": 0,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The request metadata records only high‑level status flags; however, the code does not capture or redact the raw HTTP response body on error, which could inadvertently expose provider‑specific error messages if later logged.",
+        "support": [
+          {
+            "evidence_id": "W4-35-source",
+            "quote_id": "W4-35-quote",
+            "quote": "        except EmbeddingUnavailable:\n            if metadata[\"status\"] == \"not_attempted\":\n                metadata[\"status\"] = \"configuration_error\"\n            raise\n        except (httpx.HTTPError, OSError, ValueError, TypeError, KeyError, OverflowError) as exc:\n            metadata[\"status\"] = \"provider_error\" if isinstance(exc, (httpx.HTTPError, OSError)) else \"invalid_response\"\n            metadata[\"failure_type\"] = type(exc).__name__\n            raise EmbeddingUnavailable(f\"Hosted embedding request failed ({type(exc).__name__}); no embedding results were accepted.\") from None\n        finally:\n            metadata[\"latency_ms\"] = round((time.perf_counter() - started) * 1000, 3)\n"
+          }
+        ]
+      },
+      {
+        "statement": "The handler records failure_type as the exception class name.",
+        "support": [
+          {
+            "evidence_id": "W4-35-source",
+            "quote_id": "W4-35-quote",
+            "quote": "        except EmbeddingUnavailable:\n            if metadata[\"status\"] == \"not_attempted\":\n                metadata[\"status\"] = \"configuration_error\"\n            raise\n        except (httpx.HTTPError, OSError, ValueError, TypeError, KeyError, OverflowError) as exc:\n            metadata[\"status\"] = \"provider_error\" if isinstance(exc, (httpx.HTTPError, OSError)) else \"invalid_response\"\n            metadata[\"failure_type\"] = type(exc).__name__\n            raise EmbeddingUnavailable(f\"Hosted embedding request failed ({type(exc).__name__}); no embedding results were accepted.\") from None\n        finally:\n            metadata[\"latency_ms\"] = round((time.perf_counter() - started) * 1000, 3)\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-35",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "8397259a-c24c-43f7-80fd-6b401653eca6",
+      "created_at": "2026-10-30T22:02:52.980582+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "54fe13090c1044128ca463ef1a7b4c14",
+      "event_id": 2,
+      "case_id": "8397259a-c24c-43f7-80fd-6b401653eca6",
+      "created_at": "2026-10-30T22:02:52.982922+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "54fe13090c1044128ca463ef1a7b4c14",
+      "started_at": "2026-10-30T22:02:52.983919+00:00",
+      "usage": {
+        "input_tokens": 1442,
+        "output_tokens": 618,
+        "total_tokens": 2060
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2658.62,
+      "event_id": 3,
+      "case_id": "8397259a-c24c-43f7-80fd-6b401653eca6",
+      "created_at": "2026-10-30T22:02:55.642616+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-35",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          true
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": false,
+        "expected": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            true
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": false,
+            "predicted": true,
+            "correct": false,
+            "error_type": "false_positive"
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": false,
+            "correct": false,
+            "error_type": "false_negative"
+          }
+        ],
+        "false_positives": 1,
+        "false_negatives": 1,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.68722,
+      "error": null,
+      "event_id": 4,
+      "case_id": "8397259a-c24c-43f7-80fd-6b401653eca6",
+      "created_at": "2026-10-30T22:02:55.645081+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1442,
+      "output_tokens": 618,
+      "total_tokens": 2060
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": false,
+    "expected": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        true
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": false,
+        "predicted": true,
+        "correct": false,
+        "error_type": "false_positive"
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": false,
+        "correct": false,
+        "error_type": "false_negative"
+      }
+    ],
+    "false_positives": 1,
+    "false_negatives": 1,
+    "unknown_verdicts": 0
+  },
+  "case_id": "8397259a-c24c-43f7-80fd-6b401653eca6",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

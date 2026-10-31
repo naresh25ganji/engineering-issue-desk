@@ -1,0 +1,294 @@
+{
+  "id": "W4-37",
+  "scenario": "known_failure",
+  "title": "Mixed cache claim exceeds narrow fingerprint quote",
+  "failure_mode": "Historical family: evaluation/week3-verified-results/engineering-review.md line 11 describes removed compound HTTP/response/cache claims",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 75,
+    "end_line": 83,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "        identity = {\"format\": \"hosted-embeddings-v1\", \"endpoint\": self.endpoint,\n                    \"model\": self.model_name, \"dimensions\": self.dimensions,\n                    \"chunk_fingerprint\": original_fingerprint}\n        self.fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()\n        self.index_path = self.cache_dir / f\"vectors-{self.fingerprint}.npz\"\n        self.prebuilt_path = None\n        self.calls: list[dict] = []\n        self._query_cache: OrderedDict[str, np.ndarray] = OrderedDict()\n        self._query_lock = threading.RLock()\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The fingerprint includes endpoint, model, dimensions, and chunk fingerprint, and _request validates HTTP status, response type, numeric finiteness, vector norms, and all cache invalidation behavior.",
+        "expected_supported": false,
+        "rationale": "Only the identity and cache initialization are selected; the response and invalidation claims are not established by this quote."
+      },
+      {
+        "statement": "The cache file path incorporates the computed fingerprint.",
+        "expected_supported": true,
+        "rationale": "index_path is vectors-{self.fingerprint}.npz."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Document the selected fingerprint composition without presenting omitted response checks as inspected.",
+        "expected_supported": true,
+        "rationale": "This proposal stays within the identity expression that is actually selected."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.827257,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote only shows fingerprint composition; no evidence for _request validation, HTTP status, response type, numeric finiteness, vector norms, or cache invalidation."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Code sets index_path using self.fingerprint, confirming cache file path incorporates the computed fingerprint."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Evidence confirms fingerprint composition; documenting it without claiming unseen response checks is appropriate."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The cache file path incorporates the computed fingerprint.",
+        "support": [
+          {
+            "evidence_id": "W4-37-source",
+            "quote_id": "W4-37-quote",
+            "quote": "        identity = {\"format\": \"hosted-embeddings-v1\", \"endpoint\": self.endpoint,\n                    \"model\": self.model_name, \"dimensions\": self.dimensions,\n                    \"chunk_fingerprint\": original_fingerprint}\n        self.fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()\n        self.index_path = self.cache_dir / f\"vectors-{self.fingerprint}.npz\"\n        self.prebuilt_path = None\n        self.calls: list[dict] = []\n        self._query_cache: OrderedDict[str, np.ndarray] = OrderedDict()\n        self._query_lock = threading.RLock()\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Document the selected fingerprint composition without presenting omitted response checks as inspected."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-37",
+      "run_name": "20261030T215930Z-8b2288dc",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "ece48a54-442c-40cc-98fa-078604d0fcc3",
+      "created_at": "2026-10-30T22:00:03.027200+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "16ac7f9f4a054b948f53c98acafc57dc",
+      "event_id": 2,
+      "case_id": "ece48a54-442c-40cc-98fa-078604d0fcc3",
+      "created_at": "2026-10-30T22:00:03.029310+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "16ac7f9f4a054b948f53c98acafc57dc",
+      "started_at": "2026-10-30T22:00:03.029852+00:00",
+      "usage": {
+        "input_tokens": 1401,
+        "output_tokens": 665,
+        "total_tokens": 2066
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2798.8,
+      "event_id": 3,
+      "case_id": "ece48a54-442c-40cc-98fa-078604d0fcc3",
+      "created_at": "2026-10-30T22:00:05.829434+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-37",
+      "run_name": "20261030T215930Z-8b2288dc",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.827257,
+      "error": null,
+      "event_id": 4,
+      "case_id": "ece48a54-442c-40cc-98fa-078604d0fcc3",
+      "created_at": "2026-10-30T22:00:05.832090+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1401,
+      "output_tokens": 665,
+      "total_tokens": 2066
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "ece48a54-442c-40cc-98fa-078604d0fcc3",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

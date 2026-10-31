@@ -1,0 +1,5 @@
+Synthetic operational log: controlled example, not a production incident.
+2026-10-28T18:00:00Z case=example-a phase=stage name=investigation status=completed
+2026-10-28T18:00:03Z case=example-a phase=model name=evidence_reviewer status=started call_id=m2
+2026-10-28T18:00:05Z case=example-a phase=model_result name=evidence_reviewer status=error call_id=m2 error_type=ReviewUnavailable error_code=incomplete_coverage
+2026-10-28T18:00:05Z case=example-a status=failed report_approved=false

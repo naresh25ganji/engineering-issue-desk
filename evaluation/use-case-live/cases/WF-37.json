@@ -1,0 +1,661 @@
+{
+  "id": "WF-37",
+  "eval_id": "WF-37",
+  "use_case": "test_planning",
+  "title": "Static label validation matrix",
+  "scenario": "edge",
+  "question": "Design a test matrix for the shown static-analysis filename validator. Include allowed relative .py labels and disallowed absolute, hidden, traversal, and non-Python labels. Do not run tests.",
+  "input": {
+    "question": "Design a test matrix for the shown static-analysis filename validator. Include allowed relative .py labels and disallowed absolute, hidden, traversal, and non-Python labels. Do not run tests.",
+    "version": "",
+    "context": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n",
+    "use_case": "test_planning"
+  },
+  "input_sha256": "c41e81a3c5ed7ceb9ce1379570bc37c57a7b368abd6a58b4dfdba8ed8596912a",
+  "case_definition_sha256": "6c00010034e699e5842fef5f9a37ec76b894fe1bbe59044e7e35d99167d83525",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/static_header.py",
+    "sha256": "9b819c08375b0f22bb43d754fc40a728b70f21234393269598eb4cdf26601df7"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "path.is_absolute()",
+      "part.startswith('.')"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "241571c5-d2b2-4fcb-8fa0-81ef0660e7bb",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The validator raises an error when the input is not a string.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_b0f0556de815fe1537d9662767c32053",
+            "quote_id": "ev_b0f0556de815fe1537d9662767c32053:q1",
+            "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n"
+          }
+        ]
+      },
+      {
+        "statement": "The validator raises an error if the filename length exceeds 500 characters.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_b0f0556de815fe1537d9662767c32053",
+            "quote_id": "ev_b0f0556de815fe1537d9662767c32053:q1",
+            "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n"
+          }
+        ]
+      },
+      {
+        "statement": "The validator raises an error when the filename does not match the pattern '[A-Za-z0-9_./-]+\\.py'.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_b0f0556de815fe1537d9662767c32053",
+            "quote_id": "ev_b0f0556de815fe1537d9662767c32053:q1",
+            "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n"
+          }
+        ]
+      },
+      {
+        "statement": "The validator raises an error for absolute paths.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_b0f0556de815fe1537d9662767c32053",
+            "quote_id": "ev_b0f0556de815fe1537d9662767c32053:q1",
+            "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n"
+          }
+        ]
+      },
+      {
+        "statement": "The validator raises an error when any path component is '.' or '..' or starts with a dot, rejecting hidden or traversal segments.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_b0f0556de815fe1537d9662767c32053",
+            "quote_id": "ev_b0f0556de815fe1537d9662767c32053:q1",
+            "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n"
+          }
+        ]
+      },
+      {
+        "statement": "If none of the rejection conditions are met, the validator returns the original filename unchanged.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_b0f0556de815fe1537d9662767c32053",
+            "quote_id": "ev_b0f0556de815fe1537d9662767c32053:q1",
+            "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [],
+    "next_steps": [
+      "Create test cases for allowed relative .py filenames, e.g., 'module.py', 'subdir/module.py', 'a/b_c-1.py'; expect the validator to return the input unchanged.",
+      "Create test cases for disallowed absolute paths, e.g., '/etc/passwd.py' or 'C:/project/main.py'; expect StaticAnalysisUnavailable to be raised.",
+      "Create test cases for hidden files, e.g., '.secret.py' or 'subdir/.config.py'; expect StaticAnalysisUnavailable to be raised.",
+      "Create test cases for path traversal components, e.g., 'subdir/../module.py' or './module.py'; expect StaticAnalysisUnavailable to be raised.",
+      "Create test cases for non-Python extensions, e.g., 'script.txt' or 'data.json'; expect StaticAnalysisUnavailable to be raised.",
+      "Create test cases for filenames exceeding 500 characters (e.g., a string of 501 'a' characters followed by '.py'); expect StaticAnalysisUnavailable to be raised.",
+      "Create test cases for filenames containing disallowed characters, e.g., 'module$.py' or 'my file.py'; expect StaticAnalysisUnavailable to be raised."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Code raises StaticAnalysisUnavailable when value is not a string."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Code raises when len(value) exceeds 500 characters."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Code raises when filename does not match the required regex pattern ending with .py."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Code raises for absolute paths via path.is_absolute()."
+        },
+        {
+          "index": 4,
+          "supported": true,
+          "reason": "Code raises when any path component is '.' or '..' or starts with '.'."
+        },
+        {
+          "index": 5,
+          "supported": true,
+          "reason": "If none of the rejection conditions hold, function returns the original filename unchanged."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Allowed relative .py filenames pass all checks, so validator returns the input unchanged."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Absolute paths trigger path.is_absolute(), causing StaticAnalysisUnavailable."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Hidden files have a component starting with '.', triggering the any() check and raise."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Traversal components '.' or '..' are caught by the any() check, leading to raise."
+        },
+        {
+          "index": 4,
+          "supported": true,
+          "reason": "Non‑Python extensions fail the regex, resulting in raise."
+        },
+        {
+          "index": 5,
+          "supported": true,
+          "reason": "Filenames longer than 500 characters exceed the length check and raise."
+        },
+        {
+          "index": 6,
+          "supported": true,
+          "reason": "Disallowed characters (e.g., '$' or space) fail the regex, causing raise."
+        }
+      ],
+      "retained_findings": 6,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code raises StaticAnalysisUnavailable when value is not a string."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Code raises when len(value) exceeds 500 characters."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Code raises when filename does not match the required regex pattern ending with .py."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Code raises for absolute paths via path.is_absolute()."
+      },
+      {
+        "index": 4,
+        "supported": true,
+        "reason": "Code raises when any path component is '.' or '..' or starts with '.'."
+      },
+      {
+        "index": 5,
+        "supported": true,
+        "reason": "If none of the rejection conditions hold, function returns the original filename unchanged."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Allowed relative .py filenames pass all checks, so validator returns the input unchanged."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Absolute paths trigger path.is_absolute(), causing StaticAnalysisUnavailable."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Hidden files have a component starting with '.', triggering the any() check and raise."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Traversal components '.' or '..' are caught by the any() check, leading to raise."
+      },
+      {
+        "index": 4,
+        "supported": true,
+        "reason": "Non‑Python extensions fail the regex, resulting in raise."
+      },
+      {
+        "index": 5,
+        "supported": true,
+        "reason": "Filenames longer than 500 characters exceed the length check and raise."
+      },
+      {
+        "index": 6,
+        "supported": true,
+        "reason": "Disallowed characters (e.g., '$' or space) fail the regex, causing raise."
+      }
+    ],
+    "retained_findings": 6,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_b0f0556de815fe1537d9662767c32053",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:25:21.598890+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "9b819c08375b0f22bb43d754fc40a728b70f21234393269598eb4cdf26601df7",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:25:21.594812+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:25:21.598271+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "531f371f3ee344a58d60dd40fdc31df3",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:25:21.626993+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "531f371f3ee344a58d60dd40fdc31df3",
+      "started_at": "2026-10-30T22:25:21.627284+00:00",
+      "usage": {
+        "input_tokens": 4998,
+        "output_tokens": 170,
+        "total_tokens": 5168
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 1062.11,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:25:22.689459+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "fe6ef56068ba4fd6afa91e99159b97d7",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:25:22.691638+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "fe6ef56068ba4fd6afa91e99159b97d7",
+      "started_at": "2026-10-30T22:25:22.691993+00:00",
+      "latency_ms": 1.83,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:25:22.693289+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "389a5e78c426451899410cdd547e0ca2",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:25:22.695532+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "389a5e78c426451899410cdd547e0ca2",
+      "started_at": "2026-10-30T22:25:22.695857+00:00",
+      "usage": {
+        "input_tokens": 5557,
+        "output_tokens": 1430,
+        "total_tokens": 6987
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5872.93,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:25:28.569835+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 6,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:25:28.583115+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:25:28.585554+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "ac5951b8248d48e99f3a34ab1cb445b2",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:25:28.599974+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "ac5951b8248d48e99f3a34ab1cb445b2",
+      "started_at": "2026-10-30T22:25:28.600522+00:00",
+      "usage": {
+        "input_tokens": 2499,
+        "output_tokens": 1678,
+        "total_tokens": 4177
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 6620.01,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:25:35.220875+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 6,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:25:35.228486+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13054,
+      "output_tokens": 3278,
+      "total_tokens": 16332
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 13702.118,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 6,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 2,
+    "anchors_covered": 2,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-37",
+  "saved_use_case_id": "test_planning",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-37",
+    "metadata": {
+      "use_case_id": "test_planning",
+      "input_sha256": "c41e81a3c5ed7ceb9ce1379570bc37c57a7b368abd6a58b4dfdba8ed8596912a",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:25:21.594812+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:25:21.598271+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "531f371f3ee344a58d60dd40fdc31df3",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:25:21.626993+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "531f371f3ee344a58d60dd40fdc31df3",
+        "started_at": "2026-10-30T22:25:21.627284+00:00",
+        "usage": {
+          "input_tokens": 4998,
+          "output_tokens": 170,
+          "total_tokens": 5168
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 1062.11,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:25:22.689459+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "fe6ef56068ba4fd6afa91e99159b97d7",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:25:22.691638+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "fe6ef56068ba4fd6afa91e99159b97d7",
+        "started_at": "2026-10-30T22:25:22.691993+00:00",
+        "latency_ms": 1.83,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:25:22.693289+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "389a5e78c426451899410cdd547e0ca2",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:25:22.695532+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "389a5e78c426451899410cdd547e0ca2",
+        "started_at": "2026-10-30T22:25:22.695857+00:00",
+        "usage": {
+          "input_tokens": 5557,
+          "output_tokens": 1430,
+          "total_tokens": 6987
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5872.93,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:25:28.569835+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 6,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:25:28.583115+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:25:28.585554+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "ac5951b8248d48e99f3a34ab1cb445b2",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:25:28.599974+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "ac5951b8248d48e99f3a34ab1cb445b2",
+        "started_at": "2026-10-30T22:25:28.600522+00:00",
+        "usage": {
+          "input_tokens": 2499,
+          "output_tokens": 1678,
+          "total_tokens": 4177
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 6620.01,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:25:35.220875+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 6,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:25:35.228486+00:00"
+      }
+    ]
+  }
+}

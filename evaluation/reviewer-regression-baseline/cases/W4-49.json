@@ -1,0 +1,299 @@
+{
+  "id": "W4-49",
+  "scenario": "happy_path",
+  "title": "Accepted vector count in controlled errors",
+  "failure_mode": "Accepted vector count in controlled errors",
+  "source": {
+    "path": "evaluation/fixtures/workflows/incident_provider.log",
+    "start_line": 1,
+    "end_line": 5,
+    "sha256": "a1730c9926d970059b53f30d661477512af093869600a1029882a0d3d687df3b",
+    "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T19:00:00Z request=example-b component=hosted_embedding status=provider_http_error http_status=429\n2026-10-28T19:00:00Z request=example-b vectors_accepted=0 response_body_retained=false\n2026-10-28T19:00:02Z request=example-c component=hosted_embedding status=provider_http_error http_status=503\n2026-10-28T19:00:02Z request=example-c vectors_accepted=0 response_body_retained=false\n",
+    "title": "incident_provider.log",
+    "kind": "issue",
+    "origin": "snapshot",
+    "evidence_type": "synthetic_operational_log",
+    "filename": "evaluation/fixtures/workflows/incident_provider.log"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "Each of the two controlled error records reports vectors_accepted equal to zero.",
+        "expected_supported": true,
+        "rationale": "Both controlled records literally have vectors_accepted=0."
+      },
+      {
+        "statement": "These records establish that every future retry will also return zero accepted vectors.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Collect a later retry record before claiming the provider recovered.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.873264,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows both example-b and example-c records have vectors_accepted=0."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote only shows two instances; it does not establish that all future retries will also be zero."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "With only two records, collecting a later retry record before claiming recovery is a sensible diagnostic step."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "Each of the two controlled error records reports vectors_accepted equal to zero.",
+        "support": [
+          {
+            "evidence_id": "W4-49-source",
+            "quote_id": "W4-49-quote",
+            "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T19:00:00Z request=example-b component=hosted_embedding status=provider_http_error http_status=429\n2026-10-28T19:00:00Z request=example-b vectors_accepted=0 response_body_retained=false\n2026-10-28T19:00:02Z request=example-c component=hosted_embedding status=provider_http_error http_status=503\n2026-10-28T19:00:02Z request=example-c vectors_accepted=0 response_body_retained=false\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Collect a later retry record before claiming the provider recovered."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-49",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "10716bb1-a86a-470f-b4e0-b1f90fb6a4e3",
+      "created_at": "2026-10-30T22:22:56.803484+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "f32febe7df54468a95bdee4d32e376bd",
+      "event_id": 2,
+      "case_id": "10716bb1-a86a-470f-b4e0-b1f90fb6a4e3",
+      "created_at": "2026-10-30T22:22:56.805311+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "f32febe7df54468a95bdee4d32e376bd",
+      "started_at": "2026-10-30T22:22:56.805900+00:00",
+      "usage": {
+        "input_tokens": 1389,
+        "output_tokens": 679,
+        "total_tokens": 2068
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2845.95,
+      "event_id": 3,
+      "case_id": "10716bb1-a86a-470f-b4e0-b1f90fb6a4e3",
+      "created_at": "2026-10-30T22:22:59.652712+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-49",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.873264,
+      "error": null,
+      "event_id": 4,
+      "case_id": "10716bb1-a86a-470f-b4e0-b1f90fb6a4e3",
+      "created_at": "2026-10-30T22:22:59.655308+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1389,
+      "output_tokens": 679,
+      "total_tokens": 2068
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "10716bb1-a86a-470f-b4e0-b1f90fb6a4e3",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

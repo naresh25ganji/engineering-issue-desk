@@ -1,0 +1,294 @@
+{
+  "id": "W4-38",
+  "scenario": "known_failure",
+  "title": "Unexecuted code does not establish benchmark success",
+  "failure_mode": "Runtime and quality success inferred from implementation",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 123,
+    "end_line": 149,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "            ordered: list[list[float] | None] = [None] * len(texts)\n            for item in data:\n                if not isinstance(item, dict):\n                    raise ValueError(\"Invalid embedding item\")\n                index, embedding = item.get(\"index\"), item.get(\"embedding\")\n                if isinstance(index, bool) or not isinstance(index, int) or not 0 <= index < len(texts) or ordered[index] is not None:\n                    raise ValueError(\"Missing, duplicate or out-of-range embedding index\")\n                if not isinstance(embedding, list) or len(embedding) != self.dimensions:\n                    raise ValueError(\"Unexpected embedding dimension\")\n                if any(isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(float(value)) for value in embedding):\n                    raise ValueError(\"Invalid embedding values\")\n                ordered[index] = embedding\n            if any(value is None for value in ordered):\n                raise ValueError(\"Missing embedding index\")\n            # Normalize using float64 norms to avoid overflow from otherwise\n            # finite large numbers. Only complete, finite float32 vectors leave\n            # this method; provider text is never interpolated into errors.\n            values = np.asarray(ordered, dtype=np.float64)\n            norms = np.linalg.norm(values, axis=1, keepdims=True)\n            if not np.isfinite(norms).all() or (norms <= 0).any():\n                raise ValueError(\"Invalid embedding norms\")\n            result = (values / norms).astype(np.float32)\n            if result.shape != (len(texts), self.dimensions) or not np.isfinite(result).all():\n                raise ValueError(\"Invalid normalized embedding matrix\")\n            result = self._normalise(result)\n            metadata[\"status\"] = \"success\"\n            return result\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The selected code checks vector norms for nonfinite or nonpositive values before returning normalized results.",
+        "expected_supported": true,
+        "rationale": "The norm guard and normalization assignments are selected."
+      },
+      {
+        "statement": "The hosted embeddings endpoint was exercised successfully and the returned normalized vectors improved retrieval quality.",
+        "expected_supported": false,
+        "rationale": "The selected static code contains no endpoint output, benchmark, or retrieval-quality measurement."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a fake zero-norm response test before reporting the norm guard as exercised.",
+        "expected_supported": true,
+        "rationale": "A proposed guard test is grounded in code and avoids claiming execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.619318,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code includes check for nonfinite norms and norms <= 0 before returning normalized vectors."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote shows no evidence of endpoint execution or retrieval quality improvement."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Test proposing a fake zero-norm response directly exercises the norm guard shown in the code."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The selected code checks vector norms for nonfinite or nonpositive values before returning normalized results.",
+        "support": [
+          {
+            "evidence_id": "W4-38-source",
+            "quote_id": "W4-38-quote",
+            "quote": "            ordered: list[list[float] | None] = [None] * len(texts)\n            for item in data:\n                if not isinstance(item, dict):\n                    raise ValueError(\"Invalid embedding item\")\n                index, embedding = item.get(\"index\"), item.get(\"embedding\")\n                if isinstance(index, bool) or not isinstance(index, int) or not 0 <= index < len(texts) or ordered[index] is not None:\n                    raise ValueError(\"Missing, duplicate or out-of-range embedding index\")\n                if not isinstance(embedding, list) or len(embedding) != self.dimensions:\n                    raise ValueError(\"Unexpected embedding dimension\")\n                if any(isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(float(value)) for value in embedding):\n                    raise ValueError(\"Invalid embedding values\")\n                ordered[index] = embedding\n            if any(value is None for value in ordered):\n                raise ValueError(\"Missing embedding index\")\n            # Normalize using float64 norms to avoid overflow from otherwise\n            # finite large numbers. Only complete, finite float32 vectors leave\n            # this method; provider text is never interpolated into errors.\n            values = np.asarray(ordered, dtype=np.float64)\n            norms = np.linalg.norm(values, axis=1, keepdims=True)\n            if not np.isfinite(norms).all() or (norms <= 0).any():\n                raise ValueError(\"Invalid embedding norms\")\n            result = (values / norms).astype(np.float32)\n            if result.shape != (len(texts), self.dimensions) or not np.isfinite(result).all():\n                raise ValueError(\"Invalid normalized embedding matrix\")\n            result = self._normalise(result)\n            metadata[\"status\"] = \"success\"\n            return result\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose a fake zero-norm response test before reporting the norm guard as exercised."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-38",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "fa686dd0-5303-43ba-a2c1-bbd2df101922",
+      "created_at": "2026-10-30T22:02:55.672785+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "ee35477876f247ce94c206db2f6dd469",
+      "event_id": 2,
+      "case_id": "fa686dd0-5303-43ba-a2c1-bbd2df101922",
+      "created_at": "2026-10-30T22:02:55.675164+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "ee35477876f247ce94c206db2f6dd469",
+      "started_at": "2026-10-30T22:02:55.675668+00:00",
+      "usage": {
+        "input_tokens": 1658,
+        "output_tokens": 561,
+        "total_tokens": 2219
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2589.1,
+      "event_id": 3,
+      "case_id": "fa686dd0-5303-43ba-a2c1-bbd2df101922",
+      "created_at": "2026-10-30T22:02:58.265556+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-38",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.619318,
+      "error": null,
+      "event_id": 4,
+      "case_id": "fa686dd0-5303-43ba-a2c1-bbd2df101922",
+      "created_at": "2026-10-30T22:02:58.268635+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1658,
+      "output_tokens": 561,
+      "total_tokens": 2219
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "fa686dd0-5303-43ba-a2c1-bbd2df101922",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

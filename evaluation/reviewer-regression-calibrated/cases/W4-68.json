@@ -1,0 +1,297 @@
+{
+  "id": "W4-68",
+  "scenario": "known_failure",
+  "title": "Missing scope is not confirmed exploit",
+  "failure_mode": "Missing scope is not confirmed exploit",
+  "source": {
+    "path": "evaluation/fixtures/workflows/repository_scope.diff",
+    "start_line": 1,
+    "end_line": 18,
+    "sha256": "a654954390bd68ece1f97bdcc268d22810377b96c5e9c1b25fa58f6876486fe5",
+    "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/repository_context.py\n+++ b/triage_desk/repository_context.py\n@@ -1,13 +1,13 @@\n     def _parts(self, path: str) -> tuple[str, ...]:\n         if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                 or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n             raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n         parts = tuple(path.split('/'))\n         if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                 or any(not part or part in {'.', '..'} for part in parts)\n                 or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                 or self._sensitive(path)):\n             raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n-        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n+        if not path.endswith('.py'):\n             raise RepositoryContextError('Only app.py and triage_desk Python source files are available.')\n         return parts\n",
+    "title": "repository_scope.diff",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "unapplied_patch_from_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/repository_scope.diff"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "This unapplied patch is a demonstrated secret-exfiltration exploit that ran successfully.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      },
+      {
+        "statement": "The proposed final source eligibility check tests the .py suffix instead of the previous app.py/package condition.",
+        "expected_supported": true,
+        "rationale": "The added line supplies the changed suffix test; the exploit outcome is absent."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Report a confirmed successful exploit without an execution record or the file-opening implementation.",
+        "expected_supported": false,
+        "rationale": "The asserted remedy, execution result, or cross-context guarantee is not established by the supplied evidence."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.966024,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote states patch is unapplied and not executed; no evidence of exploit or successful run."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Code change replaces prior condition with a simple .py suffix check, matching the claim."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "No execution record or evidence of exploit in quote; cannot confirm successful exploit."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The proposed final source eligibility check tests the .py suffix instead of the previous app.py/package condition.",
+        "support": [
+          {
+            "evidence_id": "W4-68-source",
+            "quote_id": "W4-68-quote",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/repository_context.py\n+++ b/triage_desk/repository_context.py\n@@ -1,13 +1,13 @@\n     def _parts(self, path: str) -> tuple[str, ...]:\n         if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                 or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n             raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n         parts = tuple(path.split('/'))\n         if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                 or any(not part or part in {'.', '..'} for part in parts)\n                 or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                 or self._sensitive(path)):\n             raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n-        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n+        if not path.endswith('.py'):\n             raise RepositoryContextError('Only app.py and triage_desk Python source files are available.')\n         return parts\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-68",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "4bfa887e-d0b2-46e3-b259-26ee98c35b14",
+      "created_at": "2026-10-30T22:24:16.676472+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "f3aa1a7e62a04efb884c85f69540fdd2",
+      "event_id": 2,
+      "case_id": "4bfa887e-d0b2-46e3-b259-26ee98c35b14",
+      "created_at": "2026-10-30T22:24:16.677839+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "f3aa1a7e62a04efb884c85f69540fdd2",
+      "started_at": "2026-10-30T22:24:16.678247+00:00",
+      "usage": {
+        "input_tokens": 2240,
+        "output_tokens": 545,
+        "total_tokens": 2785
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2943.72,
+      "event_id": 3,
+      "case_id": "4bfa887e-d0b2-46e3-b259-26ee98c35b14",
+      "created_at": "2026-10-30T22:24:19.623117+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-68",
+      "run_name": "20261030T222355Z-24d5096f",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "predicted": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "predicted": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.966024,
+      "error": null,
+      "event_id": 4,
+      "case_id": "4bfa887e-d0b2-46e3-b259-26ee98c35b14",
+      "created_at": "2026-10-30T22:24:19.625712+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2240,
+      "output_tokens": 545,
+      "total_tokens": 2785
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "predicted": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "4bfa887e-d0b2-46e3-b259-26ee98c35b14",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

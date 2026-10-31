@@ -1,0 +1,48 @@
+{
+  "status": "registered_after_baseline_before_prompt_experiments",
+  "dataset_sha256": "3ee42ac5d82df4e91c4c64cc837b6c6a1791458138e34b33a3daec8a1940fdb4",
+  "baseline": "evaluation/week4-v1-baseline/report.json",
+  "evaluation_scope": "Development-set prompt experiments on the production evidence-review component. Labels are AI-proposed, pending human review.",
+  "changes": [
+    {
+      "variant": "diagnostic",
+      "change": "Distinguish a proposed diagnostic from an asserted observed outcome. Accept grounded sentinel/negative/prerequisite checks without demanding the exact test appear in the source.",
+      "target": "Over-rejection of useful diagnostics",
+      "baseline_cases": [
+        "W4-13",
+        "W4-17",
+        "W4-18",
+        "W4-26",
+        "W4-35"
+      ],
+      "predicted_case_agreement_delta_pp": 12.5,
+      "predicted_supported_retention_delta_pp": 6.58,
+      "risk": "May retain an unsupported remedy mistaken for a diagnostic; monitor all 43 negative controls."
+    },
+    {
+      "variant": "scope",
+      "change": "Add an explicit boundary and compound-clause audit without silently repairing a finding in the reviewer explanation.",
+      "target": "Wrong comparison strictness and condition scope",
+      "baseline_cases": [
+        "W4-33"
+      ],
+      "predicted_case_agreement_delta_pp": 2.5,
+      "predicted_unsupported_rejection_delta_pp": 2.33,
+      "risk": "Overly literal checking can increase false rejections of faithful paraphrases."
+    },
+    {
+      "variant": "authority",
+      "change": "Accept narrow static consequences and explicit test/fixture attestations at their stated scope, retaining the prohibition on runtime or external-product extrapolation.",
+      "target": "Over-rejection of code and fixture observations",
+      "baseline_cases": [
+        "W4-02",
+        "W4-30",
+        "W4-36"
+      ],
+      "predicted_case_agreement_delta_pp": 7.5,
+      "predicted_supported_retention_delta_pp": 3.95,
+      "risk": "May over-generalize test artifacts into product facts; monitor mock-versus-live and provenance controls."
+    }
+  ],
+  "attribution_limit": "Variants are cumulative, use one real model call per case, and run on the same development dataset. Incremental deltas are observed associations, not isolated causal effects; serving nondeterminism remains possible."
+}

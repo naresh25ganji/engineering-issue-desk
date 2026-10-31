@@ -1,0 +1,292 @@
+{
+  "id": "W4-18",
+  "scenario": "happy_path",
+  "title": "Provider failure is checked offline",
+  "failure_mode": "Injected provider failure versus production reliability",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 316,
+    "end_line": 327,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "def test_provider_failure_is_safe_and_does_not_return_an_unreviewed_report(context):\n    model = ReviewerModel(replies=[RuntimeError('PRIVATE TOKEN AND PROVIDER RESPONSE')])\n    budget = budget_for(context)\n    with pytest.raises(ReviewUnavailable) as caught:\n        review_report(context[2], model, budget)\n    assert caught.value.code == 'provider_unavailable'\n    assert 'PRIVATE' not in str(caught.value)\n    assert caught.value.__suppress_context__\n    assert budget.model_calls == 1\n    events = context[0].events(context[1])\n    assert events[-1]['status'] == 'error'\n    assert 'PRIVATE' not in json.dumps(events)\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The offline test injects a provider RuntimeError and asserts a safe provider_unavailable code and absence of PRIVATE in the recorded event JSON.",
+        "expected_supported": true,
+        "rationale": "The injected exception, code assertion, and event check are all present."
+      },
+      {
+        "statement": "The fixture demonstrates that every external provider outage was recovered automatically in production.",
+        "expected_supported": false,
+        "rationale": "The quote is a single offline failure assertion with no production outage or recovery run."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Extend the offline check with another distinctive exception message and inspect only safe public errors and audit records.",
+        "expected_supported": true,
+        "rationale": "The proposal applies the same visible safe-error contract as a diagnostic."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.377068,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Test code injects RuntimeError, asserts caught.value.code == 'provider_unavailable' and asserts 'PRIVATE' not in json.dumps(events)"
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote contains only test code; no evidence of production fixture recovering all provider outages"
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Proposal to extend offline check is not substantiated by the provided test code"
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The offline test injects a provider RuntimeError and asserts a safe provider_unavailable code and absence of PRIVATE in the recorded event JSON.",
+        "support": [
+          {
+            "evidence_id": "W4-18-source",
+            "quote_id": "W4-18-quote",
+            "quote": "def test_provider_failure_is_safe_and_does_not_return_an_unreviewed_report(context):\n    model = ReviewerModel(replies=[RuntimeError('PRIVATE TOKEN AND PROVIDER RESPONSE')])\n    budget = budget_for(context)\n    with pytest.raises(ReviewUnavailable) as caught:\n        review_report(context[2], model, budget)\n    assert caught.value.code == 'provider_unavailable'\n    assert 'PRIVATE' not in str(caught.value)\n    assert caught.value.__suppress_context__\n    assert budget.model_calls == 1\n    events = context[0].events(context[1])\n    assert events[-1]['status'] == 'error'\n    assert 'PRIVATE' not in json.dumps(events)\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-18",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "d55712e5-4ac1-45c3-8a56-7722f1873d81",
+      "created_at": "2026-10-30T22:02:38.928608+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "2f14c89583084c4ab1a0894453f08d4d",
+      "event_id": 2,
+      "case_id": "d55712e5-4ac1-45c3-8a56-7722f1873d81",
+      "created_at": "2026-10-30T22:02:38.930364+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "2f14c89583084c4ab1a0894453f08d4d",
+      "started_at": "2026-10-30T22:02:38.930933+00:00",
+      "usage": {
+        "input_tokens": 1410,
+        "output_tokens": 707,
+        "total_tokens": 2117
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3349.99,
+      "event_id": 3,
+      "case_id": "d55712e5-4ac1-45c3-8a56-7722f1873d81",
+      "created_at": "2026-10-30T22:02:42.280446+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-18",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": false,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": false,
+            "correct": false,
+            "error_type": "false_negative"
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 1,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.377068,
+      "error": null,
+      "event_id": 4,
+      "case_id": "d55712e5-4ac1-45c3-8a56-7722f1873d81",
+      "created_at": "2026-10-30T22:02:42.281459+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1410,
+      "output_tokens": 707,
+      "total_tokens": 2117
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": false,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": false,
+        "correct": false,
+        "error_type": "false_negative"
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 1,
+    "unknown_verdicts": 0
+  },
+  "case_id": "d55712e5-4ac1-45c3-8a56-7722f1873d81",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

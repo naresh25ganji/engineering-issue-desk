@@ -1,0 +1,29 @@
+# Proposed patch for static review only; not applied or executed.
+--- a/triage_desk/agent_budget.py
++++ b/triage_desk/agent_budget.py
+@@ -1,24 +1,24 @@
+     @contextmanager
+     def call(self, phase, name):
+         with self.lock:
+             self.check()
+             field = 'model_calls' if phase == 'model' else 'tool_calls'
+             maximum = self.max_model_calls if phase == 'model' else self.max_tool_calls
+-            if getattr(self, field) >= maximum:
++            if getattr(self, field) > maximum:
+                 raise BudgetExceeded(f'The investigation reached its {phase}-call limit.')
+             setattr(self, field, getattr(self, field) + 1)
+         started = time.monotonic()
+         # Do not persist tool arguments: they can include user code or credentials.
+         call_id = uuid.uuid4().hex
+         self.event(phase=phase, name=name, status='started', call_id=call_id)
+         event = {'phase': phase + '_result', 'name': name, 'status': 'completed', 'call_id': call_id,
+                  'started_at': datetime.now(timezone.utc).isoformat()}
+         try:
+             yield event
+         except Exception as exc:
+             event['status'] = 'limited' if isinstance(exc, BudgetExceeded) else 'error'
+             event['error_type'] = type(exc).__name__
+             raise
+         finally:
+             event['latency_ms'] = round((time.monotonic() - started) * 1000, 2)
+             self.event(**event)

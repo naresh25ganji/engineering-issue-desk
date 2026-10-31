@@ -1,0 +1,294 @@
+{
+  "id": "W4-01",
+  "scenario": "happy_path",
+  "title": "Outcome-label and run-identifier validation",
+  "failure_mode": "Static validation versus unmeasured concurrency guarantee",
+  "source": {
+    "path": "triage_desk/reviews.py",
+    "start_line": 10,
+    "end_line": 23,
+    "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+    "quote": "OUTCOMES = {'resolved', 'needs_followup', 'human_handoff'}\n_LOCK = threading.Lock()\n\n\ndef save_outcome(path: Path, run_id: str, outcome: str, *, first_contact: bool = True) -> None:\n    if not re.fullmatch(r'[a-f0-9]{32}', run_id) or outcome not in OUTCOMES:\n        raise ValueError('Choose a valid run and outcome')\n    record = {'run_id': run_id, 'outcome': outcome, 'first_contact': bool(first_contact),\n              'reviewed_at': datetime.now(timezone.utc).isoformat()}\n    path = Path(path)\n    with _LOCK:\n        path.parent.mkdir(parents=True, exist_ok=True)\n        with path.open('a', encoding='utf-8') as stream:\n            stream.write(json.dumps(record) + '\\n')\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "save_outcome rejects an outcome outside the three OUTCOMES labels and a run_id that does not match 32 lowercase hexadecimal characters.",
+        "expected_supported": true,
+        "rationale": "The set, fullmatch expression, and ValueError branch are selected."
+      },
+      {
+        "statement": "Every concurrent write has been proven to finish without interleaving in a multi-process deployment.",
+        "expected_supported": false,
+        "rationale": "The quote is static code with a threading.Lock; it contains no deployment evidence or executed contention test."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose tests for an unknown outcome, uppercase run identifier, and a valid lowercase 32-character identifier.",
+        "expected_supported": true,
+        "rationale": "The proposed inputs exercise the quoted validation without asserting results were measured."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.167041,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code validates outcome against OUTCOMES and run_id against lowercase 32-hex pattern, raising ValueError on mismatch."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Only a threading.Lock is used; no evidence it prevents interleaving across multiple processes."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed tests directly exercise the validated outcome and run_id conditions shown in the code."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "save_outcome rejects an outcome outside the three OUTCOMES labels and a run_id that does not match 32 lowercase hexadecimal characters.",
+        "support": [
+          {
+            "evidence_id": "W4-01-source",
+            "quote_id": "W4-01-quote",
+            "quote": "OUTCOMES = {'resolved', 'needs_followup', 'human_handoff'}\n_LOCK = threading.Lock()\n\n\ndef save_outcome(path: Path, run_id: str, outcome: str, *, first_contact: bool = True) -> None:\n    if not re.fullmatch(r'[a-f0-9]{32}', run_id) or outcome not in OUTCOMES:\n        raise ValueError('Choose a valid run and outcome')\n    record = {'run_id': run_id, 'outcome': outcome, 'first_contact': bool(first_contact),\n              'reviewed_at': datetime.now(timezone.utc).isoformat()}\n    path = Path(path)\n    with _LOCK:\n        path.parent.mkdir(parents=True, exist_ok=True)\n        with path.open('a', encoding='utf-8') as stream:\n            stream.write(json.dumps(record) + '\\n')\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose tests for an unknown outcome, uppercase run identifier, and a valid lowercase 32-character identifier."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-01",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "ae63aeba-2030-4fdc-a294-24d1ab73b0c8",
+      "created_at": "2026-10-30T22:02:26.230981+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "7e8a6f0f239a42bb8119a50778cce1e0",
+      "event_id": 2,
+      "case_id": "ae63aeba-2030-4fdc-a294-24d1ab73b0c8",
+      "created_at": "2026-10-30T22:02:26.234977+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "7e8a6f0f239a42bb8119a50778cce1e0",
+      "started_at": "2026-10-30T22:02:26.235926+00:00",
+      "usage": {
+        "input_tokens": 1460,
+        "output_tokens": 659,
+        "total_tokens": 2119
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2834.15,
+      "event_id": 3,
+      "case_id": "ae63aeba-2030-4fdc-a294-24d1ab73b0c8",
+      "created_at": "2026-10-30T22:02:29.067945+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-01",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.167041,
+      "error": null,
+      "event_id": 4,
+      "case_id": "ae63aeba-2030-4fdc-a294-24d1ab73b0c8",
+      "created_at": "2026-10-30T22:02:29.070158+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1460,
+      "output_tokens": 659,
+      "total_tokens": 2119
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "ae63aeba-2030-4fdc-a294-24d1ab73b0c8",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

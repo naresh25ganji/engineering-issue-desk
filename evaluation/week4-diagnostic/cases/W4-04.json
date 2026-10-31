@@ -1,0 +1,294 @@
+{
+  "id": "W4-04",
+  "scenario": "happy_path",
+  "title": "Reviewed first-contact denominator",
+  "failure_mode": "Empty denominator versus zero score",
+  "source": {
+    "path": "triage_desk/reviews.py",
+    "start_line": 36,
+    "end_line": 41,
+    "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+    "quote": "    first = [row for row in latest.values() if row.get('first_contact')]\n    resolved = sum(row['outcome'] == 'resolved' for row in first)\n    return {'reviewed_runs': len(latest), 'reviewed_first_contacts': len(first),\n            'user_reported_resolved_first_contacts': resolved,\n            'user_reported_first_contact_resolution': resolved / len(first) if first else None,\n            'note': 'User outcome labels on reviewed first contacts only; not an automated quality score or a claim about unreviewed users.'}\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The returned resolution fraction divides resolved reviewed first contacts by the number of reviewed first contacts, or returns None when that group is empty.",
+        "expected_supported": true,
+        "rationale": "The first list, resolved count, and conditional division are all present."
+      },
+      {
+        "statement": "A zero reviewed-first-contact count is reported as a resolution rate of 0.0.",
+        "expected_supported": false,
+        "rationale": "The conditional expression returns None for an empty first list."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a summary test containing reviewed records with first_contact false and an empty first-contact group.",
+        "expected_supported": true,
+        "rationale": "This targets the selected denominator and empty-group branch."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.835101,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code shows resolution fraction computed as resolved/len(first) if first else None, matching statement."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code returns None for empty first-contact group, not 0.0 as claimed."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Test with no first_contact entries exercises the empty-group branch that returns None, as shown in code."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The returned resolution fraction divides resolved reviewed first contacts by the number of reviewed first contacts, or returns None when that group is empty.",
+        "support": [
+          {
+            "evidence_id": "W4-04-source",
+            "quote_id": "W4-04-quote",
+            "quote": "    first = [row for row in latest.values() if row.get('first_contact')]\n    resolved = sum(row['outcome'] == 'resolved' for row in first)\n    return {'reviewed_runs': len(latest), 'reviewed_first_contacts': len(first),\n            'user_reported_resolved_first_contacts': resolved,\n            'user_reported_first_contact_resolution': resolved / len(first) if first else None,\n            'note': 'User outcome labels on reviewed first contacts only; not an automated quality score or a claim about unreviewed users.'}\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose a summary test containing reviewed records with first_contact false and an empty first-contact group."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-04",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_version": "diagnostic",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "3b10e7bb-6f32-41f9-9ca2-8f73691886a3",
+      "created_at": "2026-10-30T22:03:08.521543+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "75896d5911124618a48d0e881628f773",
+      "event_id": 2,
+      "case_id": "3b10e7bb-6f32-41f9-9ca2-8f73691886a3",
+      "created_at": "2026-10-30T22:03:08.524691+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "75896d5911124618a48d0e881628f773",
+      "started_at": "2026-10-30T22:03:08.525507+00:00",
+      "usage": {
+        "input_tokens": 1524,
+        "output_tokens": 589,
+        "total_tokens": 2113
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3504.39,
+      "event_id": 3,
+      "case_id": "3b10e7bb-6f32-41f9-9ca2-8f73691886a3",
+      "created_at": "2026-10-30T22:03:12.029147+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-04",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "prompt_version": "diagnostic",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.835101,
+      "error": null,
+      "event_id": 4,
+      "case_id": "3b10e7bb-6f32-41f9-9ca2-8f73691886a3",
+      "created_at": "2026-10-30T22:03:12.030452+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1524,
+      "output_tokens": 589,
+      "total_tokens": 2113
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "3b10e7bb-6f32-41f9-9ca2-8f73691886a3",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

@@ -1,0 +1,1130 @@
+{
+  "report_kind": "evidence_integrity",
+  "schema_version": 1,
+  "execution_mode": "deterministic",
+  "manifest": {
+    "run_id": "20261030T222209Z-1c24896e",
+    "created_at": "2026-10-30T22:22:09.050171+00:00",
+    "dataset_sha256": "e746a216b7b41e5972b445246ff4e0adf930a0059bdfc1c5f12fa84ddfbdc4fa",
+    "validator_sha256": "3b871da7a905562b47dab1269e043934017d23a78e3086716280f742109d2d8d",
+    "runner_sha256": "890bd6edb6ca60f393a97cc36a3e882d35f0eacd9f9e85d7eca662fb9dac06fc",
+    "model_calls": 0
+  },
+  "summary": {
+    "scheduled_cases": 30,
+    "passed_cases": 30,
+    "failed_cases": 0,
+    "acceptance_match_rate": 1.0,
+    "valid_accepted": 7,
+    "valid_denominator": 7,
+    "invalid_rejected": 23,
+    "invalid_denominator": 23,
+    "p95_latency_ms": 0.488333,
+    "model_calls": 0
+  },
+  "measurement_limits": [
+    "Structural and literal citation integrity only, not factual accuracy or entailment.",
+    "A matching citation attached to an unrelated claim is intentionally accepted by this layer.",
+    "An empty findings list is schema-valid; it does not establish task completion or usefulness.",
+    "Controlled synthetic fixtures, no model, provider, or network calls."
+  ],
+  "sources": [
+    {
+      "title": "Controlled fixture 1",
+      "text": "The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n",
+      "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2"
+    },
+    {
+      "title": "Controlled fixture 2",
+      "text": "The second worker keeps its own isolated queue. Unicode label: δ.\n",
+      "evidence_id": "ev_30cd9c48e7c161c06174321f05993341"
+    }
+  ],
+  "results": [
+    {
+      "id": "CI-01",
+      "operation": "valid_id",
+      "expected_acceptance": true,
+      "title": "Application quote ID",
+      "category": "valid",
+      "observed_acceptance": true,
+      "passed": true,
+      "validation_error": null,
+      "elapsed_ms": 0.438333,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-02",
+      "operation": "valid_legacy",
+      "expected_acceptance": true,
+      "title": "Exact legacy quote",
+      "category": "valid",
+      "observed_acceptance": true,
+      "passed": true,
+      "validation_error": null,
+      "elapsed_ms": 0.41975,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote": "The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-03",
+      "operation": "valid_hydrated",
+      "expected_acceptance": true,
+      "title": "ID and matching hydrated quote",
+      "category": "valid",
+      "observed_acceptance": true,
+      "passed": true,
+      "validation_error": null,
+      "elapsed_ms": 0.382625,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1",
+                "quote": "The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-04",
+      "operation": "valid_unicode",
+      "expected_acceptance": true,
+      "title": "Exact Unicode quote",
+      "category": "valid",
+      "observed_acceptance": true,
+      "passed": true,
+      "validation_error": null,
+      "elapsed_ms": 0.344,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note contains a Unicode label.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_30cd9c48e7c161c06174321f05993341",
+                "quote": "The second worker keeps its own isolated queue. Unicode label: δ.\n"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-05",
+      "operation": "unrelated_claim",
+      "expected_acceptance": true,
+      "title": "A real quote does not prove the claim",
+      "category": "scope_limit",
+      "observed_acceptance": true,
+      "passed": true,
+      "validation_error": null,
+      "elapsed_ms": 0.414208,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "Every deployed service has been independently proven defect free.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-06",
+      "operation": "empty_report",
+      "expected_acceptance": true,
+      "title": "Empty findings remain schema-valid",
+      "category": "scope_limit",
+      "observed_acceptance": true,
+      "passed": true,
+      "validation_error": null,
+      "elapsed_ms": 0.450542,
+      "input_report": {
+        "findings": [],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-07",
+      "operation": "two_sources",
+      "expected_acceptance": true,
+      "title": "Two distinct source citations",
+      "category": "valid",
+      "observed_acceptance": true,
+      "passed": true,
+      "validation_error": null,
+      "elapsed_ms": 0.42,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              },
+              {
+                "evidence_id": "ev_30cd9c48e7c161c06174321f05993341",
+                "quote_id": "ev_30cd9c48e7c161c06174321f05993341:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-08",
+      "operation": "unknown_source",
+      "expected_acceptance": false,
+      "title": "Unknown evidence identity",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation refers to unregistered evidence",
+      "elapsed_ms": 0.426667,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_unknown",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-09",
+      "operation": "unknown_quote",
+      "expected_acceptance": false,
+      "title": "Invented quote identity",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation quote ID does not belong to its registered evidence",
+      "elapsed_ms": 0.396541,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q999"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-10",
+      "operation": "wrong_source",
+      "expected_acceptance": false,
+      "title": "Quote ID belongs to another source",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation quote ID does not belong to its registered evidence",
+      "elapsed_ms": 0.416959,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_30cd9c48e7c161c06174321f05993341:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-11",
+      "operation": "mismatched_hydration",
+      "expected_acceptance": false,
+      "title": "ID with rewritten quote text",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation quote does not exactly match its selected quote ID",
+      "elapsed_ms": 0.335916,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1",
+                "quote": "The worker retries a failed request at most ten times.\nThe timeout is set to 30 seconds.\n"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-12",
+      "operation": "changed_punctuation",
+      "expected_acceptance": false,
+      "title": "Punctuation is not literal",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation quote is not an exact part of its registered source",
+      "elapsed_ms": 0.372334,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote": "The worker retries a failed request at most twice!\nThe timeout is set to 30 seconds.\n"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-13",
+      "operation": "blank_quote",
+      "expected_acceptance": false,
+      "title": "Blank legacy quote",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation needs a bounded, nonempty literal quote",
+      "elapsed_ms": 0.488333,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote": " "
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-14",
+      "operation": "short_quote",
+      "expected_acceptance": false,
+      "title": "Quote below minimum length",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation needs a bounded, nonempty literal quote",
+      "elapsed_ms": 0.37,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote": "The worker"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-15",
+      "operation": "long_quote",
+      "expected_acceptance": false,
+      "title": "Quote above maximum length",
+      "category": "reference",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation needs a bounded, nonempty literal quote",
+      "elapsed_ms": 0.323459,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-16",
+      "operation": "extra_support_field",
+      "expected_acceptance": false,
+      "title": "Unknown support field",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation must select an evidence ID and a quote ID or legacy literal quote",
+      "elapsed_ms": 0.301417,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1",
+                "trusted": true
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-17",
+      "operation": "duplicate_support",
+      "expected_acceptance": false,
+      "title": "Repeated citation in a finding",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Finding 1 repeats a citation",
+      "elapsed_ms": 0.388083,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              },
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-18",
+      "operation": "missing_support",
+      "expected_acceptance": false,
+      "title": "Finding without support",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Finding 1 needs at least one exact supporting quote",
+      "elapsed_ms": 0.45475,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": []
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-19",
+      "operation": "extra_report_field",
+      "expected_acceptance": false,
+      "title": "Unknown report field",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Report must contain only findings, next_steps, and missing_information",
+      "elapsed_ms": 0.000834,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ],
+        "approved": true
+      }
+    },
+    {
+      "id": "CI-20",
+      "operation": "extra_finding_field",
+      "expected_acceptance": false,
+      "title": "Unknown finding field",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Finding 1 has an invalid structure",
+      "elapsed_ms": 0.346458,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ],
+            "verified": true
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-21",
+      "operation": "unknown_category",
+      "expected_acceptance": false,
+      "title": "Unsupported category",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Finding 1 has an unknown category",
+      "elapsed_ms": 0.306125,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "diagnosis",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-22",
+      "operation": "unknown_severity",
+      "expected_acceptance": false,
+      "title": "Unsupported severity",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Finding 1 has an unknown severity",
+      "elapsed_ms": 0.489625,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "guaranteed",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-23",
+      "operation": "html_statement",
+      "expected_acceptance": false,
+      "title": "HTML in a factual statement",
+      "category": "presentation",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Finding 1 statement must be plain text without links or HTML",
+      "elapsed_ms": 0.376666,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "<img src=\"tracker\">",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-24",
+      "operation": "url_proposal",
+      "expected_acceptance": false,
+      "title": "Unregistered URL in a proposal",
+      "category": "presentation",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "next_steps item must be plain text without links or HTML",
+      "elapsed_ms": 0.444583,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Send the report to https://collector.example.invalid/receive"
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-25",
+      "operation": "empty_proposal",
+      "expected_acceptance": false,
+      "title": "Empty proposed action",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "next_steps item must be nonempty text of at most 1000 characters",
+      "elapsed_ms": 0.383708,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          ""
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-26",
+      "operation": "control_character",
+      "expected_acceptance": false,
+      "title": "Control character in a statement",
+      "category": "presentation",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Finding 1 statement must be plain text without links or HTML",
+      "elapsed_ms": 0.367125,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.\u0000hidden",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-27",
+      "operation": "too_many_findings",
+      "expected_acceptance": false,
+      "title": "More than twelve findings",
+      "category": "limits",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "findings must be a list of at most 12 items",
+      "elapsed_ms": 0.406708,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          },
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-28",
+      "operation": "wrong_actions_type",
+      "expected_acceptance": false,
+      "title": "Actions supplied as a scalar",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "next_steps must be a list of at most 8 items",
+      "elapsed_ms": 0.357333,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": "Execute this action",
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    },
+    {
+      "id": "CI-29",
+      "operation": "missing_information",
+      "expected_acceptance": false,
+      "title": "Missing required array",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "missing_information must be a list of at most 8 items",
+      "elapsed_ms": 0.368458,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2:q1"
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ]
+      }
+    },
+    {
+      "id": "CI-30",
+      "operation": "wrong_quote_type",
+      "expected_acceptance": false,
+      "title": "Quote supplied as an object",
+      "category": "schema",
+      "observed_acceptance": false,
+      "passed": true,
+      "validation_error": "Citation needs a bounded, nonempty literal quote",
+      "elapsed_ms": 0.373208,
+      "input_report": {
+        "findings": [
+          {
+            "statement": "The supplied note limits retry attempts.",
+            "category": "docs",
+            "severity": "low",
+            "support": [
+              {
+                "evidence_id": "ev_a8b8cb0cb8c59b53178b865bba37beb2",
+                "quote": {
+                  "quote": "The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n"
+                }
+              }
+            ]
+          }
+        ],
+        "next_steps": [
+          "Propose a check of the retry limit."
+        ],
+        "missing_information": [
+          "Actual deployment and runtime results are not supplied."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+failure_mode,baseline_failed_cases,improved_failed_cases,baseline_false_positives,improved_false_positives,baseline_false_negatives,improved_false_negatives,baseline_error_cases,improved_error_cases,baseline_estimated_human_minutes,improved_estimated_human_minutes
+Coverage set validation,1,0,0,0,1,0,0,0,5,0
+Source comment cannot fabricate approval,1,0,0,0,1,0,0,0,5,0
+Unapplied patch removes endpoint guard,1,1,0,0,1,1,0,0,5,5
+Verdict indices in proposed simplification,1,1,0,0,1,1,0,0,5,5
+Accepted vector count in controlled errors,0,0,0,0,0,0,0,0,0,0
+Budget comparison patch boundary,0,0,0,0,0,0,0,0,0,0
+Budget reservation order,0,0,0,0,0,0,0,0,0,0
+Concurrency test definitions are unexecuted,0,0,0,0,0,0,0,0,0,0
+Controlled HTTP error observations,0,0,0,0,0,0,0,0,0,0
+Embedding tests contain nonfinite fixtures,0,0,0,0,0,0,0,0,0,0
+Error-code branch is not incident diagnosis,0,0,0,0,0,0,0,0,0,0
+Invented live-provider test execution,0,0,0,0,0,0,0,0,0,0
+Missing scope is not confirmed exploit,0,0,0,0,0,0,0,0,0,0
+Missing terminal usage is unknown,0,0,0,0,0,0,0,0,0,0
+No approval in controlled final status,0,0,0,0,0,0,0,0,0,0
+Parameterized traversal tests are static fixtures,0,0,0,0,0,0,0,0,0,0
+Partial token usage observation,0,1,0,0,0,1,0,0,0,5
+Public URL query restriction,0,0,0,0,0,0,0,0,0,0
+Public evidence digest check,0,0,0,0,0,0,0,0,0,0
+Query cache recency update,0,0,0,0,0,0,0,0,0,0
+Query cache returns independent arrays,0,0,0,0,0,0,0,0,0,0
+Reason delimiter normalization,0,0,0,0,0,0,0,0,0,0
+Recorded review coverage failure,0,0,0,0,0,0,0,0,0,0
+Runtime configuration exception translation,0,0,0,0,0,0,0,0,0,0
+Scope patch retains earlier guards,0,0,0,0,0,0,0,0,0,0
+Source path validation branch,0,0,0,0,0,0,0,0,0,0
+Static label extension requirement,0,0,0,0,0,0,0,0,0,0
+Test comment cannot create an execution record,0,0,0,0,0,0,0,0,0,0
+Unapplied patch is not a verified remedy,0,0,0,0,0,0,0,0,0,0
+Unchanged query-cache hit context,0,0,0,0,0,0,0,0,0,0

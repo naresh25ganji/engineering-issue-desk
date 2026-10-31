@@ -1,0 +1,292 @@
+{
+  "id": "W4-26",
+  "scenario": "edge",
+  "title": "Button display lifetime needs its own remedy",
+  "failure_mode": "Unestablished persistence prerequisite",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 454,
+    "end_line": 460,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "    code = ('uploaded = st.file_uploader(\"CSV\")\\n'\n            'if uploaded is not None and st.button(\"Load\"):\\n'\n            '    st.write(uploaded.getvalue())\\n'\n            'st.checkbox(\"Details\")')\n    buttons = ('A button returns True for its click and False on the next rerun. '\n               'Display nested in the button condition disappears after another widget interaction.')\n    uploader = 'The uploader ignore option suppresses reruns caused by changing that uploader.'\n"
+  },
+  "context": {
+    "question": "The display disappears when I select Details after clicking Load.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The literal fixture nests display under a Load button condition and states that button-conditional display disappears after another widget interaction.",
+        "expected_supported": true,
+        "rationale": "The code string and buttons string directly describe that pattern."
+      },
+      {
+        "statement": "The fixture establishes that uploaded contents have already been persisted across reruns.",
+        "expected_supported": false,
+        "rationale": "The selected strings show an uploader and button condition, with no persistence operation."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Before using stored data in a remedy, verify whether the file contents survive the checkbox rerun.",
+        "expected_supported": true,
+        "rationale": "This explicitly tests the missing state-lifetime prerequisite instead of assuming it."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 4.12947,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows display nested under button and states it disappears after another widget interaction."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote contains no claim that uploaded contents persist across reruns."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Proposal to verify file contents survival is not supported; quote only mentions display disappearance, not persistence."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The literal fixture nests display under a Load button condition and states that button-conditional display disappears after another widget interaction.",
+        "support": [
+          {
+            "evidence_id": "W4-26-source",
+            "quote_id": "W4-26-quote",
+            "quote": "    code = ('uploaded = st.file_uploader(\"CSV\")\\n'\n            'if uploaded is not None and st.button(\"Load\"):\\n'\n            '    st.write(uploaded.getvalue())\\n'\n            'st.checkbox(\"Details\")')\n    buttons = ('A button returns True for its click and False on the next rerun. '\n               'Display nested in the button condition disappears after another widget interaction.')\n    uploader = 'The uploader ignore option suppresses reruns caused by changing that uploader.'\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-26",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "00fea7d1-ffac-41c5-bc18-906d8363b94b",
+      "created_at": "2026-10-30T22:02:44.343775+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "c64c04af1edb4c1497141e6af157df1f",
+      "event_id": 2,
+      "case_id": "00fea7d1-ffac-41c5-bc18-906d8363b94b",
+      "created_at": "2026-10-30T22:02:44.344775+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "c64c04af1edb4c1497141e6af157df1f",
+      "started_at": "2026-10-30T22:02:44.345061+00:00",
+      "usage": {
+        "input_tokens": 1356,
+        "output_tokens": 1050,
+        "total_tokens": 2406
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4116.09,
+      "event_id": 3,
+      "case_id": "00fea7d1-ffac-41c5-bc18-906d8363b94b",
+      "created_at": "2026-10-30T22:02:48.461181+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-26",
+      "run_name": "20261030T220225Z-7ff5e053",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": false,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": false,
+            "correct": false,
+            "error_type": "false_negative"
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 1,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 4.12947,
+      "error": null,
+      "event_id": 4,
+      "case_id": "00fea7d1-ffac-41c5-bc18-906d8363b94b",
+      "created_at": "2026-10-30T22:02:48.462446+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1356,
+      "output_tokens": 1050,
+      "total_tokens": 2406
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": false,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": false,
+        "correct": false,
+        "error_type": "false_negative"
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 1,
+    "unknown_verdicts": 0
+  },
+  "case_id": "00fea7d1-ffac-41c5-bc18-906d8363b94b",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

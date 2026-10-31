@@ -71,16 +71,20 @@ class FakeService:
         self.settings = FakeSettings(ready)
         self.store = FakeStore(cases)
         self.start_calls = []
+        self.use_case_calls = []
         self.resume_calls = []
         self.retry_calls = []
 
-    def start(self, question, version='', code_context='', progress=None, *, repository_context=False, memory_context=False):
+    def start(self, question, version='', code_context='', progress=None, *, repository_context=False,
+              memory_context=False, use_case='issue_investigation'):
         self.start_calls.append((question, version, code_context))
+        self.use_case_calls.append(use_case)
         if progress:
             progress({'event': 'search_started', 'message': 'Searching local evidence.'})
         case = pending_case()
         case.update(question=question, version=version, code_context=code_context,
-                    repository_context=repository_context, memory_context=memory_context)
+                    repository_context=repository_context, memory_context=memory_context,
+                    use_case_id=use_case, use_case_version=1)
         self.store.cases[case['case_id']] = deepcopy(case)
         return case
 
@@ -311,3 +315,49 @@ def test_publication_requires_local_approval_preview_and_exact_separate_confirma
     assert not app.exception
     assert actions[-1] == ('publish', 'preview-id', 'preview-id')
     assert app.button(key='deep_publish_preview-id').disabled
+
+
+@pytest.mark.parametrize('workflow,label,context_label', [
+    ('incident_triage', 'Incident triage', 'Incident notes or logs'),
+    ('change_review', 'Change review', 'Diff or code to review'),
+    ('test_planning', 'Test planning', 'Code or acceptance criteria'),
+])
+def test_new_workflow_updates_form_and_persists_selection(tmp_path, workflow, label, context_label):
+    service = FakeService()
+    app = render(tmp_path, service)
+    app.selectbox(key='deep_use_case').select(workflow).run()
+    assert not app.exception and not service.start_calls
+    assert app.text_area(key='deep_code_context').label == context_label + ' (optional)'
+    example = app.selectbox(key='deep_example_' + workflow).options[1]
+    app.selectbox(key='deep_example_' + workflow).select(example).run()
+    app.button(key='deep_use_example_' + workflow).click().run()
+    assert app.text_area(key='deep_question').value == example and not service.start_calls
+    app.text_area(key='deep_code_context').input('Supplied bounded context for static investigation.')
+    app.button(key='FormSubmitter:deep_new_investigation-Start deep investigation').click().run()
+    assert not app.exception and service.use_case_calls == [workflow]
+    assert service.store.get_case('case-001')['use_case_id'] == workflow
+    assert any('Saved workflow: ' + label in item.value for item in app.caption)
+    assert not service.store.get_case('case-001')['repository_context']
+    app.selectbox(key='deep_use_case').select('issue_investigation').run()
+    assert any('Saved workflow: ' + label in item.value for item in app.caption)
+
+
+def test_load_sample_projects_inputs_without_labels_or_starting_a_model(tmp_path):
+    import json
+    evaluation = tmp_path / 'evaluation'
+    evaluation.mkdir()
+    sample = {'id': 'WF-11', 'title': 'Controlled incident', 'use_case': 'incident_triage',
+              'question': 'Triage these synthetic signals.', 'version': '1.66',
+              'context': {'text': 'Synthetic incident note: a request timed out at 10:00 UTC.'},
+              'expected': {'human_rubric': ['PRIVATE REFERENCE LABEL']}}
+    (evaluation / 'workflow-cases.json').write_text(json.dumps({'cases': [sample]}))
+    service = FakeService()
+    app = render(tmp_path, service)
+    app.selectbox(key='deep_use_case').select('incident_triage').run()
+    app.selectbox(key='deep_sample_incident_triage').select('WF-11').run()
+    app.button(key='deep_load_sample_incident_triage').click().run()
+    assert not app.exception and not service.start_calls
+    assert app.text_area(key='deep_question').value == sample['question']
+    assert app.text_area(key='deep_code_context').value == sample['context']['text']
+    assert app.text_input(key='deep_version').value == sample['version']
+    assert not any('PRIVATE REFERENCE LABEL' in element.value for element in app.text)

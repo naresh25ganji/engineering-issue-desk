@@ -1,0 +1,1125 @@
+{
+  "schema_version": 1,
+  "report_kind": "engineering_workflows_analysis",
+  "generated_at": "2026-10-30T22:29:14.967853+00:00",
+  "label_status": "ai_proposed_pending_human_review",
+  "scope": "Preserved engineering-workflow experiments and local integrity checks. Human semantic accuracy remains unmeasured.",
+  "artifacts": {
+    "full_workflow": {
+      "path": "evaluation/use-case-live/report.json",
+      "sha256": "25f264b9b85cd6d1bfc379a1fc2bd830d43ef2024eaba651a58f4a7a25506ee2",
+      "run_id": "20261030T222346Z-3661804e"
+    },
+    "reviewer_baseline": {
+      "path": "evaluation/reviewer-regression-baseline/report.json",
+      "sha256": "82b0d5668c403e1409a40c8c664e18387b2c5b74ab5eec8b04293027dfa0ecf1",
+      "run_id": "20261030T222250Z-4d15ef67"
+    },
+    "reviewer_calibrated": {
+      "path": "evaluation/reviewer-regression-calibrated/report.json",
+      "sha256": "9f5d9ca71d3498effdd8352e2c26164431e998a485e269bcbc0098f62803f5b9",
+      "run_id": "20261030T222355Z-24d5096f"
+    },
+    "reviewer_comparison": {
+      "path": "evaluation/reviewer-regression-comparison/comparison.json",
+      "sha256": "f8f59714ce4c7f5842454802e62e97e66ac368d6434ce03e2ad398fd18f88874",
+      "run_id": null
+    },
+    "integrity": {
+      "path": "evaluation/integrity-results/report.json",
+      "sha256": "7cbca70ce67c9632005529a0d18eae5c8be4371da525271f52e1cdb8e89b91d0",
+      "run_id": "20261030T222209Z-1c24896e"
+    }
+  },
+  "datasets": {
+    "workflow": {
+      "path": "evaluation/workflow-cases.json",
+      "sha256": "0c816f4693609be82e579ba6f1a0e6c775544e8b134a7c9fecb4851ddccb75ba",
+      "version": 1,
+      "cases": 40,
+      "profiles": 4,
+      "cases_per_profile": 10,
+      "scenario_counts": {
+        "happy_path": 20,
+        "edge": 12,
+        "known_failure": 6,
+        "adversarial": 2
+      }
+    },
+    "reviewer_regression": {
+      "path": "evaluation/reviewer-regression-cases.json",
+      "sha256": "1b7b2fac74ee74f4257986effb2d57070f99085a57e02f02fa07762e804c7b70",
+      "version": 1,
+      "cases": 30,
+      "items": 90,
+      "expected_supported_items": 45,
+      "expected_unsupported_items": 45,
+      "scenario_counts": {
+        "happy_path": 15,
+        "edge": 9,
+        "known_failure": 4,
+        "adversarial": 2
+      }
+    },
+    "fixtures": {
+      "directory": "evaluation/fixtures/workflows",
+      "count": 20,
+      "repository_or_test_excerpts": 10,
+      "unapplied_repository_based_patches": 5,
+      "controlled_synthetic_logs_or_adversarial_samples": 5,
+      "maximum_context_characters": 1494
+    }
+  },
+  "full_workflow": {
+    "manifest": {
+      "dataset_sha256": "0c816f4693609be82e579ba6f1a0e6c775544e8b134a7c9fecb4851ddccb75ba",
+      "case_ids": [
+        "WF-01",
+        "WF-02",
+        "WF-03",
+        "WF-04",
+        "WF-05",
+        "WF-06",
+        "WF-07",
+        "WF-08",
+        "WF-09",
+        "WF-10",
+        "WF-11",
+        "WF-12",
+        "WF-13",
+        "WF-14",
+        "WF-15",
+        "WF-16",
+        "WF-17",
+        "WF-18",
+        "WF-19",
+        "WF-20",
+        "WF-21",
+        "WF-22",
+        "WF-23",
+        "WF-24",
+        "WF-25",
+        "WF-26",
+        "WF-27",
+        "WF-28",
+        "WF-29",
+        "WF-30",
+        "WF-31",
+        "WF-32",
+        "WF-33",
+        "WF-34",
+        "WF-35",
+        "WF-36",
+        "WF-37",
+        "WF-38",
+        "WF-39",
+        "WF-40"
+      ],
+      "input_projection_sha256": "fe2ada37594c6a003434c63c3a98cd7a2f626a0e3948aba92665a4e9db2f6ac8",
+      "case_definition_sha256": {
+        "WF-01": "7f8213e5588b877efe88b496c82e61415407c76ff4c88c5183bd8c75b7372710",
+        "WF-02": "69daf2d07f687b6a18ba70c8b15877a6112a1754ebd4c52ad3363472ec41dcfa",
+        "WF-03": "afb5f33f73b45f4d94409542fcf5b8d6c5d1dfb39f3bca8a07f0ab5604243186",
+        "WF-04": "ea4d3798c8e3491af0f6a63d646b53cd932c83770051256e016d1d81d26a0913",
+        "WF-05": "7150d400b011979f8c6b814ca1b4eaa4bf390d9c16662f22716f4ac456aa4f57",
+        "WF-06": "1a9b723083f365d1750ee65f6ad90b5df43830b38cab3281a0adeedb96adc707",
+        "WF-07": "b081fca68273c5ac2af04cf4672b4786cac1d71c2c9c466ddf30da40f4f88bd1",
+        "WF-08": "294810c2d054968f029939579c5b26055909b2086cf5301a4fe707722c3b2e72",
+        "WF-09": "c9d7584ccc471875b5b2061a2ead5a6a3874f8033c3b46c2613606dd01a1f075",
+        "WF-10": "a5cba0151824928e72eeaa87605d69cc922f627ff45132321890a610ba43b086",
+        "WF-11": "4245279723fd319ec126966dd605163278ec644eea5925a1df0933cc12a813c9",
+        "WF-12": "f274c96890c9f8128df16375eed14ac0abbf60bd7583ec198557e6a11c2c554d",
+        "WF-13": "98e22b44182f1157647bfd22850aaeef1892053b8510f3ed16e262a7c25fb091",
+        "WF-14": "412f52ee19aa069f5ac92a33b234c17b7ae6b0019130b1a25a2434b9d5c652bd",
+        "WF-15": "cd04e85c112479a3c03fa47846ff51b339843d969278e172f8da51cff91cad83",
+        "WF-16": "3f6ba0701103bf2cd20a9fae90b7b608820a995696b318322631486e29121582",
+        "WF-17": "58192f6057ae7b5b059674a8cb1476132ba150c49785e3d00178beb3135f4b28",
+        "WF-18": "e29bdde387b59a1e57aae40710ffbe170424f4f15bb507de6ec27eb43d0580bf",
+        "WF-19": "b3648c2b3ff99ccc9c827db87c20dd67b0b1b2fe548469b160a613040237e4eb",
+        "WF-20": "4ce1e9ab6b899c780b0c41e22c3cbb8b5daeab84c4168de28e70e322a5d74daa",
+        "WF-21": "df1db885fd7237e48f6cf75a089f48736f92a8d486b34524a25fbeee4441d7b0",
+        "WF-22": "26107dde2fc26b1355ba7f85078a019322bbbb43aad4494bdc08002d877615ae",
+        "WF-23": "49580c4c9f55aa4584ce54b2d49472700c8459fb3d11968c0adba4a7f391bc3d",
+        "WF-24": "6dfe2cb7c174e4a7c47c28dcf6d96df78291449eb356802a553589f5af90b042",
+        "WF-25": "0b9779d114964bf8363dea85f4454a6ffee88d120033855d448e152f0dd23f1c",
+        "WF-26": "6b66cd55b07bcfb323837ae274b198e6f087e0dbfe1e8c0bba5dd76336281ac9",
+        "WF-27": "4fb7c1ffcc80f81ebba39dd6b48ab4bbf20d8930a254799e8d7b4821e04f8873",
+        "WF-28": "41401b551b816dfc61687b93d495078fa34e897f60ff803c82ed0f7840685c14",
+        "WF-29": "3822ca8a5a0dec315c244f3b3afd01be35d16bac22943bca5b21afbb58d8d7f5",
+        "WF-30": "8552a65d224ab043872d3ec0d3a722424a93447565547b34316d885229927f8f",
+        "WF-31": "709a592be8afb8522fe8080dfbab6d3b1932242c2a92bf14887c21b2070bfba4",
+        "WF-32": "0b28f9d7417ea73eb8341885455ba3b96443d3611b827f3e4f31aa9c8acdcebc",
+        "WF-33": "b99f8717d98c4769073a00ccd030af1db76e4de2cf5dd7e32311135887a843e0",
+        "WF-34": "c4f6b2f63a6b9c7b356f4b54dd47c90d8120f43645505113a6c88b008d75a12a",
+        "WF-35": "111c3cd71a1d7f8b013f8100c370f7fe59426723e95a60b568f0f8596db3fb8e",
+        "WF-36": "2be041a0e78e15652991d008d996d8bac8c7047f771dbfd4234cb5669eda4893",
+        "WF-37": "6c00010034e699e5842fef5f9a37ec76b894fe1bbe59044e7e35d99167d83525",
+        "WF-38": "7f440e1859664a93dc589863f8857979fb39a3be7632ef65e3dbc270927cd11b",
+        "WF-39": "6bdadef07166c59548b1a6fbaedf5257af5928f51263c705a4c5095e67ee321f",
+        "WF-40": "f7bf6d5a6280af34a6786a4b4b45e785ea48360fb30d14a0f59b10b728d73d5f"
+      },
+      "live": true,
+      "workers": 4,
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "budgets": {
+        "max_model_calls": 18,
+        "max_tool_calls": 28,
+        "max_tokens": 64000,
+        "max_seconds": 180
+      },
+      "reviewer_prompt_version": "calibrated",
+      "reviewer_prompt_sha256": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "orchestrator_prompt_sha256": "1ead6eb19ca3c856cd40fa77765d9b71f20522e8f083fe5e5dde90ff9aefb49c",
+      "profiles": {
+        "issue_investigation": {
+          "version": 1,
+          "sha256": "2c6a7ad504867e701a250ff8f33335cfa04e2483347becd7e3e6dc31bf5a090e"
+        },
+        "incident_triage": {
+          "version": 1,
+          "sha256": "bf9c18b66a23c828d1613b9be39da0a5277db020f0d8f8d8928e9198d64305a9"
+        },
+        "change_review": {
+          "version": 1,
+          "sha256": "2665122ff665edc95e53f7d50d02daa7b4eb13d34dcdcaaf1c9caeaea9070f15"
+        },
+        "test_planning": {
+          "version": 1,
+          "sha256": "8c6b1f05b964734615718d800704809c057183baec4adcc1d1b83e4abd7790c5"
+        }
+      },
+      "code_sha256": {
+        "evaluation/use_cases.py": "1af2c7f1267f4f81409d39e04028935ae3b68c3652cdac40527321d35b777693",
+        "evaluation/agent_workflow.py": "087ada44e858623440666e94755a14dac8adb23764b2f343986e92eb3de91be4",
+        "triage_desk/use_cases.py": "6f17a204a1b4520733fd297959c633a604b82a7f59393ddf2e72c62b24964e44",
+        "triage_desk/deep_investigation.py": "5ac74748541041434e04ba88f0de6cb23ad0a6e67121c22864fc232a15a8ebf0",
+        "triage_desk/agent_review.py": "164d439c3f0bd1f17a3e3e7bf5efe88408110bc1e03e26375086d20552edb972",
+        "triage_desk/agent_evidence.py": "3b871da7a905562b47dab1269e043934017d23a78e3086716280f742109d2d8d",
+        "triage_desk/agent_budget.py": "6f7de5b738d179c2788ce8174b312d43ef94151941ede43b54b924a244868555",
+        "triage_desk/agent_tools.py": "95129279d1a98795084b9b850cd276d315739039129a693f1fa60e7d79170719",
+        "triage_desk/cases.py": "f6d2528e5b60e3ea9916386732f7f70a201730c936952381961de1577d6fd386",
+        "triage_desk/core.py": "c3d1e358972b84b0c17cc7123d397f68baa31d1c9c007c2c33c0223d34fe72ec",
+        "triage_desk/static_analysis.py": "42dde4f412f4e9d90adc7895d3f6787a1c4bb633bf41aaaf92a94daa26575523",
+        "triage_desk/_static_analysis_worker.py": "ed88d902ed33b7458cbbd983bd57b1fb8419862e19783e2d400fbbfc8e845a22",
+        "triage_desk/review_extensions.py": "a1ee0764b715386d17a61306dc3953e78050f88df9c188e1849f63acbf96d768"
+      },
+      "corpus_sha256": "1473a7f6a9ebd5d0772c1e225f4223759bccff241c53cbbb95b07a3710ae2ec8",
+      "repository_context": false,
+      "memory_context": false,
+      "web_search_configured": true,
+      "github_authenticated": false,
+      "run_id": "20261030T222346Z-3661804e",
+      "created_at": "2026-10-30T22:23:46.798952+00:00",
+      "dataset_name": "Engineering Issue Desk multi-workflow full-agent regression v1",
+      "dataset_version": 1,
+      "label_status": "ai_proposed_pending_human_review",
+      "source_policy": "Context text equals the pinned UTF-8 fixture bytes. Source comments identify frozen repository origins; no file is executed. Scenario/title/expected/rubric/label fields are evaluator annotations and must never enter model inputs. Evidence anchors measure literal lexical coverage only, not entailment, correctness, or useful diagnosis. Minimum item counts are structural proxies. Expected labels and human rubrics are AI-proposed and pending actual human review.",
+      "scope": "Complete Deep Investigation graph, independent evidence review and persisted human handoff.",
+      "tracing": "Local root and child audit events only; remote tracing disabled."
+    },
+    "summary": {
+      "scheduled_cases": 40,
+      "attempted_cases": 40,
+      "completed_handoffs": 37,
+      "failed_cases": 3,
+      "not_run_cases": 0,
+      "handoff_rate": 0.925,
+      "contract_pass_rate": 0.65,
+      "citation_integrity_passed_cases": 38,
+      "citation_integrity_applicable_cases": 38,
+      "human_accuracy": null,
+      "human_citation_entailment": null,
+      "human_rubric_pending_cases": 40,
+      "accounting_unknown_error_rows": 0,
+      "anchors_checked": 45,
+      "anchors_covered": 42,
+      "quoted_anchor_recall": 0.9333333333333333,
+      "latency_p95_seconds": 16.14874055,
+      "latency_measured_cases": 40,
+      "model_calls": 128,
+      "tool_calls": 49,
+      "unfinished_call_records": 0,
+      "model_calls_by_role": {
+        "investigator": 89,
+        "evidence_reviewer": 39
+      },
+      "tool_calls_by_name": {
+        "read_case_evidence": 40,
+        "list_case_evidence": 4,
+        "search_knowledge_base": 3,
+        "grep": 2
+      },
+      "errors_by_role_or_tool": {
+        "evidence_reviewer": 1
+      },
+      "reported_token_usage": {
+        "input_tokens": 593495,
+        "output_tokens": 83739,
+        "total_tokens": 677234
+      },
+      "model_calls_missing_usage_by_field": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "reported_tokens": 677234,
+      "usage_complete": true,
+      "mean_reported_tokens": 16930.85,
+      "targets": {
+        "handoff_rate": {
+          "operator": ">=",
+          "target": 0.95,
+          "measured": 0.925,
+          "passed": false
+        },
+        "contract_pass_rate": {
+          "operator": ">=",
+          "target": 0.9,
+          "measured": 0.65,
+          "passed": false
+        },
+        "quoted_anchor_recall": {
+          "operator": ">=",
+          "target": 0.85,
+          "measured": 0.9333333333333333,
+          "passed": true
+        },
+        "latency_p95_seconds": {
+          "operator": "<=",
+          "target": 90,
+          "measured": 16.14874055,
+          "passed": true
+        },
+        "mean_reported_tokens": {
+          "operator": "<=",
+          "target": 20000,
+          "measured": 16930.85,
+          "passed": true
+        }
+      }
+    },
+    "contract_passed_cases": 26,
+    "contract_failed_cases": 14,
+    "by_use_case": {
+      "change_review": {
+        "scheduled_cases": 10,
+        "attempted_cases": 10,
+        "completed_handoffs": 10,
+        "failed_cases": 0,
+        "not_run_cases": 0,
+        "handoff_rate": 1.0,
+        "contract_pass_rate": 0.8,
+        "citation_integrity_passed_cases": 10,
+        "citation_integrity_applicable_cases": 10,
+        "human_accuracy": null,
+        "human_citation_entailment": null,
+        "human_rubric_pending_cases": 10,
+        "accounting_unknown_error_rows": 0,
+        "anchors_checked": 10,
+        "anchors_covered": 10,
+        "quoted_anchor_recall": 1.0,
+        "latency_p95_seconds": 14.442745949999999,
+        "latency_measured_cases": 10,
+        "model_calls": 31,
+        "tool_calls": 11,
+        "unfinished_call_records": 0,
+        "model_calls_by_role": {
+          "investigator": 21,
+          "evidence_reviewer": 10
+        },
+        "tool_calls_by_name": {
+          "list_case_evidence": 1,
+          "read_case_evidence": 10
+        },
+        "errors_by_role_or_tool": {},
+        "reported_token_usage": {
+          "input_tokens": 135926,
+          "output_tokens": 20730,
+          "total_tokens": 156656
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "reported_tokens": 156656,
+        "usage_complete": true,
+        "mean_reported_tokens": 15665.6,
+        "targets": {
+          "handoff_rate": {
+            "operator": ">=",
+            "target": 0.95,
+            "measured": 1.0,
+            "passed": true
+          },
+          "contract_pass_rate": {
+            "operator": ">=",
+            "target": 0.9,
+            "measured": 0.8,
+            "passed": false
+          },
+          "quoted_anchor_recall": {
+            "operator": ">=",
+            "target": 0.85,
+            "measured": 1.0,
+            "passed": true
+          },
+          "latency_p95_seconds": {
+            "operator": "<=",
+            "target": 90,
+            "measured": 14.442745949999999,
+            "passed": true
+          },
+          "mean_reported_tokens": {
+            "operator": "<=",
+            "target": 20000,
+            "measured": 15665.6,
+            "passed": true
+          }
+        }
+      },
+      "incident_triage": {
+        "scheduled_cases": 10,
+        "attempted_cases": 10,
+        "completed_handoffs": 10,
+        "failed_cases": 0,
+        "not_run_cases": 0,
+        "handoff_rate": 1.0,
+        "contract_pass_rate": 0.8,
+        "citation_integrity_passed_cases": 10,
+        "citation_integrity_applicable_cases": 10,
+        "human_accuracy": null,
+        "human_citation_entailment": null,
+        "human_rubric_pending_cases": 10,
+        "accounting_unknown_error_rows": 0,
+        "anchors_checked": 13,
+        "anchors_covered": 13,
+        "quoted_anchor_recall": 1.0,
+        "latency_p95_seconds": 13.3461695,
+        "latency_measured_cases": 10,
+        "model_calls": 32,
+        "tool_calls": 12,
+        "unfinished_call_records": 0,
+        "model_calls_by_role": {
+          "investigator": 22,
+          "evidence_reviewer": 10
+        },
+        "tool_calls_by_name": {
+          "read_case_evidence": 10,
+          "list_case_evidence": 2
+        },
+        "errors_by_role_or_tool": {},
+        "reported_token_usage": {
+          "input_tokens": 139556,
+          "output_tokens": 19432,
+          "total_tokens": 158988
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "reported_tokens": 158988,
+        "usage_complete": true,
+        "mean_reported_tokens": 15898.8,
+        "targets": {
+          "handoff_rate": {
+            "operator": ">=",
+            "target": 0.95,
+            "measured": 1.0,
+            "passed": true
+          },
+          "contract_pass_rate": {
+            "operator": ">=",
+            "target": 0.9,
+            "measured": 0.8,
+            "passed": false
+          },
+          "quoted_anchor_recall": {
+            "operator": ">=",
+            "target": 0.85,
+            "measured": 1.0,
+            "passed": true
+          },
+          "latency_p95_seconds": {
+            "operator": "<=",
+            "target": 90,
+            "measured": 13.3461695,
+            "passed": true
+          },
+          "mean_reported_tokens": {
+            "operator": "<=",
+            "target": 20000,
+            "measured": 15898.8,
+            "passed": true
+          }
+        }
+      },
+      "issue_investigation": {
+        "scheduled_cases": 10,
+        "attempted_cases": 10,
+        "completed_handoffs": 8,
+        "failed_cases": 2,
+        "not_run_cases": 0,
+        "handoff_rate": 0.8,
+        "contract_pass_rate": 0.5,
+        "citation_integrity_passed_cases": 9,
+        "citation_integrity_applicable_cases": 9,
+        "human_accuracy": null,
+        "human_citation_entailment": null,
+        "human_rubric_pending_cases": 10,
+        "accounting_unknown_error_rows": 0,
+        "anchors_checked": 10,
+        "anchors_covered": 9,
+        "quoted_anchor_recall": 0.9,
+        "latency_p95_seconds": 16.52945605,
+        "latency_measured_cases": 10,
+        "model_calls": 35,
+        "tool_calls": 16,
+        "unfinished_call_records": 0,
+        "model_calls_by_role": {
+          "investigator": 26,
+          "evidence_reviewer": 9
+        },
+        "tool_calls_by_name": {
+          "read_case_evidence": 10,
+          "list_case_evidence": 1,
+          "search_knowledge_base": 3,
+          "grep": 2
+        },
+        "errors_by_role_or_tool": {
+          "evidence_reviewer": 1
+        },
+        "reported_token_usage": {
+          "input_tokens": 186250,
+          "output_tokens": 20010,
+          "total_tokens": 206260
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "reported_tokens": 206260,
+        "usage_complete": true,
+        "mean_reported_tokens": 20626.0,
+        "targets": {
+          "handoff_rate": {
+            "operator": ">=",
+            "target": 0.95,
+            "measured": 0.8,
+            "passed": false
+          },
+          "contract_pass_rate": {
+            "operator": ">=",
+            "target": 0.9,
+            "measured": 0.5,
+            "passed": false
+          },
+          "quoted_anchor_recall": {
+            "operator": ">=",
+            "target": 0.85,
+            "measured": 0.9,
+            "passed": true
+          },
+          "latency_p95_seconds": {
+            "operator": "<=",
+            "target": 90,
+            "measured": 16.52945605,
+            "passed": true
+          },
+          "mean_reported_tokens": {
+            "operator": "<=",
+            "target": 20000,
+            "measured": 20626.0,
+            "passed": false
+          }
+        }
+      },
+      "test_planning": {
+        "scheduled_cases": 10,
+        "attempted_cases": 10,
+        "completed_handoffs": 9,
+        "failed_cases": 1,
+        "not_run_cases": 0,
+        "handoff_rate": 0.9,
+        "contract_pass_rate": 0.5,
+        "citation_integrity_passed_cases": 9,
+        "citation_integrity_applicable_cases": 9,
+        "human_accuracy": null,
+        "human_citation_entailment": null,
+        "human_rubric_pending_cases": 10,
+        "accounting_unknown_error_rows": 0,
+        "anchors_checked": 12,
+        "anchors_covered": 10,
+        "quoted_anchor_recall": 0.8333333333333334,
+        "latency_p95_seconds": 18.379274099999993,
+        "latency_measured_cases": 10,
+        "model_calls": 30,
+        "tool_calls": 10,
+        "unfinished_call_records": 0,
+        "model_calls_by_role": {
+          "investigator": 20,
+          "evidence_reviewer": 10
+        },
+        "tool_calls_by_name": {
+          "read_case_evidence": 10
+        },
+        "errors_by_role_or_tool": {},
+        "reported_token_usage": {
+          "input_tokens": 131763,
+          "output_tokens": 23567,
+          "total_tokens": 155330
+        },
+        "model_calls_missing_usage_by_field": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "reported_tokens": 155330,
+        "usage_complete": true,
+        "mean_reported_tokens": 15533.0,
+        "targets": {
+          "handoff_rate": {
+            "operator": ">=",
+            "target": 0.95,
+            "measured": 0.9,
+            "passed": false
+          },
+          "contract_pass_rate": {
+            "operator": ">=",
+            "target": 0.9,
+            "measured": 0.5,
+            "passed": false
+          },
+          "quoted_anchor_recall": {
+            "operator": ">=",
+            "target": 0.85,
+            "measured": 0.8333333333333334,
+            "passed": false
+          },
+          "latency_p95_seconds": {
+            "operator": "<=",
+            "target": 90,
+            "measured": 18.379274099999993,
+            "passed": true
+          },
+          "mean_reported_tokens": {
+            "operator": "<=",
+            "target": 20000,
+            "measured": 15533.0,
+            "passed": true
+          }
+        }
+      }
+    },
+    "citation_not_applicable_cases": 2,
+    "denominator_policy": "All 40 scheduled cases remain in handoff and contract denominators, including failures. Citation pass counts use 38 applicable cases; two empty reports are N/A. Literal citations may remain valid on a failed case and do not imply evidence-review completion or human handoff.",
+    "contract_definition": [
+      "Saved workflow ID/version preserved",
+      "Persisted awaiting_review human handoff",
+      "Independent AI review completed with an observed completed reviewer call",
+      "Configured minimum finding and proposed-step counts met",
+      "Required evidence-read tool completed successfully",
+      "No literal citation-integrity failure and no execution error"
+    ],
+    "contract_scope_note": "Quoted anchor recall is a separate lexical metric, not a conjunct in contract_passed. Item minima are structural proxies; a missing proposal can reflect a justified evidence-review removal. Contract failures are not semantic false-positive/false-negative labels.",
+    "failures": {
+      "execution": [
+        {
+          "id": "WF-04",
+          "use_case": "issue_investigation",
+          "saved_case_id": "5afc9f67-242c-416f-87d4-73e86e1c5f7b",
+          "status": "failed",
+          "recorded_execution_errors": [
+            {
+              "phase": "execution",
+              "name": "start",
+              "status": "error",
+              "error_type": "BudgetExceeded"
+            }
+          ],
+          "reported_total_tokens": 69097,
+          "interpretation": "Recorded execution boundary or validation failure; inspect the preserved trace before assigning a model-internal cause."
+        },
+        {
+          "id": "WF-08",
+          "use_case": "issue_investigation",
+          "saved_case_id": "b8549bb1-0456-4c4f-9001-864add786e16",
+          "status": "failed",
+          "recorded_execution_errors": [
+            {
+              "phase": "execution",
+              "name": "start",
+              "status": "error",
+              "error_type": "ReviewUnavailable",
+              "error_code": "invalid_schema"
+            }
+          ],
+          "reported_total_tokens": 16314,
+          "interpretation": "Recorded execution boundary or validation failure; inspect the preserved trace before assigning a model-internal cause."
+        },
+        {
+          "id": "WF-31",
+          "use_case": "test_planning",
+          "saved_case_id": "b8156dc8-5809-4e8e-8e14-b54943406e9e",
+          "status": "failed",
+          "recorded_execution_errors": [
+            {
+              "phase": "execution",
+              "name": "start",
+              "status": "error",
+              "error_type": "ReviewUnavailable",
+              "error_code": "invalid_reason"
+            }
+          ],
+          "reported_total_tokens": 16254,
+          "interpretation": "Recorded execution boundary or validation failure; inspect the preserved trace before assigning a model-internal cause."
+        }
+      ],
+      "minimum_next_steps_not_met": [
+        "WF-02",
+        "WF-09",
+        "WF-11",
+        "WF-16",
+        "WF-22",
+        "WF-23",
+        "WF-34",
+        "WF-36",
+        "WF-40"
+      ],
+      "minimum_findings_not_met": [
+        "WF-10",
+        "WF-39"
+      ],
+      "requires_human_review": true,
+      "interpretation": "The execution errors are observed boundaries. Missing proposals and findings require semantic review of draft content, selected quote spans, and reviewer judgments; some removals are justified."
+    },
+    "estimated_cost_usd": null,
+    "human_accuracy": null,
+    "human_entailment": null
+  },
+  "reviewer_regression": {
+    "baseline_manifest": {
+      "dataset_sha256": "1b7b2fac74ee74f4257986effb2d57070f99085a57e02f02fa07762e804c7b70",
+      "prompt_sha256": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "case_ids": [
+        "W4-41",
+        "W4-42",
+        "W4-43",
+        "W4-44",
+        "W4-45",
+        "W4-46",
+        "W4-47",
+        "W4-48",
+        "W4-49",
+        "W4-50",
+        "W4-51",
+        "W4-52",
+        "W4-53",
+        "W4-54",
+        "W4-55",
+        "W4-56",
+        "W4-57",
+        "W4-58",
+        "W4-59",
+        "W4-60",
+        "W4-61",
+        "W4-62",
+        "W4-63",
+        "W4-64",
+        "W4-65",
+        "W4-66",
+        "W4-67",
+        "W4-68",
+        "W4-69",
+        "W4-70"
+      ],
+      "live": true,
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "input_usd_per_million": null,
+      "output_usd_per_million": null,
+      "run_id": "20261030T222250Z-4d15ef67",
+      "created_at": "2026-10-30T22:22:50.974540+00:00",
+      "dataset_name": "Engineering workflow reviewer regression v1",
+      "dataset_version": 1,
+      "label_status": "ai_proposed_pending_human_review",
+      "source_policy": "Context text equals the pinned UTF-8 fixture bytes. Source comments identify frozen repository origins; no file is executed. Scenario/title/expected/rubric/label fields are evaluator annotations and must never enter model inputs. Evidence anchors measure literal lexical coverage only, not entailment, correctness, or useful diagnosis. Minimum item counts are structural proxies. Expected labels and human rubrics are AI-proposed and pending actual human review. Reviewer factual evidence consists only of the selected quote. Each quote pins a complete frozen fixture using inclusive line bounds and whole-file SHA-256. Synthetic logs support attributed controlled-example observations only; test definitions establish assertions rather than successful execution; unapplied diffs establish proposed changes rather than deployment outcomes.",
+      "scope": "Production evidence reviewer only; no retrieval or full investigation.",
+      "tracing": "Local root + LLM child events; remote LangSmith tracing disabled."
+    },
+    "calibrated_manifest": {
+      "dataset_sha256": "1b7b2fac74ee74f4257986effb2d57070f99085a57e02f02fa07762e804c7b70",
+      "prompt_sha256": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "case_ids": [
+        "W4-41",
+        "W4-42",
+        "W4-43",
+        "W4-44",
+        "W4-45",
+        "W4-46",
+        "W4-47",
+        "W4-48",
+        "W4-49",
+        "W4-50",
+        "W4-51",
+        "W4-52",
+        "W4-53",
+        "W4-54",
+        "W4-55",
+        "W4-56",
+        "W4-57",
+        "W4-58",
+        "W4-59",
+        "W4-60",
+        "W4-61",
+        "W4-62",
+        "W4-63",
+        "W4-64",
+        "W4-65",
+        "W4-66",
+        "W4-67",
+        "W4-68",
+        "W4-69",
+        "W4-70"
+      ],
+      "live": true,
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "input_usd_per_million": null,
+      "output_usd_per_million": null,
+      "run_id": "20261030T222355Z-24d5096f",
+      "created_at": "2026-10-30T22:23:55.938474+00:00",
+      "dataset_name": "Engineering workflow reviewer regression v1",
+      "dataset_version": 1,
+      "label_status": "ai_proposed_pending_human_review",
+      "source_policy": "Context text equals the pinned UTF-8 fixture bytes. Source comments identify frozen repository origins; no file is executed. Scenario/title/expected/rubric/label fields are evaluator annotations and must never enter model inputs. Evidence anchors measure literal lexical coverage only, not entailment, correctness, or useful diagnosis. Minimum item counts are structural proxies. Expected labels and human rubrics are AI-proposed and pending actual human review. Reviewer factual evidence consists only of the selected quote. Each quote pins a complete frozen fixture using inclusive line bounds and whole-file SHA-256. Synthetic logs support attributed controlled-example observations only; test definitions establish assertions rather than successful execution; unapplied diffs establish proposed changes rather than deployment outcomes.",
+      "scope": "Production evidence reviewer only; no retrieval or full investigation.",
+      "tracing": "Local root + LLM child events; remote LangSmith tracing disabled."
+    },
+    "baseline_summary": {
+      "scheduled_cases": 30,
+      "completed_cases": 30,
+      "error_cases": 0,
+      "not_run_cases": 0,
+      "valid_cases": 30,
+      "completion_rate": 1.0,
+      "false_positives": 0,
+      "false_negatives": 4,
+      "unknown_verdicts": 0,
+      "supported_item_denominator": 45,
+      "unsupported_item_denominator": 45,
+      "metrics": {
+        "case_exact_match": {
+          "value": 0.8666666666666667,
+          "threshold": 0.9,
+          "status": "failed"
+        },
+        "unsupported_rejection": {
+          "value": 1.0,
+          "threshold": 0.95,
+          "status": "passed"
+        },
+        "supported_retention": {
+          "value": 0.9111111111111111,
+          "threshold": 0.9,
+          "status": "passed"
+        },
+        "p95_latency_seconds": {
+          "value": 3.84678,
+          "threshold": 30,
+          "status": "passed"
+        },
+        "mean_total_tokens": {
+          "value": 2123.7,
+          "threshold": 4000,
+          "status": "passed"
+        }
+      },
+      "all_pass_bars_met": false,
+      "estimated_cost_usd": null,
+      "denominator_policy": "All scheduled cases/items, including errors and unknown verdicts. Unknown verdicts fail correctness; they are never false.",
+      "measurement_note": "Agreement with dataset labels, not human-validated accuracy. Latency includes one case setup/review. Tokens are observed provider usage; missing usage is unknown."
+    },
+    "calibrated_summary": {
+      "scheduled_cases": 30,
+      "completed_cases": 30,
+      "error_cases": 0,
+      "not_run_cases": 0,
+      "valid_cases": 30,
+      "completion_rate": 1.0,
+      "false_positives": 0,
+      "false_negatives": 3,
+      "unknown_verdicts": 0,
+      "supported_item_denominator": 45,
+      "unsupported_item_denominator": 45,
+      "metrics": {
+        "case_exact_match": {
+          "value": 0.9,
+          "threshold": 0.9,
+          "status": "passed"
+        },
+        "unsupported_rejection": {
+          "value": 1.0,
+          "threshold": 0.95,
+          "status": "passed"
+        },
+        "supported_retention": {
+          "value": 0.9333333333333333,
+          "threshold": 0.9,
+          "status": "passed"
+        },
+        "p95_latency_seconds": {
+          "value": 5.127849,
+          "threshold": 30,
+          "status": "passed"
+        },
+        "mean_total_tokens": {
+          "value": 2767.133333333333,
+          "threshold": 4000,
+          "status": "passed"
+        }
+      },
+      "all_pass_bars_met": true,
+      "estimated_cost_usd": null,
+      "denominator_policy": "All scheduled cases/items, including errors and unknown verdicts. Unknown verdicts fail correctness; they are never false.",
+      "measurement_note": "Agreement with dataset labels, not human-validated accuracy. Latency includes one case setup/review. Tokens are observed provider usage; missing usage is unknown."
+    },
+    "paired_case_counts": {
+      "fixed": 2,
+      "regression": 1,
+      "unchanged_pass": 25,
+      "unchanged_failure": 2
+    },
+    "paired_changes": [
+      {
+        "id": "W4-50",
+        "scenario": "happy_path",
+        "failure_mode": "Partial token usage observation",
+        "change": "regression",
+        "baseline_pass": true,
+        "improved_pass": false,
+        "baseline_error": null,
+        "improved_error": null,
+        "baseline_false_positives": 0,
+        "improved_false_positives": 0,
+        "baseline_false_negatives": 0,
+        "improved_false_negatives": 1,
+        "baseline_unknown": 0,
+        "improved_unknown": 0
+      },
+      {
+        "id": "W4-51",
+        "scenario": "happy_path",
+        "failure_mode": "Coverage set validation",
+        "change": "fixed",
+        "baseline_pass": false,
+        "improved_pass": true,
+        "baseline_error": null,
+        "improved_error": null,
+        "baseline_false_positives": 0,
+        "improved_false_positives": 0,
+        "baseline_false_negatives": 1,
+        "improved_false_negatives": 0,
+        "baseline_unknown": 0,
+        "improved_unknown": 0
+      },
+      {
+        "id": "W4-69",
+        "scenario": "adversarial",
+        "failure_mode": "Source comment cannot fabricate approval",
+        "change": "fixed",
+        "baseline_pass": false,
+        "improved_pass": true,
+        "baseline_error": null,
+        "improved_error": null,
+        "baseline_false_positives": 0,
+        "improved_false_positives": 0,
+        "baseline_false_negatives": 1,
+        "improved_false_negatives": 0,
+        "baseline_unknown": 0,
+        "improved_unknown": 0
+      }
+    ],
+    "unchanged_disagreements": [
+      "W4-53",
+      "W4-57"
+    ],
+    "exact_case_agreement_delta_percentage_points": 3.3333333333333326,
+    "unsupported_rejection_delta_percentage_points": 0.0,
+    "supported_retention_delta_percentage_points": 2.2222222222222254,
+    "disagreements": {
+      "baseline": [
+        {
+          "id": "W4-51",
+          "kind": "next_steps",
+          "index": 0,
+          "expected": true,
+          "predicted": false,
+          "error_type_against_proposed_label": "false_negative",
+          "model_reason": "Evidence shows duplicate/wrong indices raise error, not a valid proposal.",
+          "human_review_status": "pending"
+        },
+        {
+          "id": "W4-53",
+          "kind": "next_steps",
+          "index": 0,
+          "expected": true,
+          "predicted": false,
+          "error_type_against_proposed_label": "false_negative",
+          "model_reason": "Quote only shows code removal; it gives no support for adding a regression check or its implementation.",
+          "human_review_status": "pending"
+        },
+        {
+          "id": "W4-57",
+          "kind": "next_steps",
+          "index": 0,
+          "expected": true,
+          "predicted": false,
+          "error_type_against_proposed_label": "false_negative",
+          "model_reason": "No evidence in quote that a repeated index list is valid or addresses any observed issue.",
+          "human_review_status": "pending"
+        },
+        {
+          "id": "W4-69",
+          "kind": "next_steps",
+          "index": 0,
+          "expected": true,
+          "predicted": false,
+          "error_type_against_proposed_label": "false_negative",
+          "model_reason": "Proposal not grounded in any quoted evidence; no observation of missing symptom provided.",
+          "human_review_status": "pending"
+        }
+      ],
+      "calibrated": [
+        {
+          "id": "W4-50",
+          "kind": "findings",
+          "index": 1,
+          "expected": true,
+          "predicted": false,
+          "error_type_against_proposed_label": "false_negative",
+          "model_reason": "Quote reports investigator total 190 and correctness_security usage unavailable; it does not mention a specialist call, making the statement unsupported.",
+          "human_review_status": "pending"
+        },
+        {
+          "id": "W4-53",
+          "kind": "next_steps",
+          "index": 0,
+          "expected": true,
+          "predicted": false,
+          "error_type_against_proposed_label": "false_negative",
+          "model_reason": "No evidence of an existing regression check; proposal is unsubstantiated by the provided code.",
+          "human_review_status": "pending"
+        },
+        {
+          "id": "W4-57",
+          "kind": "next_steps",
+          "index": 0,
+          "expected": true,
+          "predicted": false,
+          "error_type_against_proposed_label": "false_negative",
+          "model_reason": "Quote provides no evidence that a repeated-index list is valid or useful.",
+          "human_review_status": "pending"
+        }
+      ]
+    },
+    "interpretation": "Single paired development run on the same model and fixed new inputs. Results measure agreement with AI-proposed labels and do not prove unseen generalization, isolated causal prompt effects, or human-validated accuracy. W4-50 merits review of whether specialist correctly attributes the correctness_security role in this bounded log.",
+    "estimated_cost_usd": null
+  },
+  "integrity": {
+    "manifest": {
+      "run_id": "20261030T222209Z-1c24896e",
+      "created_at": "2026-10-30T22:22:09.050171+00:00",
+      "dataset_sha256": "e746a216b7b41e5972b445246ff4e0adf930a0059bdfc1c5f12fa84ddfbdc4fa",
+      "validator_sha256": "3b871da7a905562b47dab1269e043934017d23a78e3086716280f742109d2d8d",
+      "runner_sha256": "890bd6edb6ca60f393a97cc36a3e882d35f0eacd9f9e85d7eca662fb9dac06fc",
+      "model_calls": 0
+    },
+    "summary": {
+      "scheduled_cases": 30,
+      "passed_cases": 30,
+      "failed_cases": 0,
+      "acceptance_match_rate": 1.0,
+      "valid_accepted": 7,
+      "valid_denominator": 7,
+      "invalid_rejected": 23,
+      "invalid_denominator": 23,
+      "p95_latency_ms": 0.488333,
+      "model_calls": 0
+    },
+    "deliberate_scope_limit": {
+      "id": "CI-05",
+      "claim": "Every deployed service has been independently proven defect free.",
+      "matching_registered_citation_accepted": true,
+      "expected_acceptance": true,
+      "interpretation": "The layer verifies schema and exact registered citation text. It intentionally does not establish entailment, factual correctness, or usefulness."
+    }
+  },
+  "production_status": {
+    "interactive_evidence_review_default": "baseline",
+    "full_workflow_experimental_evidence_review_prompt": "calibrated",
+    "automatic_prompt_promotion": false,
+    "all_reference_labels_human_reviewed": false,
+    "full_workflow_human_semantic_reviews_completed": 0,
+    "historical_full_workflow_results_rewritten": false
+  },
+  "followup_guard": {
+    "trigger_case": "WF-02",
+    "observed_issue": "The historical report requested specific _configuration key/base return values in missing_information. No credential was supplied or exposed by this recorded run.",
+    "implementation_scope": "Narrow sanitization of sensitive information requests plus shared instruction guidance; follow-up work after the historical full-workflow run.",
+    "smoke_report": "evaluation/workflow-guard-smoke/report.json",
+    "smoke_status": "completed",
+    "historical_run_policy": "Keep all historical case outputs and measurements unchanged. A later smoke result is a separate limited check.",
+    "implementation_status": "implemented_and_tested",
+    "smoke_artifact": "evaluation/workflow-guard-smoke/report.json",
+    "smoke_sha256": "9c5db4f43ebfac78e9e2654d5452cebad2d3de10d90efbce3b05afcb96ce07c1",
+    "smoke_case": "WF-02",
+    "smoke_handoff": true,
+    "smoke_contract_passed": false,
+    "smoke_missing_information": [],
+    "smoke_guard_counts": {
+      "policy_version": 1,
+      "draft_converted": 0,
+      "review_converted": 0,
+      "converted_count": 0
+    },
+    "smoke_observation": "No credential-value request was generated in this new live sample; zero guard conversions observed. The exact historical unsafe request is covered by deterministic real-graph tests. Missing proposed steps still fail the structural contract."
+  },
+  "limitations": [
+    "New cases and labels are AI-authored development diagnostics with human signoff pending.",
+    "Evidence anchors measure literal coverage in valid quotes, not entailment or diagnosis correctness.",
+    "Structural handoffs, minimum counts, and citation integrity do not establish user usefulness.",
+    "Synthetic incident logs support controlled-example observations only, not current production status.",
+    "Static code, test definitions, and proposed diffs do not establish executed tests, deployed changes, or verified fixes.",
+    "Full-workflow evaluation used calibrated evidence review; the interactive app keeps baseline by default.",
+    "The original corpus and external source allowlist remain bounded to Streamlit, Python, LangChain, and streamlit/streamlit context.",
+    "Provider token totals are observed usage; dollar billing and human time saved are unknown.",
+    "A single run per prompt on reused development fixtures does not establish robust generalization."
+  ],
+  "prioritized_next_actions": [
+    {
+      "priority": 1,
+      "action": "Complete human semantic review of workflow outputs, selected spans, proposed steps, and all new reviewer labels; resolve W4-50 role attribution and other disagreements."
+    },
+    {
+      "priority": 2,
+      "action": "Improve recovery from invalid reviewer schemas/reasons and preserve enough case budget for independent review. Validate changes on new preserved runs."
+    },
+    {
+      "priority": 3,
+      "action": "Calibrate diagnostic proposals against causal claims using reviewed examples; distinguish justified removals from over-rejection before changing prompts."
+    },
+    {
+      "priority": 4,
+      "action": "Author a separate held-out human-reviewed case set and repeat the actual prompt/model/harness combination before promoting a candidate."
+    }
+  ],
+  "software_validation": {
+    "tests_passed": 879,
+    "failed": 0,
+    "seconds": 15.14,
+    "command": "uv run pytest -q"
+  }
+}

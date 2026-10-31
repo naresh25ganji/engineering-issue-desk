@@ -1,0 +1,297 @@
+{
+  "id": "W4-54",
+  "scenario": "happy_path",
+  "title": "Unchanged query-cache hit context",
+  "failure_mode": "Unchanged query-cache hit context",
+  "source": {
+    "path": "evaluation/fixtures/workflows/query_guard.diff",
+    "start_line": 1,
+    "end_line": 20,
+    "sha256": "c29f31f0a1fb6af8245478dffdbeddcbc9121a96160d283c8f1d138a58e8e177",
+    "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:\n                 self._query_cache.popitem(last=False)\n         return value.copy()\n",
+    "title": "query_guard.diff",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "unapplied_patch_from_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/query_guard.diff"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The proposed patch deletes every query-cache lookup and disables caching completely.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      },
+      {
+        "statement": "The proposed diff retains the cache membership check in its context while deleting the earlier _runtime_key call.",
+        "expected_supported": true,
+        "rationale": "The unchanged membership branch and removed runtime check are both shown."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Claim the patch has eliminated all cache defects because it changes a single line.",
+        "expected_supported": false,
+        "rationale": "The asserted remedy, execution result, or cross-context guarantee is not established by the supplied evidence."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.366934,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Patch still includes cache lookup and eviction logic; caching not disabled."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Diff removes _runtime_key call while leaving the identity‑in‑_query_cache check."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote provides no evidence that changing one line eliminates all cache defects."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The proposed diff retains the cache membership check in its context while deleting the earlier _runtime_key call.",
+        "support": [
+          {
+            "evidence_id": "W4-54-source",
+            "quote_id": "W4-54-quote",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:\n                 self._query_cache.popitem(last=False)\n         return value.copy()\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-54",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "d845ad0a-36c6-4f98-83aa-939d34081824",
+      "created_at": "2026-10-30T22:23:00.493536+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "6d5668c29ce2447486740f80411d930f",
+      "event_id": 2,
+      "case_id": "d845ad0a-36c6-4f98-83aa-939d34081824",
+      "created_at": "2026-10-30T22:23:00.495411+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "6d5668c29ce2447486740f80411d930f",
+      "started_at": "2026-10-30T22:23:00.495979+00:00",
+      "usage": {
+        "input_tokens": 1514,
+        "output_tokens": 554,
+        "total_tokens": 2068
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2340.88,
+      "event_id": 3,
+      "case_id": "d845ad0a-36c6-4f98-83aa-939d34081824",
+      "created_at": "2026-10-30T22:23:02.836867+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-54",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "predicted": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          false
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "predicted": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            false
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.366934,
+      "error": null,
+      "event_id": 4,
+      "case_id": "d845ad0a-36c6-4f98-83aa-939d34081824",
+      "created_at": "2026-10-30T22:23:02.839001+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1514,
+      "output_tokens": 554,
+      "total_tokens": 2068
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "predicted": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        false
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "d845ad0a-36c6-4f98-83aa-939d34081824",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

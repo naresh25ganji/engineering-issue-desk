@@ -1,0 +1,530 @@
+{
+  "id": "WF-03",
+  "eval_id": "WF-03",
+  "use_case": "issue_investigation",
+  "title": "Repeated query cache behavior",
+  "scenario": "happy_path",
+  "question": "The same search question is asked repeatedly. Explain the literal in-memory cache lookup and return behavior shown here and propose how to check for unnecessary requests.",
+  "input": {
+    "question": "The same search question is asked repeatedly. Explain the literal in-memory cache lookup and return behavior shown here and propose how to check for unnecessary requests.",
+    "version": "",
+    "context": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n",
+    "use_case": "issue_investigation"
+  },
+  "input_sha256": "3f72690a8febabc84d9907bd4bef417b433a0e467a3df9301bce8021f9d6840f",
+  "case_definition_sha256": "afb5f33f73b45f4d94409542fcf5b8d6c5d1dfb39f3bca8a07f0ab5604243186",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/query_cache.py",
+    "sha256": "d4b3e52224dd2a12726f7f03bd9cbd4910032199a8d3ff848a2d7400e69d48d6"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "if identity in self._query_cache:"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "4e9703e3-4520-4ca1-ae64-72fd508758b9",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "When a query string's SHA‑256 identity is already present in the in‑memory _query_cache, embed_query moves the entry to the end of the OrderedDict to mark it as most‑recently used and returns a copy of the cached NumPy array.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_4a9ed323dc32ab65f55707ed1bbb019c",
+            "quote_id": "ev_4a9ed323dc32ab65f55707ed1bbb019c:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n"
+          }
+        ]
+      },
+      {
+        "statement": "If the query identity is not cached, embed_query performs a remote request via _request, stores a copy of the returned vector in _query_cache, moves it to the end, and evicts the least‑recently used entry when the cache exceeds QUERY_CACHE_SIZE.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_4a9ed323dc32ab65f55707ed1bbb019c",
+            "quote_id": "ev_4a9ed323dc32ab65f55707ed1bbb019c:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "Exact value of QUERY_CACHE_SIZE and whether it is configurable at runtime.",
+      "Implementation details of the _request method to confirm it performs network I/O."
+    ],
+    "next_steps": [
+      "Add instrumentation (e.g., logging or metrics counters) around the cache‑hit check and the _request call to record how often the cache is used versus a remote request is made.",
+      "Write a test that calls embed_query repeatedly with the same question and asserts that the underlying _request method is invoked only once, confirming that subsequent calls hit the in‑memory cache."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Code shows cache-hit moves entry to end and returns copy of cached array."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Code shows miss triggers _request, stores copy, moves to end, and evicts LRU when size exceeded."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Instrumentation can be added around shown cache check and request call."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Test can verify _request called once using code's cache behavior."
+        },
+        {
+          "index": 2,
+          "supported": false,
+          "reason": "No evidence of a monitoring endpoint or exposure mechanism in the code."
+        }
+      ],
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code shows cache-hit moves entry to end and returns copy of cached array."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Code shows miss triggers _request, stores copy, moves to end, and evicts LRU when size exceeded."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Instrumentation can be added around shown cache check and request call."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Test can verify _request called once using code's cache behavior."
+      },
+      {
+        "index": 2,
+        "supported": false,
+        "reason": "No evidence of a monitoring endpoint or exposure mechanism in the code."
+      }
+    ],
+    "retained_findings": 2,
+    "removed_findings": 0,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_4a9ed323dc32ab65f55707ed1bbb019c",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:23:47.005385+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "d4b3e52224dd2a12726f7f03bd9cbd4910032199a8d3ff848a2d7400e69d48d6",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:23:46.989616+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:23:47.002807+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "5d21cf67112746588ee63f3d17ff6729",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:23:47.983188+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "5d21cf67112746588ee63f3d17ff6729",
+      "started_at": "2026-10-30T22:23:47.983658+00:00",
+      "usage": {
+        "input_tokens": 4844,
+        "output_tokens": 114,
+        "total_tokens": 4958
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 1387.04,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:23:49.351989+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "3c6bc29939564d5d9d2d489b1a3380cd",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:23:49.356991+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "3c6bc29939564d5d9d2d489b1a3380cd",
+      "started_at": "2026-10-30T22:23:49.357862+00:00",
+      "latency_ms": 3.63,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:23:49.360237+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "40fe8ca8aae14329a9a9b33fff673886",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:23:49.363566+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "40fe8ca8aae14329a9a9b33fff673886",
+      "started_at": "2026-10-30T22:23:49.364178+00:00",
+      "usage": {
+        "input_tokens": 5439,
+        "output_tokens": 684,
+        "total_tokens": 6123
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3409.85,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:23:52.774045+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:23:52.787320+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:23:52.790364+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "b01c83104ece4fa98bfb286395b8dafa",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:23:52.798540+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "b01c83104ece4fa98bfb286395b8dafa",
+      "started_at": "2026-10-30T22:23:52.798909+00:00",
+      "usage": {
+        "input_tokens": 2320,
+        "output_tokens": 1239,
+        "total_tokens": 3559
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5099.55,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:23:57.898269+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:23:57.902137+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12603,
+      "output_tokens": 2037,
+      "total_tokens": 14640
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 11106.584,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 2,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-03",
+  "saved_use_case_id": "issue_investigation",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-03",
+    "metadata": {
+      "use_case_id": "issue_investigation",
+      "input_sha256": "3f72690a8febabc84d9907bd4bef417b433a0e467a3df9301bce8021f9d6840f",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:23:46.989616+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:23:47.002807+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "5d21cf67112746588ee63f3d17ff6729",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:23:47.983188+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "5d21cf67112746588ee63f3d17ff6729",
+        "started_at": "2026-10-30T22:23:47.983658+00:00",
+        "usage": {
+          "input_tokens": 4844,
+          "output_tokens": 114,
+          "total_tokens": 4958
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 1387.04,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:23:49.351989+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "3c6bc29939564d5d9d2d489b1a3380cd",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:23:49.356991+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "3c6bc29939564d5d9d2d489b1a3380cd",
+        "started_at": "2026-10-30T22:23:49.357862+00:00",
+        "latency_ms": 3.63,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:23:49.360237+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "40fe8ca8aae14329a9a9b33fff673886",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:23:49.363566+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "40fe8ca8aae14329a9a9b33fff673886",
+        "started_at": "2026-10-30T22:23:49.364178+00:00",
+        "usage": {
+          "input_tokens": 5439,
+          "output_tokens": 684,
+          "total_tokens": 6123
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 3409.85,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:23:52.774045+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:23:52.787320+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:23:52.790364+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "b01c83104ece4fa98bfb286395b8dafa",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:23:52.798540+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "b01c83104ece4fa98bfb286395b8dafa",
+        "started_at": "2026-10-30T22:23:52.798909+00:00",
+        "usage": {
+          "input_tokens": 2320,
+          "output_tokens": 1239,
+          "total_tokens": 3559
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5099.55,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:23:57.898269+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 2,
+        "removed_findings": 0,
+        "removed_next_steps": 1,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:23:57.902137+00:00"
+      }
+    ]
+  }
+}

@@ -1,0 +1,506 @@
+{
+  "id": "WF-39",
+  "eval_id": "WF-39",
+  "use_case": "test_planning",
+  "title": "Invented execution from assertion text",
+  "scenario": "known_failure",
+  "question": "A reviewer claims these tests ran successfully against the live provider and certify every embedding is valid. Assess only the test definitions and mocked setup shown, and propose a focused evidence request.",
+  "input": {
+    "question": "A reviewer claims these tests ran successfully against the live provider and certify every embedding is valid. Assess only the test definitions and mocked setup shown, and propose a focused evidence request.",
+    "version": "",
+    "context": "# Frozen source excerpt: tests/test_hosted_embeddings.py:89-114\ndef test_serial_batches_are_bounded_and_coverage_is_complete(source_records, tmp_path, monkeypatch):\n    requests = install_http(monkeypatch, successful)\n    index = make_index(source_records, tmp_path)\n    vectors = index.embed_documents([f\"text-{i}\" for i in range(65)])\n    assert vectors.shape == (65, 4)\n    assert [len(r[\"json\"][\"input\"]) for r in requests] == [32, 32, 1]\n    assert [r[\"input_count\"] for r in index.calls] == [32, 32, 1]\n    assert sum(r[\"usage\"][\"total_tokens\"] for r in index.calls) == 54\n\n\n@pytest.mark.parametrize(\"data\", [\n    {}, {\"data\": []}, {\"data\": [{\"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 1, \"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [True, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [\"1\", 1, 1, 1]}]},\n])\ndef test_invalid_provider_response_never_becomes_a_vector(source_records, tmp_path, monkeypatch, data):\n    install_http(monkeypatch, lambda payload, number: Response(data))\n    index = make_index(source_records, tmp_path)\n    with pytest.raises(EmbeddingUnavailable): index.embed_query(\"query\")\n    assert index.calls[-1][\"status\"] == \"invalid_response\"\n    assert not index._query_cache\n",
+    "use_case": "test_planning"
+  },
+  "input_sha256": "9bddb20fec8afb84515fb6007f9892df72eaacc26e7b6fbd1903938d3d698238",
+  "case_definition_sha256": "6bdadef07166c59548b1a6fbaedf5257af5928f51263c705a4c5095e67ee321f",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/embedding_test_definitions.py",
+    "sha256": "6f4bf275ef68dd7df3e1044a325653ea8d5489203d9ee25ec11bca8ba5aecd90"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "requests = install_http(monkeypatch, successful)"
+    ],
+    "behavior_notes": "Known failure class: test definitions and mocked assertions promoted into executed live-provider certification.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "78344b8a-64cb-46bb-a4b7-0d457d8f735e",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [],
+    "missing_information": [
+      "The definition of the install_http function and its behavior regarding network mocking.",
+      "The configuration of the 'successful' fixture used in the first test."
+    ],
+    "next_steps": [
+      "Request the implementation of the install_http helper to verify that it replaces network calls with mocked responses.",
+      "Obtain CI or test run logs to confirm whether any real HTTP requests were made during execution of these tests.",
+      "If live provider interaction is required, request a test variant that does not mock HTTP and runs against the actual embedding service."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": false,
+          "reason": "Quote only shows install_http called; it does not explicitly state it mocks HTTP, so claim of no live contact is not directly supported."
+        },
+        {
+          "index": 1,
+          "supported": false,
+          "reason": "Quote shows install_http called with a lambda but provides no explicit evidence that it mocks HTTP, thus claim of mocked interaction is unsupported."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Requesting the helper's implementation directly addresses the uncertainty about whether it replaces network calls."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Obtaining CI or test logs can verify if real HTTP requests were made, testing the uncertainty."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Asking for an unmocked test variant is a valid evidence request to see behavior against the live provider."
+        }
+      ],
+      "retained_findings": 0,
+      "removed_findings": 2,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote only shows install_http called; it does not explicitly state it mocks HTTP, so claim of no live contact is not directly supported."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote shows install_http called with a lambda but provides no explicit evidence that it mocks HTTP, thus claim of mocked interaction is unsupported."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Requesting the helper's implementation directly addresses the uncertainty about whether it replaces network calls."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Obtaining CI or test logs can verify if real HTTP requests were made, testing the uncertainty."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Asking for an unmocked test variant is a valid evidence request to see behavior against the live provider."
+      }
+    ],
+    "retained_findings": 0,
+    "removed_findings": 2,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_ba3c7c325112a937f16d61b4c95eea36",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:25:30.825067+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "6f4bf275ef68dd7df3e1044a325653ea8d5489203d9ee25ec11bca8ba5aecd90",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:25:30.820464+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:25:30.824421+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "bfe10c62b7e54bddbe0d88d1c6026b82",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:25:30.853212+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "bfe10c62b7e54bddbe0d88d1c6026b82",
+      "started_at": "2026-10-30T22:25:30.853460+00:00",
+      "usage": {
+        "input_tokens": 4996,
+        "output_tokens": 93,
+        "total_tokens": 5089
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 650.04,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:25:31.503663+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "20dab89f810d44e08839d7d94406a253",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:25:31.507039+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "20dab89f810d44e08839d7d94406a253",
+      "started_at": "2026-10-30T22:25:31.507504+00:00",
+      "latency_ms": 2.35,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:25:31.509089+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "f9efa6072a16448f92334d045783c3f0",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:25:31.511642+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "f9efa6072a16448f92334d045783c3f0",
+      "started_at": "2026-10-30T22:25:31.512051+00:00",
+      "usage": {
+        "input_tokens": 5996,
+        "output_tokens": 758,
+        "total_tokens": 6754
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3818.33,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:25:35.330298+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:25:35.337887+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:25:35.339001+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "e439a7014d264f4baebd8cc7afb0733f",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:25:35.347972+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "e439a7014d264f4baebd8cc7afb0733f",
+      "started_at": "2026-10-30T22:25:35.348307+00:00",
+      "usage": {
+        "input_tokens": 2720,
+        "output_tokens": 1132,
+        "total_tokens": 3852
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5172.71,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:25:40.521937+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 0,
+      "removed_findings": 2,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:25:40.529211+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13712,
+      "output_tokens": 1983,
+      "total_tokens": 15695
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 9785.885,
+  "automatic_citation_integrity": {
+    "status": "not_applicable",
+    "checked_supports": 0,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": false,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 0.0,
+    "anchors_checked": 1,
+    "anchors_covered": 0,
+    "contract_passed": false
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-39",
+  "saved_use_case_id": "test_planning",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-39",
+    "metadata": {
+      "use_case_id": "test_planning",
+      "input_sha256": "9bddb20fec8afb84515fb6007f9892df72eaacc26e7b6fbd1903938d3d698238",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:25:30.820464+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:25:30.824421+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "bfe10c62b7e54bddbe0d88d1c6026b82",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:25:30.853212+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "bfe10c62b7e54bddbe0d88d1c6026b82",
+        "started_at": "2026-10-30T22:25:30.853460+00:00",
+        "usage": {
+          "input_tokens": 4996,
+          "output_tokens": 93,
+          "total_tokens": 5089
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 650.04,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:25:31.503663+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "20dab89f810d44e08839d7d94406a253",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:25:31.507039+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "20dab89f810d44e08839d7d94406a253",
+        "started_at": "2026-10-30T22:25:31.507504+00:00",
+        "latency_ms": 2.35,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:25:31.509089+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "f9efa6072a16448f92334d045783c3f0",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:25:31.511642+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "f9efa6072a16448f92334d045783c3f0",
+        "started_at": "2026-10-30T22:25:31.512051+00:00",
+        "usage": {
+          "input_tokens": 5996,
+          "output_tokens": 758,
+          "total_tokens": 6754
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 3818.33,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:25:35.330298+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:25:35.337887+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:25:35.339001+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "e439a7014d264f4baebd8cc7afb0733f",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:25:35.347972+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "e439a7014d264f4baebd8cc7afb0733f",
+        "started_at": "2026-10-30T22:25:35.348307+00:00",
+        "usage": {
+          "input_tokens": 2720,
+          "output_tokens": 1132,
+          "total_tokens": 3852
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5172.71,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:25:40.521937+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 0,
+        "removed_findings": 2,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:25:40.529211+00:00"
+      }
+    ]
+  }
+}

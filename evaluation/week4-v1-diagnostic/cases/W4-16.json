@@ -1,0 +1,294 @@
+{
+  "id": "W4-16",
+  "scenario": "happy_path",
+  "title": "Wrong-shape vector cache recovery path",
+  "failure_mode": "Cache rebuild path versus model fallback",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 196,
+    "end_line": 213,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "    def vectors(self) -> np.ndarray:\n        if not self.chunks:\n            self._vectors = np.empty((0, self.dimensions), dtype=np.float32)\n            self.index_origin = \"empty\"\n            return self._vectors\n        values = super().vectors()\n        if values.shape != (len(self.chunks), self.dimensions):\n            # This is only a derived cache under this hosted fingerprint, never\n            # a local/prebuilt index. Rebuild with the same hosted provider.\n            self._vectors, self.cache_hit, self.index_origin = None, False, \"not_loaded\"\n            try:\n                self.index_path.unlink(missing_ok=True)\n            except OSError:\n                raise EmbeddingUnavailable(\"The hosted vector cache has the wrong shape and could not be replaced\") from None\n            values = super().vectors()\n        if values.shape != (len(self.chunks), self.dimensions):\n            raise EmbeddingUnavailable(\"Hosted vector index shape does not match the configured model dimensions\")\n        return values\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "A wrong-shape vector result clears the stored vector state, attempts to unlink the index path, and asks the superclass for vectors again.",
+        "expected_supported": true,
+        "rationale": "The selected conditional shows all three actions."
+      },
+      {
+        "statement": "This recovery path switches to a local prebuilt model when the hosted cache has the wrong shape.",
+        "expected_supported": false,
+        "rationale": "The comment specifies the same hosted provider and the code calls the superclass again without selecting a local provider."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose fake superclass results with a wrong shape on both attempts to check the final EmbeddingUnavailable branch.",
+        "expected_supported": true,
+        "rationale": "It exercises the selected retry-of-shape-recovery path as a test, without claiming a provider success."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 5.366286,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code clears _vectors, sets cache_hit False, index_origin 'not_loaded', unlinks index_path, then calls super().vectors() again when shape mismatches."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code comments state it never uses a local/prebuilt index; no evidence of switching to such a model."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Suggesting to mock superclass to return wrong shape on both calls tests the final EmbeddingUnavailable branch, matching the observed logic."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "A wrong-shape vector result clears the stored vector state, attempts to unlink the index path, and asks the superclass for vectors again.",
+        "support": [
+          {
+            "evidence_id": "W4-16-source",
+            "quote_id": "W4-16-quote",
+            "quote": "    def vectors(self) -> np.ndarray:\n        if not self.chunks:\n            self._vectors = np.empty((0, self.dimensions), dtype=np.float32)\n            self.index_origin = \"empty\"\n            return self._vectors\n        values = super().vectors()\n        if values.shape != (len(self.chunks), self.dimensions):\n            # This is only a derived cache under this hosted fingerprint, never\n            # a local/prebuilt index. Rebuild with the same hosted provider.\n            self._vectors, self.cache_hit, self.index_origin = None, False, \"not_loaded\"\n            try:\n                self.index_path.unlink(missing_ok=True)\n            except OSError:\n                raise EmbeddingUnavailable(\"The hosted vector cache has the wrong shape and could not be replaced\") from None\n            values = super().vectors()\n        if values.shape != (len(self.chunks), self.dimensions):\n            raise EmbeddingUnavailable(\"Hosted vector index shape does not match the configured model dimensions\")\n        return values\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose fake superclass results with a wrong shape on both attempts to check the final EmbeddingUnavailable branch."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-16",
+      "run_name": "20261030T220035Z-c74386df",
+      "prompt_version": "diagnostic",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "694d1409-f1c9-4412-ba64-06fa5c9fc506",
+      "created_at": "2026-10-30T22:00:57.133138+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "6a110a40bd5a4b7b89f5e4407af46a9d",
+      "event_id": 2,
+      "case_id": "694d1409-f1c9-4412-ba64-06fa5c9fc506",
+      "created_at": "2026-10-30T22:00:57.139883+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "6a110a40bd5a4b7b89f5e4407af46a9d",
+      "started_at": "2026-10-30T22:00:57.140173+00:00",
+      "usage": {
+        "input_tokens": 1631,
+        "output_tokens": 850,
+        "total_tokens": 2481
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5349.23,
+      "event_id": 3,
+      "case_id": "694d1409-f1c9-4412-ba64-06fa5c9fc506",
+      "created_at": "2026-10-30T22:01:02.489111+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-16",
+      "run_name": "20261030T220035Z-c74386df",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "prompt_version": "diagnostic",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 5.366286,
+      "error": null,
+      "event_id": 4,
+      "case_id": "694d1409-f1c9-4412-ba64-06fa5c9fc506",
+      "created_at": "2026-10-30T22:01:02.490013+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1631,
+      "output_tokens": 850,
+      "total_tokens": 2481
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "694d1409-f1c9-4412-ba64-06fa5c9fc506",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

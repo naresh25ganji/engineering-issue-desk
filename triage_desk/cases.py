@@ -15,6 +15,8 @@ import sqlite3
 from typing import Iterator
 from uuid import UUID, uuid4
 
+from .use_cases import get_use_case
+
 
 DEFAULT_CASE_DB = Path('.cache/agent/cases.sqlite')
 CASE_STATUSES = frozenset({
@@ -23,7 +25,7 @@ CASE_STATUSES = frozenset({
 _CASE_FIELDS = frozenset({
     'question', 'version', 'code_context', 'status', 'report', 'review_notes', 'error', 'report_markdown',
 })
-_ORIGINS = frozenset({'snapshot', 'live', 'user_code', 'repository', 'analysis'})
+_ORIGINS = frozenset({'snapshot', 'live', 'user_code', 'user_context', 'repository', 'analysis'})
 
 
 class CaseExecutionBusy(ValueError):
@@ -100,6 +102,10 @@ class CaseStore:
                 connection.execute('ALTER TABLE cases ADD COLUMN memory_context INTEGER NOT NULL DEFAULT 0 CHECK(memory_context IN (0,1))')
             if 'repository_context' not in columns:
                 connection.execute('ALTER TABLE cases ADD COLUMN repository_context INTEGER NOT NULL DEFAULT 0 CHECK(repository_context IN (0,1))')
+            if 'use_case_id' not in columns:
+                connection.execute("ALTER TABLE cases ADD COLUMN use_case_id TEXT NOT NULL DEFAULT 'issue_investigation'")
+            if 'use_case_version' not in columns:
+                connection.execute('ALTER TABLE cases ADD COLUMN use_case_version INTEGER NOT NULL DEFAULT 1')
 
     @contextmanager
     def _connection(self) -> Iterator[sqlite3.Connection]:
@@ -127,10 +133,12 @@ class CaseStore:
         if connection.execute('SELECT 1 FROM cases WHERE case_id=?', (case_id,)).fetchone() is None:
             raise KeyError(f'Unknown investigation case: {case_id}')
 
-    def create_case(self, question: str, version: str = '', code_context: str = '', *, repository_context: bool = False, memory_context: bool = False) -> dict:
+    def create_case(self, question: str, version: str = '', code_context: str = '', *, repository_context: bool = False, memory_context: bool = False,
+                    use_case_id: str = 'issue_investigation', use_case_version: int = 1) -> dict:
         question = _text(question, 'question', limit=20_000, required=True)
         version = _text(version, 'version', limit=200)
         code_context = _text(code_context, 'code_context')
+        profile = get_use_case(use_case_id, use_case_version)
         if not isinstance(repository_context, bool):
             raise ValueError('repository_context must be a boolean')
         if not isinstance(memory_context, bool):
@@ -138,8 +146,8 @@ class CaseStore:
         case_id, timestamp = str(uuid4()), _now()
         with self._connection() as connection:
             connection.execute(
-                'INSERT INTO cases(case_id,question,version,code_context,created_at,updated_at,repository_context,memory_context) VALUES(?,?,?,?,?,?,?,?)',
-                (case_id, question, version, code_context, timestamp, timestamp, int(repository_context), int(memory_context)),
+                'INSERT INTO cases(case_id,question,version,code_context,created_at,updated_at,repository_context,memory_context,use_case_id,use_case_version) VALUES(?,?,?,?,?,?,?,?,?,?)',
+                (case_id, question, version, code_context, timestamp, timestamp, int(repository_context), int(memory_context), profile.id, profile.version),
             )
         return self.get_case(case_id)
 

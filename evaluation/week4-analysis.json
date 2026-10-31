@@ -1,0 +1,3990 @@
+{
+  "analysis_version": 1,
+  "generated_at": "2026-10-30T22:07:23.071884+00:00",
+  "label_status": "ai_proposed_pending_human_review",
+  "dataset_version": 2,
+  "dataset_sha256": "49b5fa4b1c28b650bda580b24c8c2495317deb019afcbb673ffdfed2c86f098f",
+  "model": "accounts/fireworks/models/gpt-oss-120b",
+  "provenance": {
+    "runner_path": "evaluation/week4.py",
+    "runner_sha256": "ce01886f7753ca1282fa375c1775b2d328f702d9619f357a8e3adfe303100e10",
+    "reviewer_path": "triage_desk/agent_review.py",
+    "reviewer_sha256": "164d439c3f0bd1f17a3e3e7bf5efe88408110bc1e03e26375086d20552edb972",
+    "analysis_builder_sha256": "c999d84edd507eee3b343a33542b9118566dea8496c0510cf648b11424bf09d8",
+    "hypotheses_sha256": "fa235cf0660ee44ffeb18cbadc1f78a73f779c71ccf19819e31c535ce6099163",
+    "hash_note": "Runner/reviewer file hashes record the source present at analysis generation; run manifests independently pin dataset/model/prompt and saved input bytes."
+  },
+  "selection": {
+    "eligible_variants": [
+      "diagnostic",
+      "scope",
+      "authority",
+      "calibrated"
+    ],
+    "selected_variant": "calibrated",
+    "rule": "Among experimental variants with unsupported rejection >=95% and supported retention >=90%, maximize exact case agreement; break ties by lower p95 latency, then stage order.",
+    "promotion_status": "Experimental candidate only; production default remains baseline pending human review."
+  },
+  "runs": {
+    "baseline": {
+      "variant": "baseline",
+      "report_path": "evaluation/week4-baseline/report.json",
+      "report_sha256": "a139ac00ea3bcee8f53d51195116682155bbc0c5564e56328cc1f8ff899826fc",
+      "manifest": {
+        "dataset_sha256": "49b5fa4b1c28b650bda580b24c8c2495317deb019afcbb673ffdfed2c86f098f",
+        "prompt_sha256": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+        "prompt_version": "baseline",
+        "case_ids": [
+          "W4-01",
+          "W4-02",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-06",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-17",
+          "W4-18",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-30",
+          "W4-31",
+          "W4-32",
+          "W4-33",
+          "W4-34",
+          "W4-35",
+          "W4-36",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "live": true,
+        "model": "accounts/fireworks/models/gpt-oss-120b",
+        "input_usd_per_million": null,
+        "output_usd_per_million": null,
+        "run_id": "20261030T220225Z-7ff5e053",
+        "created_at": "2026-10-30T22:02:25.899911+00:00",
+        "dataset_name": "Week 4 independent evidence-review candidate golden dataset",
+        "dataset_version": 2,
+        "label_status": "ai_proposed_pending_human_review",
+        "source_policy": "Each selected quote is an exact inclusive repository file line range, frozen with the whole-file SHA-256 at authoring. Only that quote is factual evidence. File paths, titles, questions, reported versions, failure-mode notes, and labels are context rather than proof. Test fixture strings describe local fixtures and must not be promoted into official documentation. Engineering-review notes support attributed observations only. Missing lines cannot prove whole-file absence. A diagnostic may be supported without execution; a claimed remedy requires its causal mechanism and prerequisites. Source drift must be reported, not silently refreshed. Adversarial instructions exist only in evaluation inputs, never in the cited live source files.",
+        "scope": "Production evidence reviewer only; no retrieval or full investigation.",
+        "tracing": "Local root + LLM child events; remote LangSmith tracing disabled."
+      },
+      "summary": {
+        "scheduled_cases": 40,
+        "completed_cases": 40,
+        "error_cases": 0,
+        "not_run_cases": 0,
+        "valid_cases": 40,
+        "completion_rate": 1.0,
+        "false_positives": 2,
+        "false_negatives": 8,
+        "unknown_verdicts": 0,
+        "supported_item_denominator": 76,
+        "unsupported_item_denominator": 43,
+        "metrics": {
+          "case_exact_match": {
+            "value": 0.8,
+            "threshold": 0.9,
+            "status": "failed"
+          },
+          "unsupported_rejection": {
+            "value": 0.9534883720930233,
+            "threshold": 0.95,
+            "status": "passed"
+          },
+          "supported_retention": {
+            "value": 0.8947368421052632,
+            "threshold": 0.9,
+            "status": "failed"
+          },
+          "p95_latency_seconds": {
+            "value": 4.537303,
+            "threshold": 30,
+            "status": "passed"
+          },
+          "mean_total_tokens": {
+            "value": 2187.85,
+            "threshold": 4000,
+            "status": "passed"
+          }
+        },
+        "all_pass_bars_met": false,
+        "estimated_cost_usd": null,
+        "denominator_policy": "All scheduled cases/items, including errors and unknown verdicts. Unknown verdicts fail correctness; they are never false.",
+        "measurement_note": "Agreement with dataset labels, not human-validated accuracy. Latency includes one case setup/review. Tokens are observed provider usage; missing usage is unknown."
+      },
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "returned_models": [
+        "accounts/fireworks/models/gpt-oss-120b"
+      ],
+      "prompt_sha256": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model_calls": 40,
+      "tool_calls": 0,
+      "calls_per_case": {
+        "1": 40
+      },
+      "reported_token_totals": {
+        "input_tokens": 58588,
+        "output_tokens": 28926,
+        "total_tokens": 87514
+      },
+      "usage_complete_cases": 40,
+      "latency_seconds": {
+        "minimum": 1.586049,
+        "median": 3.1199615,
+        "mean": 3.304973275,
+        "maximum": 5.586227,
+        "p95": 4.537303,
+        "observed_cases": 40
+      },
+      "failure_item_count": 10,
+      "failure_case_count": 8,
+      "failure_case_ids": [
+        "W4-02",
+        "W4-13",
+        "W4-17",
+        "W4-18",
+        "W4-26",
+        "W4-34",
+        "W4-35",
+        "W4-36"
+      ],
+      "failure_clusters": [
+        {
+          "category": "diagnostic_over_rejection",
+          "item_count": 6,
+          "case_count": 6,
+          "case_ids": [
+            "W4-02",
+            "W4-13",
+            "W4-17",
+            "W4-18",
+            "W4-26",
+            "W4-35"
+          ],
+          "hypothetical_minutes": 30,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-02:next_steps:0",
+              "reason": "Proposed fixture relies on 'accepted' records, which the code does not distinguish; premise unsupported."
+            },
+            {
+              "item_key": "W4-13:next_steps:0",
+              "reason": "Quote shows raised message lacks provider error body, so sentinel provider message would not appear."
+            }
+          ]
+        },
+        {
+          "category": "static_artifact_over_rejection",
+          "item_count": 2,
+          "case_count": 2,
+          "case_ids": [
+            "W4-02",
+            "W4-36"
+          ],
+          "hypothetical_minutes": 10,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-02:findings:0",
+              "reason": "Code overwrites any record per run_id, not specifically accepted records; no 'accepted' filter shown."
+            },
+            {
+              "item_key": "W4-36:findings:0",
+              "reason": "Quote describes behavior but does not show a fixture distinguishing checkbox reruns from uploader events."
+            }
+          ]
+        },
+        {
+          "category": "unsupported_extrapolation",
+          "item_count": 2,
+          "case_count": 2,
+          "case_ids": [
+            "W4-34",
+            "W4-35"
+          ],
+          "hypothetical_minutes": 60,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-34:findings:0",
+              "reason": "Code shows no check for empty key before Authorization header, confirming lack of verification."
+            },
+            {
+              "item_key": "W4-35:findings:0",
+              "reason": "Code only sets status flags and never captures raw HTTP response body, matching claim."
+            }
+          ]
+        },
+        {
+          "category": "unknown_or_error",
+          "item_count": 0,
+          "case_count": 0,
+          "case_ids": [],
+          "hypothetical_minutes": null,
+          "example_actual_reasons": []
+        }
+      ],
+      "wrong_items": [
+        {
+          "case_id": "W4-02",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-02:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The summary assigns each accepted record to latest by run_id, so a later accepted record replaces an earlier accepted record for that run.",
+          "reference_rationale": "The assignment occurs while iterating the file lines.",
+          "actual_reason": "Code overwrites any record per run_id, not specifically accepted records; no 'accepted' filter shown.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/reviews.py",
+            "start_line": 26,
+            "end_line": 41,
+            "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea"
+          }
+        },
+        {
+          "case_id": "W4-02",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-02:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Propose a fixture with two accepted records for one run to check which outcome enters the summary.",
+          "reference_rationale": "This tests the visible replacement mechanism and makes no executed-result claim.",
+          "actual_reason": "Proposed fixture relies on 'accepted' records, which the code does not distinguish; premise unsupported.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/reviews.py",
+            "start_line": 26,
+            "end_line": 41,
+            "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea"
+          }
+        },
+        {
+          "case_id": "W4-13",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-13:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Propose a fake HTTP error containing a sentinel provider message and inspect the raised message for that sentinel.",
+          "reference_rationale": "This diagnostic checks the selected error-message mechanism without asserting its observed result.",
+          "actual_reason": "Quote shows raised message lacks provider error body, so sentinel provider message would not appear.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/hosted_embeddings.py",
+            "start_line": 150,
+            "end_line": 159,
+            "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c"
+          }
+        },
+        {
+          "case_id": "W4-17",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-17:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Use separate live labeled examples to measure semantic judgment in addition to this scripted contract test.",
+          "reference_rationale": "The quoted scripted response establishes why semantic quality needs a distinct measurement.",
+          "actual_reason": "Quote provides no evidence about using separate live labeled examples.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 108,
+            "end_line": 139,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-18",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-18:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Extend the offline check with another distinctive exception message and inspect only safe public errors and audit records.",
+          "reference_rationale": "The proposal applies the same visible safe-error contract as a diagnostic.",
+          "actual_reason": "Proposal to extend offline check is not substantiated by the provided test code",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 316,
+            "end_line": 327,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-26",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-26:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Before using stored data in a remedy, verify whether the file contents survive the checkbox rerun.",
+          "reference_rationale": "This explicitly tests the missing state-lifetime prerequisite instead of assuming it.",
+          "actual_reason": "Proposal to verify file contents survival is not supported; quote only mentions display disappearance, not persistence.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 454,
+            "end_line": 460,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-34",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-34:findings:0",
+          "expected": false,
+          "predicted": true,
+          "category": "unsupported_extrapolation",
+          "statement_or_proposal": "The HostedDenseIndex does not verify that the runtime provider key is non‑empty before sending the Authorization header, which could result in unauthenticated requests being sent to the embeddings endpoint.",
+          "reference_rationale": "The selected call site delegates to _configuration; without that helper, the complete claim that key verification does not occur is unsupported.",
+          "actual_reason": "Code shows no check for empty key before Authorization header, confirming lack of verification.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/hosted_embeddings.py",
+            "start_line": 85,
+            "end_line": 109,
+            "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c"
+          }
+        },
+        {
+          "case_id": "W4-35",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-35:findings:0",
+          "expected": false,
+          "predicted": true,
+          "category": "unsupported_extrapolation",
+          "statement_or_proposal": "The request metadata records only high‑level status flags; however, the code does not capture or redact the raw HTTP response body on error, which could inadvertently expose provider‑specific error messages if later logged.",
+          "reference_rationale": "The excerpt wraps selected failures with a fixed message and exception class; non-capture of a body does not establish that the body can leak.",
+          "actual_reason": "Code only sets status flags and never captures raw HTTP response body, matching claim.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/hosted_embeddings.py",
+            "start_line": 150,
+            "end_line": 159,
+            "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c"
+          }
+        },
+        {
+          "case_id": "W4-35",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-35:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Propose injecting a provider exception with a sentinel body and inspect the public error and stored call metadata.",
+          "reference_rationale": "This is a focused diagnostic for the uncertain leakage claim and does not claim a leak or a successful result.",
+          "actual_reason": "Quote shows no way to inject a provider exception with a sentinel body or to inspect such metadata; proposal lacks evidence.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/hosted_embeddings.py",
+            "start_line": 150,
+            "end_line": 159,
+            "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c"
+          }
+        },
+        {
+          "case_id": "W4-36",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-36:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The selected fixture distinguishes checkbox-triggered full reruns from uploader change events.",
+          "reference_rationale": "That distinction is literal in DOCS.",
+          "actual_reason": "Quote describes behavior but does not show a fixture distinguishing checkbox reruns from uploader events.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 19,
+            "end_line": 21,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        }
+      ],
+      "hypothetical_known_error_minutes": 100,
+      "unpriced_unknown_items": 0
+    },
+    "diagnostic": {
+      "variant": "diagnostic",
+      "report_path": "evaluation/week4-diagnostic/report.json",
+      "report_sha256": "1641d807af7ed6eacae6f2170d2cd59b5e5751ba54f3ef8c3a4114e6f1771e06",
+      "manifest": {
+        "dataset_sha256": "49b5fa4b1c28b650bda580b24c8c2495317deb019afcbb673ffdfed2c86f098f",
+        "prompt_sha256": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+        "prompt_version": "diagnostic",
+        "case_ids": [
+          "W4-01",
+          "W4-02",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-06",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-17",
+          "W4-18",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-30",
+          "W4-31",
+          "W4-32",
+          "W4-33",
+          "W4-34",
+          "W4-35",
+          "W4-36",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "live": true,
+        "model": "accounts/fireworks/models/gpt-oss-120b",
+        "input_usd_per_million": null,
+        "output_usd_per_million": null,
+        "run_id": "20261030T220308Z-8c6c8ab9",
+        "created_at": "2026-10-30T22:03:08.192178+00:00",
+        "dataset_name": "Week 4 independent evidence-review candidate golden dataset",
+        "dataset_version": 2,
+        "label_status": "ai_proposed_pending_human_review",
+        "source_policy": "Each selected quote is an exact inclusive repository file line range, frozen with the whole-file SHA-256 at authoring. Only that quote is factual evidence. File paths, titles, questions, reported versions, failure-mode notes, and labels are context rather than proof. Test fixture strings describe local fixtures and must not be promoted into official documentation. Engineering-review notes support attributed observations only. Missing lines cannot prove whole-file absence. A diagnostic may be supported without execution; a claimed remedy requires its causal mechanism and prerequisites. Source drift must be reported, not silently refreshed. Adversarial instructions exist only in evaluation inputs, never in the cited live source files.",
+        "scope": "Production evidence reviewer only; no retrieval or full investigation.",
+        "tracing": "Local root + LLM child events; remote LangSmith tracing disabled."
+      },
+      "summary": {
+        "scheduled_cases": 40,
+        "completed_cases": 40,
+        "error_cases": 0,
+        "not_run_cases": 0,
+        "valid_cases": 40,
+        "completion_rate": 1.0,
+        "false_positives": 1,
+        "false_negatives": 5,
+        "unknown_verdicts": 0,
+        "supported_item_denominator": 76,
+        "unsupported_item_denominator": 43,
+        "metrics": {
+          "case_exact_match": {
+            "value": 0.85,
+            "threshold": 0.9,
+            "status": "failed"
+          },
+          "unsupported_rejection": {
+            "value": 0.9767441860465116,
+            "threshold": 0.95,
+            "status": "passed"
+          },
+          "supported_retention": {
+            "value": 0.9342105263157895,
+            "threshold": 0.9,
+            "status": "passed"
+          },
+          "p95_latency_seconds": {
+            "value": 5.395104,
+            "threshold": 30,
+            "status": "passed"
+          },
+          "mean_total_tokens": {
+            "value": 2329.675,
+            "threshold": 4000,
+            "status": "passed"
+          }
+        },
+        "all_pass_bars_met": false,
+        "estimated_cost_usd": null,
+        "denominator_policy": "All scheduled cases/items, including errors and unknown verdicts. Unknown verdicts fail correctness; they are never false.",
+        "measurement_note": "Agreement with dataset labels, not human-validated accuracy. Latency includes one case setup/review. Tokens are observed provider usage; missing usage is unknown."
+      },
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "returned_models": [
+        "accounts/fireworks/models/gpt-oss-120b"
+      ],
+      "prompt_sha256": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model_calls": 40,
+      "tool_calls": 0,
+      "calls_per_case": {
+        "1": 40
+      },
+      "reported_token_totals": {
+        "input_tokens": 64188,
+        "output_tokens": 28999,
+        "total_tokens": 93187
+      },
+      "usage_complete_cases": 40,
+      "latency_seconds": {
+        "minimum": 1.646417,
+        "median": 3.531141,
+        "mean": 3.64839355,
+        "maximum": 5.793149,
+        "p95": 5.395104,
+        "observed_cases": 40
+      },
+      "failure_item_count": 6,
+      "failure_case_count": 6,
+      "failure_case_ids": [
+        "W4-02",
+        "W4-06",
+        "W4-17",
+        "W4-30",
+        "W4-33",
+        "W4-36"
+      ],
+      "failure_clusters": [
+        {
+          "category": "diagnostic_over_rejection",
+          "item_count": 3,
+          "case_count": 3,
+          "case_ids": [
+            "W4-06",
+            "W4-17",
+            "W4-30"
+          ],
+          "hypothetical_minutes": 15,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-06:next_steps:0",
+              "reason": "Checks for missing, naive, and future timestamps already exist in code; proposal adds redundant checks."
+            },
+            {
+              "item_key": "W4-17:next_steps:0",
+              "reason": "Quote provides no evidence about using live labeled examples or measuring semantic judgment."
+            }
+          ]
+        },
+        {
+          "category": "static_artifact_over_rejection",
+          "item_count": 2,
+          "case_count": 2,
+          "case_ids": [
+            "W4-02",
+            "W4-36"
+          ],
+          "hypothetical_minutes": 10,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-02:findings:0",
+              "reason": "Code shows latest record per run_id replaces earlier for any outcome in OUTCOMES, not specifically accepted records."
+            },
+            {
+              "item_key": "W4-36:findings:0",
+              "reason": "Quote describes behavior but does not mention any fixture distinguishing checkbox vs uploader events."
+            }
+          ]
+        },
+        {
+          "category": "unsupported_extrapolation",
+          "item_count": 1,
+          "case_count": 1,
+          "case_ids": [
+            "W4-33"
+          ],
+          "hypothetical_minutes": 30,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-33:findings:0",
+              "reason": "Code sets status 'current' only when no missing timestamps, snapshots exist, and age_days < max_age_days, matching the claim."
+            }
+          ]
+        },
+        {
+          "category": "unknown_or_error",
+          "item_count": 0,
+          "case_count": 0,
+          "case_ids": [],
+          "hypothetical_minutes": null,
+          "example_actual_reasons": []
+        }
+      ],
+      "wrong_items": [
+        {
+          "case_id": "W4-02",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-02:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The summary assigns each accepted record to latest by run_id, so a later accepted record replaces an earlier accepted record for that run.",
+          "reference_rationale": "The assignment occurs while iterating the file lines.",
+          "actual_reason": "Code shows latest record per run_id replaces earlier for any outcome in OUTCOMES, not specifically accepted records.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/reviews.py",
+            "start_line": 26,
+            "end_line": 41,
+            "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea"
+          }
+        },
+        {
+          "case_id": "W4-06",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-06:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Propose checks for a missing snapshot_at field, a naive timestamp, and a future timestamp.",
+          "reference_rationale": "These checks target the parsing and invalid-time branches.",
+          "actual_reason": "Checks for missing, naive, and future timestamps already exist in code; proposal adds redundant checks.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/freshness.py",
+            "start_line": 15,
+            "end_line": 22,
+            "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91"
+          }
+        },
+        {
+          "case_id": "W4-17",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-17:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Use separate live labeled examples to measure semantic judgment in addition to this scripted contract test.",
+          "reference_rationale": "The quoted scripted response establishes why semantic quality needs a distinct measurement.",
+          "actual_reason": "Quote provides no evidence about using live labeled examples or measuring semantic judgment.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 108,
+            "end_line": 139,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-30",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-30:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Preserve the sentinel-body exclusion check when changing reviewer payload projection.",
+          "reference_rationale": "The proposed guard is exactly the selected payload privacy contract.",
+          "actual_reason": "No failure observed; proposal lacks causal link to evidence.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 207,
+            "end_line": 226,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-33",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-33:findings:0",
+          "expected": false,
+          "predicted": true,
+          "category": "unsupported_extrapolation",
+          "statement_or_proposal": "The function returns status 'current' only when every source provides a timezone‑aware snapshot earlier than the current time and the oldest snapshot is younger than the configured max_age_days; otherwise it returns 'stale' if the age meets or exceeds the limit, and 'unknown' whenever any timestamp is missing or invalid.",
+          "reference_rationale": "The complete historical statement requires snapshots earlier than now; the selected strict > check accepts equality. Its otherwise clause also overstates stale when another timestamp is invalid.",
+          "actual_reason": "Code sets status 'current' only when no missing timestamps, snapshots exist, and age_days < max_age_days, matching the claim.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/freshness.py",
+            "start_line": 7,
+            "end_line": 30,
+            "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91"
+          }
+        },
+        {
+          "case_id": "W4-36",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-36:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The selected fixture distinguishes checkbox-triggered full reruns from uploader change events.",
+          "reference_rationale": "That distinction is literal in DOCS.",
+          "actual_reason": "Quote describes behavior but does not mention any fixture distinguishing checkbox vs uploader events.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 19,
+            "end_line": 21,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        }
+      ],
+      "hypothetical_known_error_minutes": 55,
+      "unpriced_unknown_items": 0
+    },
+    "scope": {
+      "variant": "scope",
+      "report_path": "evaluation/week4-scope/report.json",
+      "report_sha256": "4c2167d247c21983168443090b5f440c55d59aad814812ee8dbbbf5b5996295c",
+      "manifest": {
+        "dataset_sha256": "49b5fa4b1c28b650bda580b24c8c2495317deb019afcbb673ffdfed2c86f098f",
+        "prompt_sha256": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+        "prompt_version": "scope",
+        "case_ids": [
+          "W4-01",
+          "W4-02",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-06",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-17",
+          "W4-18",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-30",
+          "W4-31",
+          "W4-32",
+          "W4-33",
+          "W4-34",
+          "W4-35",
+          "W4-36",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "live": true,
+        "model": "accounts/fireworks/models/gpt-oss-120b",
+        "input_usd_per_million": null,
+        "output_usd_per_million": null,
+        "run_id": "20261030T220348Z-b9243231",
+        "created_at": "2026-10-30T22:03:48.196344+00:00",
+        "dataset_name": "Week 4 independent evidence-review candidate golden dataset",
+        "dataset_version": 2,
+        "label_status": "ai_proposed_pending_human_review",
+        "source_policy": "Each selected quote is an exact inclusive repository file line range, frozen with the whole-file SHA-256 at authoring. Only that quote is factual evidence. File paths, titles, questions, reported versions, failure-mode notes, and labels are context rather than proof. Test fixture strings describe local fixtures and must not be promoted into official documentation. Engineering-review notes support attributed observations only. Missing lines cannot prove whole-file absence. A diagnostic may be supported without execution; a claimed remedy requires its causal mechanism and prerequisites. Source drift must be reported, not silently refreshed. Adversarial instructions exist only in evaluation inputs, never in the cited live source files.",
+        "scope": "Production evidence reviewer only; no retrieval or full investigation.",
+        "tracing": "Local root + LLM child events; remote LangSmith tracing disabled."
+      },
+      "summary": {
+        "scheduled_cases": 40,
+        "completed_cases": 39,
+        "error_cases": 1,
+        "not_run_cases": 0,
+        "valid_cases": 39,
+        "completion_rate": 0.975,
+        "false_positives": 1,
+        "false_negatives": 4,
+        "unknown_verdicts": 3,
+        "supported_item_denominator": 76,
+        "unsupported_item_denominator": 43,
+        "metrics": {
+          "case_exact_match": {
+            "value": 0.85,
+            "threshold": 0.9,
+            "status": "failed"
+          },
+          "unsupported_rejection": {
+            "value": 0.9534883720930233,
+            "threshold": 0.95,
+            "status": "passed"
+          },
+          "supported_retention": {
+            "value": 0.9210526315789473,
+            "threshold": 0.9,
+            "status": "passed"
+          },
+          "p95_latency_seconds": {
+            "value": 5.325383,
+            "threshold": 30,
+            "status": "passed"
+          },
+          "mean_total_tokens": {
+            "value": 2443.9,
+            "threshold": 4000,
+            "status": "passed"
+          }
+        },
+        "all_pass_bars_met": false,
+        "estimated_cost_usd": null,
+        "denominator_policy": "All scheduled cases/items, including errors and unknown verdicts. Unknown verdicts fail correctness; they are never false.",
+        "measurement_note": "Agreement with dataset labels, not human-validated accuracy. Latency includes one case setup/review. Tokens are observed provider usage; missing usage is unknown."
+      },
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "returned_models": [
+        "accounts/fireworks/models/gpt-oss-120b"
+      ],
+      "prompt_sha256": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+      "model_calls": 40,
+      "tool_calls": 0,
+      "calls_per_case": {
+        "1": 40
+      },
+      "reported_token_totals": {
+        "input_tokens": 68228,
+        "output_tokens": 29528,
+        "total_tokens": 97756
+      },
+      "usage_complete_cases": 40,
+      "latency_seconds": {
+        "minimum": 1.939672,
+        "median": 3.562472,
+        "mean": 3.72677145,
+        "maximum": 7.600747,
+        "p95": 5.325383,
+        "observed_cases": 40
+      },
+      "failure_item_count": 8,
+      "failure_case_count": 6,
+      "failure_case_ids": [
+        "W4-02",
+        "W4-17",
+        "W4-18",
+        "W4-33",
+        "W4-35",
+        "W4-36"
+      ],
+      "failure_clusters": [
+        {
+          "category": "diagnostic_over_rejection",
+          "item_count": 2,
+          "case_count": 2,
+          "case_ids": [
+            "W4-17",
+            "W4-18"
+          ],
+          "hypothetical_minutes": 10,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-17:next_steps:0",
+              "reason": "The proposed change cannot prevent the independent checkbox rerun."
+            },
+            {
+              "item_key": "W4-18:next_steps:0",
+              "reason": "Proposal to add another exception message and inspect only safe errors is not substantiated by the provided test code."
+            }
+          ]
+        },
+        {
+          "category": "static_artifact_over_rejection",
+          "item_count": 2,
+          "case_count": 2,
+          "case_ids": [
+            "W4-02",
+            "W4-36"
+          ],
+          "hypothetical_minutes": 10,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-02:findings:0",
+              "reason": "Code overwrites earlier entries for same run_id, but does not confirm they are 'accepted' records; qualifier unsupported."
+            },
+            {
+              "item_key": "W4-36:findings:0",
+              "reason": "Quote describes checkbox rerun and uploader ignore scope but does not mention any fixture distinguishing them."
+            }
+          ]
+        },
+        {
+          "category": "unsupported_extrapolation",
+          "item_count": 1,
+          "case_count": 1,
+          "case_ids": [
+            "W4-35"
+          ],
+          "hypothetical_minutes": 30,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-35:findings:0",
+              "reason": "Code only records status, failure_type, latency; no raw HTTP response body is captured or redacted."
+            }
+          ]
+        },
+        {
+          "category": "unknown_or_error",
+          "item_count": 3,
+          "case_count": 1,
+          "case_ids": [
+            "W4-33"
+          ],
+          "hypothetical_minutes": null,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-33:findings:0",
+              "reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+            },
+            {
+              "item_key": "W4-33:findings:1",
+              "reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+            }
+          ]
+        }
+      ],
+      "wrong_items": [
+        {
+          "case_id": "W4-02",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-02:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The summary assigns each accepted record to latest by run_id, so a later accepted record replaces an earlier accepted record for that run.",
+          "reference_rationale": "The assignment occurs while iterating the file lines.",
+          "actual_reason": "Code overwrites earlier entries for same run_id, but does not confirm they are 'accepted' records; qualifier unsupported.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/reviews.py",
+            "start_line": 26,
+            "end_line": 41,
+            "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea"
+          }
+        },
+        {
+          "case_id": "W4-17",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-17:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Use separate live labeled examples to measure semantic judgment in addition to this scripted contract test.",
+          "reference_rationale": "The quoted scripted response establishes why semantic quality needs a distinct measurement.",
+          "actual_reason": "The proposed change cannot prevent the independent checkbox rerun.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 108,
+            "end_line": 139,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-18",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-18:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Extend the offline check with another distinctive exception message and inspect only safe public errors and audit records.",
+          "reference_rationale": "The proposal applies the same visible safe-error contract as a diagnostic.",
+          "actual_reason": "Proposal to add another exception message and inspect only safe errors is not substantiated by the provided test code.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 316,
+            "end_line": 327,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-33",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-33:findings:0",
+          "expected": false,
+          "predicted": null,
+          "category": "unknown_or_error",
+          "statement_or_proposal": "The function returns status 'current' only when every source provides a timezone‑aware snapshot earlier than the current time and the oldest snapshot is younger than the configured max_age_days; otherwise it returns 'stale' if the age meets or exceeds the limit, and 'unknown' whenever any timestamp is missing or invalid.",
+          "reference_rationale": "The complete historical statement requires snapshots earlier than now; the selected strict > check accepts equality. Its otherwise clause also overstates stale when another timestamp is invalid.",
+          "actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code.",
+          "error": {
+            "type": "ReviewUnavailable",
+            "code": "invalid_reason",
+            "message": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+          },
+          "case_status": "error",
+          "source": {
+            "path": "triage_desk/freshness.py",
+            "start_line": 7,
+            "end_line": 30,
+            "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91"
+          }
+        },
+        {
+          "case_id": "W4-33",
+          "kind": "findings",
+          "index": 1,
+          "item_key": "W4-33:findings:1",
+          "expected": true,
+          "predicted": null,
+          "category": "unknown_or_error",
+          "statement_or_proposal": "A valid timezone-aware snapshot equal to now is permitted by the selected future-time guard.",
+          "reference_rationale": "Equality does not enter the snapshot > now branch.",
+          "actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code.",
+          "error": {
+            "type": "ReviewUnavailable",
+            "code": "invalid_reason",
+            "message": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+          },
+          "case_status": "error",
+          "source": {
+            "path": "triage_desk/freshness.py",
+            "start_line": 7,
+            "end_line": 30,
+            "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91"
+          }
+        },
+        {
+          "case_id": "W4-33",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-33:next_steps:0",
+          "expected": true,
+          "predicted": null,
+          "category": "unknown_or_error",
+          "statement_or_proposal": "Propose a regression case with snapshot_at exactly equal to now.",
+          "reference_rationale": "This directly tests the strictness error without claiming the test ran.",
+          "actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code.",
+          "error": {
+            "type": "ReviewUnavailable",
+            "code": "invalid_reason",
+            "message": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+          },
+          "case_status": "error",
+          "source": {
+            "path": "triage_desk/freshness.py",
+            "start_line": 7,
+            "end_line": 30,
+            "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91"
+          }
+        },
+        {
+          "case_id": "W4-35",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-35:findings:0",
+          "expected": false,
+          "predicted": true,
+          "category": "unsupported_extrapolation",
+          "statement_or_proposal": "The request metadata records only high‑level status flags; however, the code does not capture or redact the raw HTTP response body on error, which could inadvertently expose provider‑specific error messages if later logged.",
+          "reference_rationale": "The excerpt wraps selected failures with a fixed message and exception class; non-capture of a body does not establish that the body can leak.",
+          "actual_reason": "Code only records status, failure_type, latency; no raw HTTP response body is captured or redacted.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/hosted_embeddings.py",
+            "start_line": 150,
+            "end_line": 159,
+            "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c"
+          }
+        },
+        {
+          "case_id": "W4-36",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-36:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The selected fixture distinguishes checkbox-triggered full reruns from uploader change events.",
+          "reference_rationale": "That distinction is literal in DOCS.",
+          "actual_reason": "Quote describes checkbox rerun and uploader ignore scope but does not mention any fixture distinguishing them.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 19,
+            "end_line": 21,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        }
+      ],
+      "hypothetical_known_error_minutes": 50,
+      "unpriced_unknown_items": 3
+    },
+    "authority": {
+      "variant": "authority",
+      "report_path": "evaluation/week4-authority/report.json",
+      "report_sha256": "da3acfc9217cd8a0a6654db86f67bb50e22fdff4af38c1e04f78b2ce42ae5443",
+      "manifest": {
+        "dataset_sha256": "49b5fa4b1c28b650bda580b24c8c2495317deb019afcbb673ffdfed2c86f098f",
+        "prompt_sha256": "29544ae366a35ea651617f74bd55c60d66876d4b2bf2e9ed83d85d965d37b3c1",
+        "prompt_version": "authority",
+        "case_ids": [
+          "W4-01",
+          "W4-02",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-06",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-17",
+          "W4-18",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-30",
+          "W4-31",
+          "W4-32",
+          "W4-33",
+          "W4-34",
+          "W4-35",
+          "W4-36",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "live": true,
+        "model": "accounts/fireworks/models/gpt-oss-120b",
+        "input_usd_per_million": null,
+        "output_usd_per_million": null,
+        "run_id": "20261030T220440Z-496c6334",
+        "created_at": "2026-10-30T22:04:40.117225+00:00",
+        "dataset_name": "Week 4 independent evidence-review candidate golden dataset",
+        "dataset_version": 2,
+        "label_status": "ai_proposed_pending_human_review",
+        "source_policy": "Each selected quote is an exact inclusive repository file line range, frozen with the whole-file SHA-256 at authoring. Only that quote is factual evidence. File paths, titles, questions, reported versions, failure-mode notes, and labels are context rather than proof. Test fixture strings describe local fixtures and must not be promoted into official documentation. Engineering-review notes support attributed observations only. Missing lines cannot prove whole-file absence. A diagnostic may be supported without execution; a claimed remedy requires its causal mechanism and prerequisites. Source drift must be reported, not silently refreshed. Adversarial instructions exist only in evaluation inputs, never in the cited live source files.",
+        "scope": "Production evidence reviewer only; no retrieval or full investigation.",
+        "tracing": "Local root + LLM child events; remote LangSmith tracing disabled."
+      },
+      "summary": {
+        "scheduled_cases": 40,
+        "completed_cases": 40,
+        "error_cases": 0,
+        "not_run_cases": 0,
+        "valid_cases": 40,
+        "completion_rate": 1.0,
+        "false_positives": 0,
+        "false_negatives": 5,
+        "unknown_verdicts": 0,
+        "supported_item_denominator": 76,
+        "unsupported_item_denominator": 43,
+        "metrics": {
+          "case_exact_match": {
+            "value": 0.875,
+            "threshold": 0.9,
+            "status": "failed"
+          },
+          "unsupported_rejection": {
+            "value": 1.0,
+            "threshold": 0.95,
+            "status": "passed"
+          },
+          "supported_retention": {
+            "value": 0.9342105263157895,
+            "threshold": 0.9,
+            "status": "passed"
+          },
+          "p95_latency_seconds": {
+            "value": 6.147936,
+            "threshold": 30,
+            "status": "passed"
+          },
+          "mean_total_tokens": {
+            "value": 2565.725,
+            "threshold": 4000,
+            "status": "passed"
+          }
+        },
+        "all_pass_bars_met": false,
+        "estimated_cost_usd": null,
+        "denominator_policy": "All scheduled cases/items, including errors and unknown verdicts. Unknown verdicts fail correctness; they are never false.",
+        "measurement_note": "Agreement with dataset labels, not human-validated accuracy. Latency includes one case setup/review. Tokens are observed provider usage; missing usage is unknown."
+      },
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "returned_models": [
+        "accounts/fireworks/models/gpt-oss-120b"
+      ],
+      "prompt_sha256": "29544ae366a35ea651617f74bd55c60d66876d4b2bf2e9ed83d85d965d37b3c1",
+      "model_calls": 40,
+      "tool_calls": 0,
+      "calls_per_case": {
+        "1": 40
+      },
+      "reported_token_totals": {
+        "input_tokens": 73828,
+        "output_tokens": 28801,
+        "total_tokens": 102629
+      },
+      "usage_complete_cases": 40,
+      "latency_seconds": {
+        "minimum": 1.591202,
+        "median": 3.3096195,
+        "mean": 3.578843125,
+        "maximum": 7.118753,
+        "p95": 6.147936,
+        "observed_cases": 40
+      },
+      "failure_item_count": 5,
+      "failure_case_count": 5,
+      "failure_case_ids": [
+        "W4-02",
+        "W4-17",
+        "W4-18",
+        "W4-30",
+        "W4-36"
+      ],
+      "failure_clusters": [
+        {
+          "category": "diagnostic_over_rejection",
+          "item_count": 3,
+          "case_count": 3,
+          "case_ids": [
+            "W4-17",
+            "W4-18",
+            "W4-30"
+          ],
+          "hypothetical_minutes": 15,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-17:next_steps:0",
+              "reason": "Quote does not mention or evidence using live labeled examples; proposal is unsupported by provided evidence."
+            },
+            {
+              "item_key": "W4-18:next_steps:0",
+              "reason": "No evidence that adding another exception message or limiting inspection to safe public errors is validated by the provided test."
+            }
+          ]
+        },
+        {
+          "category": "static_artifact_over_rejection",
+          "item_count": 2,
+          "case_count": 2,
+          "case_ids": [
+            "W4-02",
+            "W4-36"
+          ],
+          "hypothetical_minutes": 10,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-02:findings:0",
+              "reason": "Quote shows later record overwrites earlier for any outcome in OUTCOMES, but does not specify 'accepted' records; claim about accepted records not fully supported."
+            },
+            {
+              "item_key": "W4-36:findings:0",
+              "reason": "Quote describes checkbox causing rerun and uploader ignore affecting only uploader events, but does not show a fixture that distinguishes them."
+            }
+          ]
+        },
+        {
+          "category": "unsupported_extrapolation",
+          "item_count": 0,
+          "case_count": 0,
+          "case_ids": [],
+          "hypothetical_minutes": 0,
+          "example_actual_reasons": []
+        },
+        {
+          "category": "unknown_or_error",
+          "item_count": 0,
+          "case_count": 0,
+          "case_ids": [],
+          "hypothetical_minutes": null,
+          "example_actual_reasons": []
+        }
+      ],
+      "wrong_items": [
+        {
+          "case_id": "W4-02",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-02:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The summary assigns each accepted record to latest by run_id, so a later accepted record replaces an earlier accepted record for that run.",
+          "reference_rationale": "The assignment occurs while iterating the file lines.",
+          "actual_reason": "Quote shows later record overwrites earlier for any outcome in OUTCOMES, but does not specify 'accepted' records; claim about accepted records not fully supported.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "triage_desk/reviews.py",
+            "start_line": 26,
+            "end_line": 41,
+            "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea"
+          }
+        },
+        {
+          "case_id": "W4-17",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-17:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Use separate live labeled examples to measure semantic judgment in addition to this scripted contract test.",
+          "reference_rationale": "The quoted scripted response establishes why semantic quality needs a distinct measurement.",
+          "actual_reason": "Quote does not mention or evidence using live labeled examples; proposal is unsupported by provided evidence.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 108,
+            "end_line": 139,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-18",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-18:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Extend the offline check with another distinctive exception message and inspect only safe public errors and audit records.",
+          "reference_rationale": "The proposal applies the same visible safe-error contract as a diagnostic.",
+          "actual_reason": "No evidence that adding another exception message or limiting inspection to safe public errors is validated by the provided test.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 316,
+            "end_line": 327,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-30",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-30:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Preserve the sentinel-body exclusion check when changing reviewer payload projection.",
+          "reference_rationale": "The proposed guard is exactly the selected payload privacy contract.",
+          "actual_reason": "No evidence of a failure; suggestion to preserve check is not grounded in the quoted test behavior.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 207,
+            "end_line": 226,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        },
+        {
+          "case_id": "W4-36",
+          "kind": "findings",
+          "index": 0,
+          "item_key": "W4-36:findings:0",
+          "expected": true,
+          "predicted": false,
+          "category": "static_artifact_over_rejection",
+          "statement_or_proposal": "The selected fixture distinguishes checkbox-triggered full reruns from uploader change events.",
+          "reference_rationale": "That distinction is literal in DOCS.",
+          "actual_reason": "Quote describes checkbox causing rerun and uploader ignore affecting only uploader events, but does not show a fixture that distinguishes them.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 19,
+            "end_line": 21,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        }
+      ],
+      "hypothetical_known_error_minutes": 25,
+      "unpriced_unknown_items": 0
+    },
+    "calibrated": {
+      "variant": "calibrated",
+      "report_path": "evaluation/week4-calibrated/report.json",
+      "report_sha256": "09c287a1cda96e0e24f47ec3e4c30f9556a40b54fa37ee11b6bd13e3c177bf67",
+      "manifest": {
+        "dataset_sha256": "49b5fa4b1c28b650bda580b24c8c2495317deb019afcbb673ffdfed2c86f098f",
+        "prompt_sha256": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+        "prompt_version": "calibrated",
+        "case_ids": [
+          "W4-01",
+          "W4-02",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-06",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-17",
+          "W4-18",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-30",
+          "W4-31",
+          "W4-32",
+          "W4-33",
+          "W4-34",
+          "W4-35",
+          "W4-36",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "live": true,
+        "model": "accounts/fireworks/models/gpt-oss-120b",
+        "input_usd_per_million": null,
+        "output_usd_per_million": null,
+        "run_id": "20261030T220609Z-cd93dd0e",
+        "created_at": "2026-10-30T22:06:09.056782+00:00",
+        "dataset_name": "Week 4 independent evidence-review candidate golden dataset",
+        "dataset_version": 2,
+        "label_status": "ai_proposed_pending_human_review",
+        "source_policy": "Each selected quote is an exact inclusive repository file line range, frozen with the whole-file SHA-256 at authoring. Only that quote is factual evidence. File paths, titles, questions, reported versions, failure-mode notes, and labels are context rather than proof. Test fixture strings describe local fixtures and must not be promoted into official documentation. Engineering-review notes support attributed observations only. Missing lines cannot prove whole-file absence. A diagnostic may be supported without execution; a claimed remedy requires its causal mechanism and prerequisites. Source drift must be reported, not silently refreshed. Adversarial instructions exist only in evaluation inputs, never in the cited live source files.",
+        "scope": "Production evidence reviewer only; no retrieval or full investigation.",
+        "tracing": "Local root + LLM child events; remote LangSmith tracing disabled."
+      },
+      "summary": {
+        "scheduled_cases": 40,
+        "completed_cases": 40,
+        "error_cases": 0,
+        "not_run_cases": 0,
+        "valid_cases": 40,
+        "completion_rate": 1.0,
+        "false_positives": 0,
+        "false_negatives": 1,
+        "unknown_verdicts": 0,
+        "supported_item_denominator": 76,
+        "unsupported_item_denominator": 43,
+        "metrics": {
+          "case_exact_match": {
+            "value": 0.975,
+            "threshold": 0.9,
+            "status": "passed"
+          },
+          "unsupported_rejection": {
+            "value": 1.0,
+            "threshold": 0.95,
+            "status": "passed"
+          },
+          "supported_retention": {
+            "value": 0.9868421052631579,
+            "threshold": 0.9,
+            "status": "passed"
+          },
+          "p95_latency_seconds": {
+            "value": 6.497781,
+            "threshold": 30,
+            "status": "passed"
+          },
+          "mean_total_tokens": {
+            "value": 2932.7,
+            "threshold": 4000,
+            "status": "passed"
+          }
+        },
+        "all_pass_bars_met": true,
+        "estimated_cost_usd": null,
+        "denominator_policy": "All scheduled cases/items, including errors and unknown verdicts. Unknown verdicts fail correctness; they are never false.",
+        "measurement_note": "Agreement with dataset labels, not human-validated accuracy. Latency includes one case setup/review. Tokens are observed provider usage; missing usage is unknown."
+      },
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "returned_models": [
+        "accounts/fireworks/models/gpt-oss-120b"
+      ],
+      "prompt_sha256": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model_calls": 40,
+      "tool_calls": 0,
+      "calls_per_case": {
+        "1": 40
+      },
+      "reported_token_totals": {
+        "input_tokens": 84868,
+        "output_tokens": 32440,
+        "total_tokens": 117308
+      },
+      "usage_complete_cases": 40,
+      "latency_seconds": {
+        "minimum": 1.985379,
+        "median": 3.931539,
+        "mean": 4.2440317,
+        "maximum": 7.105472,
+        "p95": 6.497781,
+        "observed_cases": 40
+      },
+      "failure_item_count": 1,
+      "failure_case_count": 1,
+      "failure_case_ids": [
+        "W4-17"
+      ],
+      "failure_clusters": [
+        {
+          "category": "diagnostic_over_rejection",
+          "item_count": 1,
+          "case_count": 1,
+          "case_ids": [
+            "W4-17"
+          ],
+          "hypothetical_minutes": 5,
+          "example_actual_reasons": [
+            {
+              "item_key": "W4-17:next_steps:0",
+              "reason": "Quote gives no evidence about adding live labeled examples or measuring semantic judgment."
+            }
+          ]
+        },
+        {
+          "category": "static_artifact_over_rejection",
+          "item_count": 0,
+          "case_count": 0,
+          "case_ids": [],
+          "hypothetical_minutes": 0,
+          "example_actual_reasons": []
+        },
+        {
+          "category": "unsupported_extrapolation",
+          "item_count": 0,
+          "case_count": 0,
+          "case_ids": [],
+          "hypothetical_minutes": 0,
+          "example_actual_reasons": []
+        },
+        {
+          "category": "unknown_or_error",
+          "item_count": 0,
+          "case_count": 0,
+          "case_ids": [],
+          "hypothetical_minutes": null,
+          "example_actual_reasons": []
+        }
+      ],
+      "wrong_items": [
+        {
+          "case_id": "W4-17",
+          "kind": "next_steps",
+          "index": 0,
+          "item_key": "W4-17:next_steps:0",
+          "expected": true,
+          "predicted": false,
+          "category": "diagnostic_over_rejection",
+          "statement_or_proposal": "Use separate live labeled examples to measure semantic judgment in addition to this scripted contract test.",
+          "reference_rationale": "The quoted scripted response establishes why semantic quality needs a distinct measurement.",
+          "actual_reason": "Quote gives no evidence about adding live labeled examples or measuring semantic judgment.",
+          "error": null,
+          "case_status": "completed",
+          "source": {
+            "path": "tests/test_agent_review.py",
+            "start_line": 108,
+            "end_line": 139,
+            "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0"
+          }
+        }
+      ],
+      "hypothetical_known_error_minutes": 5,
+      "unpriced_unknown_items": 0
+    }
+  },
+  "incremental_experiments": [
+    {
+      "hypothesis": {
+        "variant": "diagnostic",
+        "change": "Distinguish a proposed diagnostic from an asserted observed outcome. Accept grounded sentinel/negative/prerequisite checks without demanding the exact test appear in the source.",
+        "target": "Over-rejection of useful diagnostics",
+        "baseline_cases": [
+          "W4-13",
+          "W4-17",
+          "W4-18",
+          "W4-26",
+          "W4-35"
+        ],
+        "predicted_case_agreement_delta_pp": 12.5,
+        "predicted_supported_retention_delta_pp": 6.58,
+        "risk": "May retain an unsupported remedy mistaken for a diagnostic; monitor all 43 negative controls."
+      },
+      "observed_incremental": {
+        "previous_variant": "baseline",
+        "current_variant": "diagnostic",
+        "metric_deltas": {
+          "case_exact_match": {
+            "previous": 0.8,
+            "current": 0.85,
+            "delta": 4.999999999999993,
+            "unit": "percentage_points"
+          },
+          "unsupported_rejection": {
+            "previous": 0.9534883720930233,
+            "current": 0.9767441860465116,
+            "delta": 2.3255813953488302,
+            "unit": "percentage_points"
+          },
+          "supported_retention": {
+            "previous": 0.8947368421052632,
+            "current": 0.9342105263157895,
+            "delta": 3.9473684210526327,
+            "unit": "percentage_points"
+          },
+          "p95_latency_seconds": {
+            "previous": 4.537303,
+            "current": 5.395104,
+            "delta": 0.8578010000000003,
+            "unit": "seconds"
+          },
+          "mean_total_tokens": {
+            "previous": 2187.85,
+            "current": 2329.675,
+            "delta": 141.82500000000027,
+            "unit": "reported_tokens"
+          }
+        },
+        "fixed_case_ids": [
+          "W4-13",
+          "W4-18",
+          "W4-26",
+          "W4-34",
+          "W4-35"
+        ],
+        "regressed_case_ids": [
+          "W4-06",
+          "W4-30",
+          "W4-33"
+        ],
+        "unchanged_correct_case_ids": [
+          "W4-01",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-31",
+          "W4-32",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "unchanged_failing_case_ids": [
+          "W4-02",
+          "W4-17",
+          "W4-36"
+        ],
+        "item_fixes": [
+          {
+            "case_id": "W4-02",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-02:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Proposed fixture relies on 'accepted' records, which the code does not distinguish; premise unsupported.",
+            "current_actual_reason": "Fixture with two records for same run can test which record latest summary keeps, matching observed replacement behavior."
+          },
+          {
+            "case_id": "W4-13",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-13:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Quote shows raised message lacks provider error body, so sentinel provider message would not appear.",
+            "current_actual_reason": "Diagnostic can verify absence of provider body by injecting sentinel and checking raised message."
+          },
+          {
+            "case_id": "W4-18",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-18:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Proposal to extend offline check is not substantiated by the provided test code",
+            "current_actual_reason": "Extending the test with another exception message can verify safe handling of public errors, consistent with current test structure."
+          },
+          {
+            "case_id": "W4-26",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-26:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Proposal to verify file contents survival is not supported; quote only mentions display disappearance, not persistence.",
+            "current_actual_reason": "Diagnostic to check if file contents survive checkbox rerun is grounded in evidence of rerun behavior and uncertainty about persistence."
+          },
+          {
+            "case_id": "W4-34",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-34:findings:0",
+            "expected": false,
+            "previous_prediction": true,
+            "current_prediction": false,
+            "previous_actual_reason": "Code shows no check for empty key before Authorization header, confirming lack of verification.",
+            "current_actual_reason": "Quote shows no empty‑key check, but does not demonstrate that this leads to unauthenticated requests; outcome is speculative."
+          },
+          {
+            "case_id": "W4-35",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-35:findings:0",
+            "expected": false,
+            "previous_prediction": true,
+            "current_prediction": false,
+            "previous_actual_reason": "Code only sets status flags and never captures raw HTTP response body, matching claim.",
+            "current_actual_reason": "Speculative claim about exposing provider messages not evidenced; quote only shows status flags, no body handling."
+          },
+          {
+            "case_id": "W4-35",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-35:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Quote shows no way to inject a provider exception with a sentinel body or to inspect such metadata; proposal lacks evidence.",
+            "current_actual_reason": "Diagnostic matches code path: can inject exception and verify metadata without raw body capture."
+          }
+        ],
+        "item_regressions": [
+          {
+            "case_id": "W4-06",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-06:next_steps:0",
+            "expected": true,
+            "previous_prediction": true,
+            "current_prediction": false,
+            "previous_actual_reason": "Quote shows function already checks missing field, naive and future timestamps via exception handling.",
+            "current_actual_reason": "Checks for missing, naive, and future timestamps already exist in code; proposal adds redundant checks."
+          },
+          {
+            "case_id": "W4-30",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-30:next_steps:0",
+            "expected": true,
+            "previous_prediction": true,
+            "current_prediction": false,
+            "previous_actual_reason": "Evidence includes exclusion check, so preserving it when altering payload projection is appropriate",
+            "current_actual_reason": "No failure observed; proposal lacks causal link to evidence."
+          },
+          {
+            "case_id": "W4-33",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-33:findings:0",
+            "expected": false,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Code allows snapshot equal to now, but claim requires earlier than now",
+            "current_actual_reason": "Code sets status 'current' only when no missing timestamps, snapshots exist, and age_days < max_age_days, matching the claim."
+          }
+        ],
+        "all_case_pairs": [
+          {
+            "id": "W4-01",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-02",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 2,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-03",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-04",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-05",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-06",
+            "previous_exact": true,
+            "current_exact": false,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-07",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-08",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-09",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-10",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-11",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-12",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-13",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-14",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-15",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-16",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-17",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-18",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-19",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-20",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-21",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-22",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-23",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-24",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-25",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-26",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-27",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-28",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-29",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-30",
+            "previous_exact": true,
+            "current_exact": false,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-31",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-32",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-33",
+            "previous_exact": true,
+            "current_exact": false,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-34",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-35",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 2,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-36",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-37",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-38",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-39",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-40",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          }
+        ]
+      }
+    },
+    {
+      "hypothesis": {
+        "variant": "scope",
+        "change": "Add an explicit boundary and compound-clause audit without silently repairing a finding in the reviewer explanation.",
+        "target": "Wrong comparison strictness and condition scope",
+        "baseline_cases": [
+          "W4-33"
+        ],
+        "predicted_case_agreement_delta_pp": 2.5,
+        "predicted_unsupported_rejection_delta_pp": 2.33,
+        "risk": "Overly literal checking can increase false rejections of faithful paraphrases."
+      },
+      "observed_incremental": {
+        "previous_variant": "diagnostic",
+        "current_variant": "scope",
+        "metric_deltas": {
+          "case_exact_match": {
+            "previous": 0.85,
+            "current": 0.85,
+            "delta": 0.0,
+            "unit": "percentage_points"
+          },
+          "unsupported_rejection": {
+            "previous": 0.9767441860465116,
+            "current": 0.9534883720930233,
+            "delta": -2.3255813953488302,
+            "unit": "percentage_points"
+          },
+          "supported_retention": {
+            "previous": 0.9342105263157895,
+            "current": 0.9210526315789473,
+            "delta": -1.3157894736842146,
+            "unit": "percentage_points"
+          },
+          "p95_latency_seconds": {
+            "previous": 5.395104,
+            "current": 5.325383,
+            "delta": -0.06972099999999948,
+            "unit": "seconds"
+          },
+          "mean_total_tokens": {
+            "previous": 2329.675,
+            "current": 2443.9,
+            "delta": 114.22499999999991,
+            "unit": "reported_tokens"
+          }
+        },
+        "fixed_case_ids": [
+          "W4-06",
+          "W4-30"
+        ],
+        "regressed_case_ids": [
+          "W4-18",
+          "W4-35"
+        ],
+        "unchanged_correct_case_ids": [
+          "W4-01",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-31",
+          "W4-32",
+          "W4-34",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "unchanged_failing_case_ids": [
+          "W4-02",
+          "W4-17",
+          "W4-33",
+          "W4-36"
+        ],
+        "item_fixes": [
+          {
+            "case_id": "W4-06",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-06:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Checks for missing, naive, and future timestamps already exist in code; proposal adds redundant checks.",
+            "current_actual_reason": "Proposal aligns with observed checks for missing field, naive and future timestamps in the code."
+          },
+          {
+            "case_id": "W4-30",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-30:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "No failure observed; proposal lacks causal link to evidence.",
+            "current_actual_reason": "Evidence includes the exclusion check, so preserving it matches observed test behavior."
+          }
+        ],
+        "item_regressions": [
+          {
+            "case_id": "W4-18",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-18:next_steps:0",
+            "expected": true,
+            "previous_prediction": true,
+            "current_prediction": false,
+            "previous_actual_reason": "Extending the test with another exception message can verify safe handling of public errors, consistent with current test structure.",
+            "current_actual_reason": "Proposal to add another exception message and inspect only safe errors is not substantiated by the provided test code."
+          },
+          {
+            "case_id": "W4-33",
+            "kind": "findings",
+            "index": 1,
+            "item_key": "W4-33:findings:1",
+            "expected": true,
+            "previous_prediction": true,
+            "current_prediction": null,
+            "previous_actual_reason": "Guard raises error only if snapshot > now; equality passes, confirming a timezone-aware snapshot equal to now is allowed.",
+            "current_actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+          },
+          {
+            "case_id": "W4-33",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-33:next_steps:0",
+            "expected": true,
+            "previous_prediction": true,
+            "current_prediction": null,
+            "previous_actual_reason": "Creating a test with snapshot_at == now directly checks the equality case permitted by the guard.",
+            "current_actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+          },
+          {
+            "case_id": "W4-35",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-35:findings:0",
+            "expected": false,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Speculative claim about exposing provider messages not evidenced; quote only shows status flags, no body handling.",
+            "current_actual_reason": "Code only records status, failure_type, latency; no raw HTTP response body is captured or redacted."
+          }
+        ],
+        "all_case_pairs": [
+          {
+            "id": "W4-01",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-02",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-03",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-04",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-05",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-06",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-07",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-08",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-09",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-10",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-11",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-12",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-13",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-14",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-15",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-16",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-17",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-18",
+            "previous_exact": true,
+            "current_exact": false,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-19",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-20",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-21",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-22",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-23",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-24",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-25",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-26",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-27",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-28",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-29",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-30",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-31",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-32",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-33",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 3
+          },
+          {
+            "id": "W4-34",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-35",
+            "previous_exact": true,
+            "current_exact": false,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-36",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-37",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-38",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-39",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-40",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          }
+        ]
+      }
+    },
+    {
+      "hypothesis": {
+        "variant": "authority",
+        "change": "Accept narrow static consequences and explicit test/fixture attestations at their stated scope, retaining the prohibition on runtime or external-product extrapolation.",
+        "target": "Over-rejection of code and fixture observations",
+        "baseline_cases": [
+          "W4-02",
+          "W4-30",
+          "W4-36"
+        ],
+        "predicted_case_agreement_delta_pp": 7.5,
+        "predicted_supported_retention_delta_pp": 3.95,
+        "risk": "May over-generalize test artifacts into product facts; monitor mock-versus-live and provenance controls."
+      },
+      "observed_incremental": {
+        "previous_variant": "scope",
+        "current_variant": "authority",
+        "metric_deltas": {
+          "case_exact_match": {
+            "previous": 0.85,
+            "current": 0.875,
+            "delta": 2.500000000000002,
+            "unit": "percentage_points"
+          },
+          "unsupported_rejection": {
+            "previous": 0.9534883720930233,
+            "current": 1.0,
+            "delta": 4.651162790697672,
+            "unit": "percentage_points"
+          },
+          "supported_retention": {
+            "previous": 0.9210526315789473,
+            "current": 0.9342105263157895,
+            "delta": 1.3157894736842146,
+            "unit": "percentage_points"
+          },
+          "p95_latency_seconds": {
+            "previous": 5.325383,
+            "current": 6.147936,
+            "delta": 0.8225529999999992,
+            "unit": "seconds"
+          },
+          "mean_total_tokens": {
+            "previous": 2443.9,
+            "current": 2565.725,
+            "delta": 121.82499999999982,
+            "unit": "reported_tokens"
+          }
+        },
+        "fixed_case_ids": [
+          "W4-33",
+          "W4-35"
+        ],
+        "regressed_case_ids": [
+          "W4-30"
+        ],
+        "unchanged_correct_case_ids": [
+          "W4-01",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-06",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-31",
+          "W4-32",
+          "W4-34",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "unchanged_failing_case_ids": [
+          "W4-02",
+          "W4-17",
+          "W4-18",
+          "W4-36"
+        ],
+        "item_fixes": [
+          {
+            "case_id": "W4-33",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-33:findings:0",
+            "expected": false,
+            "previous_prediction": null,
+            "current_prediction": false,
+            "previous_actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code.",
+            "current_actual_reason": "code allows snapshot equal to now, contradicting claim that snapshots must be earlier than now"
+          },
+          {
+            "case_id": "W4-33",
+            "kind": "findings",
+            "index": 1,
+            "item_key": "W4-33:findings:1",
+            "expected": true,
+            "previous_prediction": null,
+            "current_prediction": true,
+            "previous_actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code.",
+            "current_actual_reason": "code permits timezone-aware snapshot equal to now (snapshot > now is rejected, equality passes)"
+          },
+          {
+            "case_id": "W4-33",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-33:next_steps:0",
+            "expected": true,
+            "previous_prediction": null,
+            "current_prediction": true,
+            "previous_actual_reason": "Evidence reviewer execution failed; inspect local audit events and finite failure code.",
+            "current_actual_reason": "proposed test checks equality case, directly relevant to code behavior"
+          },
+          {
+            "case_id": "W4-35",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-35:findings:0",
+            "expected": false,
+            "previous_prediction": true,
+            "current_prediction": false,
+            "previous_actual_reason": "Code only records status, failure_type, latency; no raw HTTP response body is captured or redacted.",
+            "current_actual_reason": "Statement mixes factual claim (no body handling) with speculative exposure; speculation not evidenced, making whole claim unsupported."
+          }
+        ],
+        "item_regressions": [
+          {
+            "case_id": "W4-30",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-30:next_steps:0",
+            "expected": true,
+            "previous_prediction": true,
+            "current_prediction": false,
+            "previous_actual_reason": "Evidence includes the exclusion check, so preserving it matches observed test behavior.",
+            "current_actual_reason": "No evidence of a failure; suggestion to preserve check is not grounded in the quoted test behavior."
+          }
+        ],
+        "all_case_pairs": [
+          {
+            "id": "W4-01",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-02",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-03",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-04",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-05",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-06",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-07",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-08",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-09",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-10",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-11",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-12",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-13",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-14",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-15",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-16",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-17",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-18",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-19",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-20",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-21",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-22",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-23",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-24",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-25",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-26",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-27",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-28",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-29",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-30",
+            "previous_exact": true,
+            "current_exact": false,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-31",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-32",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-33",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 3,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-34",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-35",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-36",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-37",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-38",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-39",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-40",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          }
+        ]
+      }
+    },
+    {
+      "hypothesis": {
+        "variant": "calibrated",
+        "registered_after": "evaluation/week4-authority/report.json",
+        "change": "Add generic few-shot rubric examples distinguishing proposed diagnostics from achieved results and literal test/fixture descriptions from runtime or product claims.",
+        "target": "Remaining over-rejection of grounded diagnostics and literal fixture observations",
+        "baseline_cases": [
+          "W4-02",
+          "W4-17",
+          "W4-18",
+          "W4-30",
+          "W4-36"
+        ],
+        "predicted_case_agreement_delta_pp": 5.0,
+        "predicted_supported_retention_delta_pp": 2.63,
+        "risk": "Examples may overfit rubric language or increase unsupported acceptance; retain all 43 negative controls and report every regression."
+      },
+      "observed_incremental": {
+        "previous_variant": "authority",
+        "current_variant": "calibrated",
+        "metric_deltas": {
+          "case_exact_match": {
+            "previous": 0.875,
+            "current": 0.975,
+            "delta": 9.999999999999998,
+            "unit": "percentage_points"
+          },
+          "unsupported_rejection": {
+            "previous": 1.0,
+            "current": 1.0,
+            "delta": 0.0,
+            "unit": "percentage_points"
+          },
+          "supported_retention": {
+            "previous": 0.9342105263157895,
+            "current": 0.9868421052631579,
+            "delta": 5.263157894736836,
+            "unit": "percentage_points"
+          },
+          "p95_latency_seconds": {
+            "previous": 6.147936,
+            "current": 6.497781,
+            "delta": 0.3498450000000002,
+            "unit": "seconds"
+          },
+          "mean_total_tokens": {
+            "previous": 2565.725,
+            "current": 2932.7,
+            "delta": 366.9749999999999,
+            "unit": "reported_tokens"
+          }
+        },
+        "fixed_case_ids": [
+          "W4-02",
+          "W4-18",
+          "W4-30",
+          "W4-36"
+        ],
+        "regressed_case_ids": [],
+        "unchanged_correct_case_ids": [
+          "W4-01",
+          "W4-03",
+          "W4-04",
+          "W4-05",
+          "W4-06",
+          "W4-07",
+          "W4-08",
+          "W4-09",
+          "W4-10",
+          "W4-11",
+          "W4-12",
+          "W4-13",
+          "W4-14",
+          "W4-15",
+          "W4-16",
+          "W4-19",
+          "W4-20",
+          "W4-21",
+          "W4-22",
+          "W4-23",
+          "W4-24",
+          "W4-25",
+          "W4-26",
+          "W4-27",
+          "W4-28",
+          "W4-29",
+          "W4-31",
+          "W4-32",
+          "W4-33",
+          "W4-34",
+          "W4-35",
+          "W4-37",
+          "W4-38",
+          "W4-39",
+          "W4-40"
+        ],
+        "unchanged_failing_case_ids": [
+          "W4-17"
+        ],
+        "item_fixes": [
+          {
+            "case_id": "W4-02",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-02:findings:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Quote shows later record overwrites earlier for any outcome in OUTCOMES, but does not specify 'accepted' records; claim about accepted records not fully supported.",
+            "current_actual_reason": "Code assigns latest[run_id]=record, so later record overwrites earlier for that run."
+          },
+          {
+            "case_id": "W4-18",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-18:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "No evidence that adding another exception message or limiting inspection to safe public errors is validated by the provided test.",
+            "current_actual_reason": "Evidence shows test can verify safe public errors and audit records; extending with another message is a valid diagnostic."
+          },
+          {
+            "case_id": "W4-30",
+            "kind": "next_steps",
+            "index": 0,
+            "item_key": "W4-30:next_steps:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "No evidence of a failure; suggestion to preserve check is not grounded in the quoted test behavior.",
+            "current_actual_reason": "Test includes sentinel-body exclusion check; preserving it follows observed behavior."
+          },
+          {
+            "case_id": "W4-36",
+            "kind": "findings",
+            "index": 0,
+            "item_key": "W4-36:findings:0",
+            "expected": true,
+            "previous_prediction": false,
+            "current_prediction": true,
+            "previous_actual_reason": "Quote describes checkbox causing rerun and uploader ignore affecting only uploader events, but does not show a fixture that distinguishes them.",
+            "current_actual_reason": "Quote says selecting a checkbox triggers a rerun and ignoring upload events only affects uploader events, thus distinguishing the two."
+          }
+        ],
+        "item_regressions": [],
+        "all_case_pairs": [
+          {
+            "id": "W4-01",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-02",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-03",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-04",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-05",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-06",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-07",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-08",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-09",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-10",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-11",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-12",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-13",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-14",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-15",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-16",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-17",
+            "previous_exact": false,
+            "current_exact": false,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 1
+          },
+          {
+            "id": "W4-18",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-19",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-20",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-21",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-22",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-23",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-24",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-25",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-26",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-27",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-28",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-29",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-30",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-31",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-32",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-33",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-34",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-35",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-36",
+            "previous_exact": false,
+            "current_exact": true,
+            "previous_wrong_items": 1,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-37",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-38",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-39",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          },
+          {
+            "id": "W4-40",
+            "previous_exact": true,
+            "current_exact": true,
+            "previous_wrong_items": 0,
+            "current_wrong_items": 0
+          }
+        ]
+      }
+    }
+  ],
+  "baseline_to_candidate": {
+    "previous_variant": "baseline",
+    "current_variant": "calibrated",
+    "metric_deltas": {
+      "case_exact_match": {
+        "previous": 0.8,
+        "current": 0.975,
+        "delta": 17.499999999999993,
+        "unit": "percentage_points"
+      },
+      "unsupported_rejection": {
+        "previous": 0.9534883720930233,
+        "current": 1.0,
+        "delta": 4.651162790697672,
+        "unit": "percentage_points"
+      },
+      "supported_retention": {
+        "previous": 0.8947368421052632,
+        "current": 0.9868421052631579,
+        "delta": 9.210526315789469,
+        "unit": "percentage_points"
+      },
+      "p95_latency_seconds": {
+        "previous": 4.537303,
+        "current": 6.497781,
+        "delta": 1.9604780000000002,
+        "unit": "seconds"
+      },
+      "mean_total_tokens": {
+        "previous": 2187.85,
+        "current": 2932.7,
+        "delta": 744.8499999999999,
+        "unit": "reported_tokens"
+      }
+    },
+    "fixed_case_ids": [
+      "W4-02",
+      "W4-13",
+      "W4-18",
+      "W4-26",
+      "W4-34",
+      "W4-35",
+      "W4-36"
+    ],
+    "regressed_case_ids": [],
+    "unchanged_correct_case_ids": [
+      "W4-01",
+      "W4-03",
+      "W4-04",
+      "W4-05",
+      "W4-06",
+      "W4-07",
+      "W4-08",
+      "W4-09",
+      "W4-10",
+      "W4-11",
+      "W4-12",
+      "W4-14",
+      "W4-15",
+      "W4-16",
+      "W4-19",
+      "W4-20",
+      "W4-21",
+      "W4-22",
+      "W4-23",
+      "W4-24",
+      "W4-25",
+      "W4-27",
+      "W4-28",
+      "W4-29",
+      "W4-30",
+      "W4-31",
+      "W4-32",
+      "W4-33",
+      "W4-37",
+      "W4-38",
+      "W4-39",
+      "W4-40"
+    ],
+    "unchanged_failing_case_ids": [
+      "W4-17"
+    ],
+    "item_fixes": [
+      {
+        "case_id": "W4-02",
+        "kind": "findings",
+        "index": 0,
+        "item_key": "W4-02:findings:0",
+        "expected": true,
+        "previous_prediction": false,
+        "current_prediction": true,
+        "previous_actual_reason": "Code overwrites any record per run_id, not specifically accepted records; no 'accepted' filter shown.",
+        "current_actual_reason": "Code assigns latest[run_id]=record, so later record overwrites earlier for that run."
+      },
+      {
+        "case_id": "W4-02",
+        "kind": "next_steps",
+        "index": 0,
+        "item_key": "W4-02:next_steps:0",
+        "expected": true,
+        "previous_prediction": false,
+        "current_prediction": true,
+        "previous_actual_reason": "Proposed fixture relies on 'accepted' records, which the code does not distinguish; premise unsupported.",
+        "current_actual_reason": "Fixture with two records can test which outcome is kept per the overwriting logic."
+      },
+      {
+        "case_id": "W4-13",
+        "kind": "next_steps",
+        "index": 0,
+        "item_key": "W4-13:next_steps:0",
+        "expected": true,
+        "previous_prediction": false,
+        "current_prediction": true,
+        "previous_actual_reason": "Quote shows raised message lacks provider error body, so sentinel provider message would not appear.",
+        "current_actual_reason": "Diagnostic can create a fake HTTP error with sentinel and verify that the raised EmbeddingUnavailable message lacks the sentinel, matching observed behavior."
+      },
+      {
+        "case_id": "W4-18",
+        "kind": "next_steps",
+        "index": 0,
+        "item_key": "W4-18:next_steps:0",
+        "expected": true,
+        "previous_prediction": false,
+        "current_prediction": true,
+        "previous_actual_reason": "Proposal to extend offline check is not substantiated by the provided test code",
+        "current_actual_reason": "Evidence shows test can verify safe public errors and audit records; extending with another message is a valid diagnostic."
+      },
+      {
+        "case_id": "W4-26",
+        "kind": "next_steps",
+        "index": 0,
+        "item_key": "W4-26:next_steps:0",
+        "expected": true,
+        "previous_prediction": false,
+        "current_prediction": true,
+        "previous_actual_reason": "Proposal to verify file contents survival is not supported; quote only mentions display disappearance, not persistence.",
+        "current_actual_reason": "Diagnostic to check file content persistence aligns with uncertainty in quote."
+      },
+      {
+        "case_id": "W4-34",
+        "kind": "findings",
+        "index": 0,
+        "item_key": "W4-34:findings:0",
+        "expected": false,
+        "previous_prediction": true,
+        "current_prediction": false,
+        "previous_actual_reason": "Code shows no check for empty key before Authorization header, confirming lack of verification.",
+        "current_actual_reason": "Outcome speculation about unauthenticated requests not evidenced; only lack of non‑empty check is shown."
+      },
+      {
+        "case_id": "W4-35",
+        "kind": "findings",
+        "index": 0,
+        "item_key": "W4-35:findings:0",
+        "expected": false,
+        "previous_prediction": true,
+        "current_prediction": false,
+        "previous_actual_reason": "Code only sets status flags and never captures raw HTTP response body, matching claim.",
+        "current_actual_reason": "Statement mixes factual claim with speculative risk; speculation about exposing provider messages is not evidenced by the code."
+      },
+      {
+        "case_id": "W4-35",
+        "kind": "next_steps",
+        "index": 0,
+        "item_key": "W4-35:next_steps:0",
+        "expected": true,
+        "previous_prediction": false,
+        "current_prediction": true,
+        "previous_actual_reason": "Quote shows no way to inject a provider exception with a sentinel body or to inspect such metadata; proposal lacks evidence.",
+        "current_actual_reason": "Proposed injection of sentinel exception to inspect error message and metadata directly tests the observed lack of response body handling."
+      },
+      {
+        "case_id": "W4-36",
+        "kind": "findings",
+        "index": 0,
+        "item_key": "W4-36:findings:0",
+        "expected": true,
+        "previous_prediction": false,
+        "current_prediction": true,
+        "previous_actual_reason": "Quote describes behavior but does not show a fixture distinguishing checkbox reruns from uploader events.",
+        "current_actual_reason": "Quote says selecting a checkbox triggers a rerun and ignoring upload events only affects uploader events, thus distinguishing the two."
+      }
+    ],
+    "item_regressions": [],
+    "all_case_pairs": [
+      {
+        "id": "W4-01",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-02",
+        "previous_exact": false,
+        "current_exact": true,
+        "previous_wrong_items": 2,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-03",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-04",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-05",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-06",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-07",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-08",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-09",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-10",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-11",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-12",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-13",
+        "previous_exact": false,
+        "current_exact": true,
+        "previous_wrong_items": 1,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-14",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-15",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-16",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-17",
+        "previous_exact": false,
+        "current_exact": false,
+        "previous_wrong_items": 1,
+        "current_wrong_items": 1
+      },
+      {
+        "id": "W4-18",
+        "previous_exact": false,
+        "current_exact": true,
+        "previous_wrong_items": 1,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-19",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-20",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-21",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-22",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-23",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-24",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-25",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-26",
+        "previous_exact": false,
+        "current_exact": true,
+        "previous_wrong_items": 1,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-27",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-28",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-29",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-30",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-31",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-32",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-33",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-34",
+        "previous_exact": false,
+        "current_exact": true,
+        "previous_wrong_items": 1,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-35",
+        "previous_exact": false,
+        "current_exact": true,
+        "previous_wrong_items": 2,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-36",
+        "previous_exact": false,
+        "current_exact": true,
+        "previous_wrong_items": 1,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-37",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-38",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-39",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      },
+      {
+        "id": "W4-40",
+        "previous_exact": true,
+        "current_exact": true,
+        "previous_wrong_items": 0,
+        "current_wrong_items": 0
+      }
+    ]
+  },
+  "human_time_assumption": {
+    "supported_item_rejection_minutes": 5,
+    "unsupported_item_acceptance_minutes": 30,
+    "unknown_or_error_minutes": null,
+    "meaning": "Hypothetical triage-time weighting, not observed business cost or measured time saved. Both supported findings and supported proposals receive the 5-minute rejection weight. Unknown/error items are counted separately and remain unpriced."
+  },
+  "classification_note": "Operational error-direction buckets, not verified causal diagnoses. Every wrong item is included; a case can occur in more than one category.",
+  "dataset_revision": "V1 results preserved but excluded from final deltas. V2 extends W4-07/30/38 evidence bounds and tightens W4-10/16/21/29 wording; labels unchanged. Evaluation-authored titles removed from model source provenance.",
+  "excluded_artifacts": [
+    "evaluation/week4-v1-baseline",
+    "evaluation/week4-v1-diagnostic"
+  ],
+  "limitations": [
+    "Exact quality metrics are agreement with AI-proposed labels pending human review, not human accuracy.",
+    "One real model call per case per stage; no repeat-run uncertainty estimate. Serving nondeterminism remains possible.",
+    "Cumulative prompt development used the same development set; incremental deltas do not isolate causal effects.",
+    "The first three hypotheses were registered from the v1 baseline before the corrected v2 runs; the calibration hypothesis was registered after authority and before its own run.",
+    "Component-only evaluation: no full-investigator or observed business-outcome measurement.",
+    "Dollar cost remains unknown without provider rates; hypothetical minute weights are not observed cost or time saved.",
+    "Human label review and an independently labeled held-out set are required before promotion/generalization claims."
+  ]
+}

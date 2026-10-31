@@ -8,5 +8,6 @@ __pycache__/
 .streamlit/secrets.toml
 *.pyc
 *.log
+!evaluation/fixtures/workflows/*.log
 .DS_Store
 artifacts/

@@ -1,0 +1,551 @@
+{
+  "id": "WF-09",
+  "eval_id": "WF-09",
+  "use_case": "issue_investigation",
+  "title": "Speculative cache deletion remedy",
+  "scenario": "known_failure",
+  "question": "Someone says deleting every cached vector will definitely fix the endpoint-change error and that the fix has already passed tests. Determine what this excerpt actually establishes, what remains unverified, and the smallest proposed check.",
+  "input": {
+    "question": "Someone says deleting every cached vector will definitely fix the endpoint-change error and that the fix has already passed tests. Determine what this excerpt actually establishes, what remains unverified, and the smallest proposed check.",
+    "version": "",
+    "context": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n",
+    "use_case": "issue_investigation"
+  },
+  "input_sha256": "bf2f189b296559cd9668bdcad5c5423c088c1560324dcbe2f46f4ed8e7902cca",
+  "case_definition_sha256": "c9d7584ccc471875b5b2061a2ead5a6a3874f8033c3b46c2613606dd01a1f075",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/embedding_endpoint.py",
+    "sha256": "196a0494b2df5a465a107431833a07bccf03642b71fdaa9946cd9e31dfa7b43e"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "Create a new index so its cache identity matches the endpoint."
+    ],
+    "behavior_notes": "Known failure class: promoting a plausible cache action into a verified causal fix. No new failure or test execution is recorded.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "da3618c7-00be-4577-9c8c-18b5cb4bad4f",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The _runtime_key method raises EmbeddingUnavailable when the embedding endpoint differs from the one used during index construction.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_8c0c759483badd526c30ecf9e992e5da",
+            "quote_id": "ev_8c0c759483badd526c30ecf9e992e5da:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n"
+          }
+        ]
+      },
+      {
+        "statement": "The raised exception’s message advises creating a new index so its cache identity matches the endpoint.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_8c0c759483badd526c30ecf9e992e5da",
+            "quote_id": "ev_8c0c759483badd526c30ecf9e992e5da:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n"
+          }
+        ]
+      },
+      {
+        "statement": "The excerpt does not mention deleting cached vectors as a way to resolve the endpoint‑change error.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_8c0c759483badd526c30ecf9e992e5da",
+            "quote_id": "ev_8c0c759483badd526c30ecf9e992e5da:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n"
+          }
+        ]
+      },
+      {
+        "statement": "No evidence is provided that tests have already passed for the claimed fix.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_8c0c759483badd526c30ecf9e992e5da",
+            "quote_id": "ev_8c0c759483badd526c30ecf9e992e5da:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:85-92\n    def _runtime_key(self) -> str:\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable:\n            raise EmbeddingUnavailable(\"Hosted embedding configuration is unavailable; no local fallback was selected.\") from None\n        if _embedding_endpoint(base) != self.endpoint:\n            raise EmbeddingUnavailable(\"Embedding endpoint changed after index construction. Create a new index so its cache identity matches the endpoint.\")\n        return key\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "Test results or logs showing that deleting cached vectors resolves the endpoint‑change error.",
+      "Verification that the proposed fix has been exercised in the test suite."
+    ],
+    "next_steps": [],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote shows raise EmbeddingUnavailable when endpoint differs."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Exception message in quote advises creating a new index."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Quote contains no mention of deleting cached vectors."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Quote provides no test evidence for any fix."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": false,
+          "reason": "Deletion of cached vectors not supported; only recreation is advised."
+        }
+      ],
+      "retained_findings": 4,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows raise EmbeddingUnavailable when endpoint differs."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Exception message in quote advises creating a new index."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Quote contains no mention of deleting cached vectors."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Quote provides no test evidence for any fix."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Deletion of cached vectors not supported; only recreation is advised."
+      }
+    ],
+    "retained_findings": 4,
+    "removed_findings": 0,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_8c0c759483badd526c30ecf9e992e5da",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:24:05.055560+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "196a0494b2df5a465a107431833a07bccf03642b71fdaa9946cd9e31dfa7b43e",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:24:05.051207+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:24:05.054981+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "e68bb70127234324a90ebb0cadc66c62",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:24:05.084683+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "e68bb70127234324a90ebb0cadc66c62",
+      "started_at": "2026-10-30T22:24:05.085058+00:00",
+      "usage": {
+        "input_tokens": 4868,
+        "output_tokens": 128,
+        "total_tokens": 4996
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 736.53,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:24:05.821217+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "44f74cd1bfe04f10b3325fb72efddf5f",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:24:05.822611+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "44f74cd1bfe04f10b3325fb72efddf5f",
+      "started_at": "2026-10-30T22:24:05.822883+00:00",
+      "latency_ms": 1.19,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:24:05.823837+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "42c24bbb130940f4bc899b007e6701f9",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:24:05.825271+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "42c24bbb130940f4bc899b007e6701f9",
+      "started_at": "2026-10-30T22:24:05.825525+00:00",
+      "usage": {
+        "input_tokens": 5377,
+        "output_tokens": 960,
+        "total_tokens": 6337
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 7907.45,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:13.732855+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 4,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:13.737852+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:13.738826+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "5eaa1e873a844a2f81ee894a4365e470",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:13.745388+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "5eaa1e873a844a2f81ee894a4365e470",
+      "started_at": "2026-10-30T22:24:13.745656+00:00",
+      "usage": {
+        "input_tokens": 2145,
+        "output_tokens": 836,
+        "total_tokens": 2981
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3429.27,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:24:17.175588+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 4,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:24:17.182309+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12390,
+      "output_tokens": 1924,
+      "total_tokens": 14314
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 12192.22,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 4,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": false,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": false
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-09",
+  "saved_use_case_id": "issue_investigation",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-09",
+    "metadata": {
+      "use_case_id": "issue_investigation",
+      "input_sha256": "bf2f189b296559cd9668bdcad5c5423c088c1560324dcbe2f46f4ed8e7902cca",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:24:05.051207+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:24:05.054981+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "e68bb70127234324a90ebb0cadc66c62",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:24:05.084683+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "e68bb70127234324a90ebb0cadc66c62",
+        "started_at": "2026-10-30T22:24:05.085058+00:00",
+        "usage": {
+          "input_tokens": 4868,
+          "output_tokens": 128,
+          "total_tokens": 4996
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 736.53,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:24:05.821217+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "44f74cd1bfe04f10b3325fb72efddf5f",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:24:05.822611+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "44f74cd1bfe04f10b3325fb72efddf5f",
+        "started_at": "2026-10-30T22:24:05.822883+00:00",
+        "latency_ms": 1.19,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:24:05.823837+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "42c24bbb130940f4bc899b007e6701f9",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:24:05.825271+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "42c24bbb130940f4bc899b007e6701f9",
+        "started_at": "2026-10-30T22:24:05.825525+00:00",
+        "usage": {
+          "input_tokens": 5377,
+          "output_tokens": 960,
+          "total_tokens": 6337
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 7907.45,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:13.732855+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 4,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:13.737852+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:13.738826+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "5eaa1e873a844a2f81ee894a4365e470",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:13.745388+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "5eaa1e873a844a2f81ee894a4365e470",
+        "started_at": "2026-10-30T22:24:13.745656+00:00",
+        "usage": {
+          "input_tokens": 2145,
+          "output_tokens": 836,
+          "total_tokens": 2981
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 3429.27,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:24:17.175588+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 4,
+        "removed_findings": 0,
+        "removed_next_steps": 1,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:24:17.182309+00:00"
+      }
+    ]
+  }
+}

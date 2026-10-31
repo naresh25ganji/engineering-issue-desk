@@ -1,0 +1,252 @@
+{
+  "id": "W4-32",
+  "scenario": "edge",
+  "title": "Next steps are reviewable without findings",
+  "failure_mode": "Actions-only report bypass",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 372,
+    "end_line": 378,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "def test_next_steps_are_reviewed_even_when_there_are_no_findings(context):\n    report = {'findings': [], 'next_steps': ['Apply a guaranteed fix.'], 'missing_information': []}\n    model = ReviewerModel(replies=[response({'finding_verdicts': [], 'next_step_verdicts': [verdict(0, False)]})])\n    result = review_report(report, model, budget_for(context))\n    assert result['report']['next_steps'] == []\n    assert result['quality_review']['status'] == 'completed'\n    assert len(model.calls) == 1\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The selected offline test reviews a next step even when findings is empty and removes that step after a false verdict.",
+        "expected_supported": true,
+        "rationale": "The input, scripted false verdict, and empty output assertion are present."
+      },
+      {
+        "statement": "An empty findings list allows a guaranteed-fix proposal to bypass independent review.",
+        "expected_supported": false,
+        "rationale": "The test expects one model call and removal of the guaranteed-fix step."
+      }
+    ],
+    "next_steps": []
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 4.362134,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Test asserts next step is reviewed and removed even with empty findings."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code shows step is still reviewed, not bypassed."
+      }
+    ],
+    "next_step_verdicts": [],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The selected offline test reviews a next step even when findings is empty and removes that step after a false verdict.",
+        "support": [
+          {
+            "evidence_id": "W4-32-source",
+            "quote_id": "W4-32-quote",
+            "quote": "def test_next_steps_are_reviewed_even_when_there_are_no_findings(context):\n    report = {'findings': [], 'next_steps': ['Apply a guaranteed fix.'], 'missing_information': []}\n    model = ReviewerModel(replies=[response({'finding_verdicts': [], 'next_step_verdicts': [verdict(0, False)]})])\n    result = review_report(report, model, budget_for(context))\n    assert result['report']['next_steps'] == []\n    assert result['quality_review']['status'] == 'completed'\n    assert len(model.calls) == 1\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-32",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "c0e07b31-7a46-4f84-b18f-96b2929bc5ce",
+      "created_at": "2026-10-30T22:06:40.774733+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "ef8aaf408c1a42b4acd11277913d3293",
+      "event_id": 2,
+      "case_id": "c0e07b31-7a46-4f84-b18f-96b2929bc5ce",
+      "created_at": "2026-10-30T22:06:40.776271+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "ef8aaf408c1a42b4acd11277913d3293",
+      "started_at": "2026-10-30T22:06:40.776764+00:00",
+      "usage": {
+        "input_tokens": 2009,
+        "output_tokens": 588,
+        "total_tokens": 2597
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4339.09,
+      "event_id": 3,
+      "case_id": "c0e07b31-7a46-4f84-b18f-96b2929bc5ce",
+      "created_at": "2026-10-30T22:06:45.115363+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-32",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": []
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": []
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": []
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": []
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 4.362134,
+      "error": null,
+      "event_id": 4,
+      "case_id": "c0e07b31-7a46-4f84-b18f-96b2929bc5ce",
+      "created_at": "2026-10-30T22:06:45.116016+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2009,
+      "output_tokens": 588,
+      "total_tokens": 2597
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": []
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": []
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "c0e07b31-7a46-4f84-b18f-96b2929bc5ce",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

@@ -1,0 +1,6 @@
+metric,baseline_value,improved_value,delta,threshold,baseline_status,improved_status
+case_exact_match,0.875,0.975,0.09999999999999998,0.9,failed,passed
+unsupported_rejection,1.0,1.0,0.0,0.95,passed,passed
+supported_retention,0.9342105263157895,0.9868421052631579,0.05263157894736836,0.9,passed,passed
+p95_latency_seconds,6.147936,6.497781,0.3498450000000002,30,passed,passed
+mean_total_tokens,2565.725,2932.7,366.9749999999999,4000,passed,passed

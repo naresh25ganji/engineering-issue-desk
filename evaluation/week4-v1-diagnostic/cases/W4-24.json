@@ -1,0 +1,294 @@
+{
+  "id": "W4-24",
+  "scenario": "edge",
+  "title": "Reported version in an issue fixture",
+  "failure_mode": "Reported issue version versus verified compatibility",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 197,
+    "end_line": 202,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "    issue = registry.register_source(\n        source_key='public-issue', title='A public reporter observation', text=DOCS,\n        url='https://github.com/streamlit/streamlit/issues/123', kind='issue', origin='live',\n        evidence_type='github_issue_search_snippet', version_scope='Reporter says 1.40.0',\n        fetched_at='2026-10-25T00:00:00Z', snapshot_at='', truncated=True,\n    )\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": "1.50.0"
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The fixture registers a live issue search snippet whose version_scope says Reporter says 1.40.0 and whose truncated flag is true.",
+        "expected_supported": true,
+        "rationale": "These are literal arguments in the selected registration."
+      },
+      {
+        "statement": "The fixture establishes official API compatibility for reported version 1.50.0.",
+        "expected_supported": false,
+        "rationale": "The source is a truncated reporter issue fixture scoped to a different reported version, not official compatibility evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Obtain version-matched evidence before recommending a version-dependent API remedy.",
+        "expected_supported": true,
+        "rationale": "The mismatch and source limitations in the quote ground this request for verification."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 5.463526,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows registration of a live issue snippet with version_scope 'Reporter says 1.40.0' and truncated=True."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote contains no claim of official API compatibility or reference to version 1.50.0."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Evidence reveals version_scope 1.40.0 while request reports 1.50.0, justifying need for version-matched evidence before API advice."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The fixture registers a live issue search snippet whose version_scope says Reporter says 1.40.0 and whose truncated flag is true.",
+        "support": [
+          {
+            "evidence_id": "W4-24-source",
+            "quote_id": "W4-24-quote",
+            "quote": "    issue = registry.register_source(\n        source_key='public-issue', title='A public reporter observation', text=DOCS,\n        url='https://github.com/streamlit/streamlit/issues/123', kind='issue', origin='live',\n        evidence_type='github_issue_search_snippet', version_scope='Reporter says 1.40.0',\n        fetched_at='2026-10-25T00:00:00Z', snapshot_at='', truncated=True,\n    )\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Obtain version-matched evidence before recommending a version-dependent API remedy."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-24",
+      "run_name": "20261030T220035Z-c74386df",
+      "prompt_version": "diagnostic",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "61554968-edf8-44a2-a855-3ec87b93fd8e",
+      "created_at": "2026-10-30T22:01:08.954262+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "534e5f83708440f3a77816b6fe3b7326",
+      "event_id": 2,
+      "case_id": "61554968-edf8-44a2-a855-3ec87b93fd8e",
+      "created_at": "2026-10-30T22:01:08.956010+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "534e5f83708440f3a77816b6fe3b7326",
+      "started_at": "2026-10-30T22:01:08.956450+00:00",
+      "usage": {
+        "input_tokens": 1505,
+        "output_tokens": 799,
+        "total_tokens": 2304
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5437.64,
+      "event_id": 3,
+      "case_id": "61554968-edf8-44a2-a855-3ec87b93fd8e",
+      "created_at": "2026-10-30T22:01:14.394828+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-24",
+      "run_name": "20261030T220035Z-c74386df",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "prompt_version": "diagnostic",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 5.463526,
+      "error": null,
+      "event_id": 4,
+      "case_id": "61554968-edf8-44a2-a855-3ec87b93fd8e",
+      "created_at": "2026-10-30T22:01:14.397378+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1505,
+      "output_tokens": 799,
+      "total_tokens": 2304
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "61554968-edf8-44a2-a855-3ec87b93fd8e",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

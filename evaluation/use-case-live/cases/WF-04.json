@@ -1,0 +1,1025 @@
+{
+  "id": "WF-04",
+  "eval_id": "WF-04",
+  "use_case": "issue_investigation",
+  "title": "Bounded query cache retention",
+  "scenario": "happy_path",
+  "question": "Questions keep accumulating in one hosted index instance. Review the cache insertion and eviction code and propose a bounded-capacity diagnostic; do not claim memory use has been measured.",
+  "input": {
+    "question": "Questions keep accumulating in one hosted index instance. Review the cache insertion and eviction code and propose a bounded-capacity diagnostic; do not claim memory use has been measured.",
+    "version": "",
+    "context": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n",
+    "use_case": "issue_investigation"
+  },
+  "input_sha256": "79fe14aa9733a24faa1302c87598582c3677250f067162cc58504b0ce6f8f085",
+  "case_definition_sha256": "ea4d3798c8e3491af0f6a63d646b53cd932c83770051256e016d1d81d26a0913",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/query_cache.py",
+    "sha256": "d4b3e52224dd2a12726f7f03bd9cbd4910032199a8d3ff848a2d7400e69d48d6"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "while len(self._query_cache) > QUERY_CACHE_SIZE:"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "failed",
+  "case_id": "5afc9f67-242c-416f-87d4-73e86e1c5f7b",
+  "error": {
+    "type": "InvestigationFailed",
+    "message": "The saved investigation did not reach human review."
+  },
+  "handoff_observed": false,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The embed_query method stores query embeddings in a dict _query_cache and evicts the oldest entry when the number of cached items exceeds QUERY_CACHE_SIZE, implementing an LRU eviction policy.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_9700a1cc6b7b760185c727ccbb6fdb42",
+            "quote_id": "ev_9700a1cc6b7b760185c727ccbb6fdb42:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n"
+          }
+        ]
+      },
+      {
+        "statement": "The provided code excerpt references QUERY_CACHE_SIZE but does not show its definition, leaving the effective cache capacity unspecified in the examined snippet.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_9700a1cc6b7b760185c727ccbb6fdb42",
+            "quote_id": "ev_9700a1cc6b7b760185c727ccbb6fdb42:q1",
+            "quote": "# Frozen source excerpt: triage_desk/hosted_embeddings.py:179-194\n    def embed_query(self, question: str) -> np.ndarray:\n        if not isinstance(question, str) or not question.strip():\n            raise ValueError(\"Embedding query must be nonempty text\")\n        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n        identity = hashlib.sha256(question.encode()).hexdigest()\n        with self._query_lock:\n            if identity in self._query_cache:\n                self._query_cache.move_to_end(identity)\n                return self._query_cache[identity].copy()\n        value = self._request([question], \"query\")[0]\n        with self._query_lock:\n            self._query_cache[identity] = value.copy()\n            self._query_cache.move_to_end(identity)\n            while len(self._query_cache) > QUERY_CACHE_SIZE:\n                self._query_cache.popitem(last=False)\n        return value.copy()\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "The actual definition and default value of QUERY_CACHE_SIZE in the application."
+    ],
+    "next_steps": [
+      "Confirm the value and source of QUERY_CACHE_SIZE in the full codebase; ensure it is set to a reasonable limit.",
+      "Add logging to record when cache entries are evicted and the current cache size.",
+      "Expose a metric (e.g., cache size gauge) for monitoring cache growth in production.",
+      "Consider making QUERY_CACHE_SIZE configurable via environment variable or Streamlit config.",
+      "Document the cache behavior and its impact on memory usage in the developer guide."
+    ]
+  },
+  "independent_ai_review": null,
+  "sources": [
+    {
+      "evidence_id": "ev_9700a1cc6b7b760185c727ccbb6fdb42",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:23:47.004088+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "d4b3e52224dd2a12726f7f03bd9cbd4910032199a8d3ff848a2d7400e69d48d6",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_c24d9602c3274f3aee6bb3e50873aefd",
+      "title": "Caching overview",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/caching",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:55Z",
+      "snapshot_at": "2026-10-26T06:07:55Z",
+      "version_scope": "Official documentation snapshot at the pinned docs commit; check the user's installed version before applying guidance.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "9f2e2211121b342f85624fcadcb92b96c80f9fcdf910d31a1c57399f58e2aa4f",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_28abc0bba82b53b7005caf567d704cb4",
+      "title": "Caching overview",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/caching",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:55Z",
+      "snapshot_at": "2026-10-26T06:07:55Z",
+      "version_scope": "Official documentation snapshot at the pinned docs commit; check the user's installed version before applying guidance.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "02b97d1425511de1fb88c76b2d6d2b3c2b36346769e07b9b45761a06126f7cd7",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_f18838e48a851f6b7bdd2251daf3d9cc",
+      "title": "st.file_uploader",
+      "url": "https://docs.streamlit.io/1.66.0/develop/api-reference/widgets/st.file_uploader",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:58Z",
+      "snapshot_at": "2026-10-26T06:07:58Z",
+      "version_scope": "Official generated API reference for Streamlit 1.66.0, from the pinned docs commit; not a promise for other versions.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "dcbad11f06c8f083cdf2b8da5e77ec543ebc6404d29d28033ba29d6c1e8c91b4",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_2d77a88d47c7f4af215ec37e7cbf9d8c",
+      "title": "Widget behavior",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/widget-behavior",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:55Z",
+      "snapshot_at": "2026-10-26T06:07:55Z",
+      "version_scope": "Official documentation snapshot at the pinned docs commit; check the user's installed version before applying guidance.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "a3bbba864efd5a46209a60ae6a473279e82162ffa2902806c4df553469e786d2",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_f78bd57eaa56485841d47e0bd6b8b98c",
+      "title": "st.file_uploader",
+      "url": "https://docs.streamlit.io/1.66.0/develop/api-reference/widgets/st.file_uploader",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:58Z",
+      "snapshot_at": "2026-10-26T06:07:58Z",
+      "version_scope": "Official generated API reference for Streamlit 1.66.0, from the pinned docs commit; not a promise for other versions.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "d6dabac009fa01a60f53f0c91666821f307d9b726464c5b03e4387754e763302",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_5e73383d523aea1318128a810f479c74",
+      "title": "Run your Streamlit app",
+      "url": "https://docs.streamlit.io/develop/concepts/architecture/run-your-app",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:55Z",
+      "snapshot_at": "2026-10-26T06:07:55Z",
+      "version_scope": "Official documentation snapshot at the pinned docs commit; check the user's installed version before applying guidance.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "962dbea1efcb9097500af2e93c19aff9a5422405ea3cfea9df9ee60684aaea57",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_720169ddabe56d413fdda5db1949b887",
+      "title": "session_state not preserved when using st.switch_page",
+      "url": "https://github.com/streamlit/streamlit/issues/11115",
+      "kind": "issue",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:59Z",
+      "snapshot_at": "2026-10-26T06:07:59Z",
+      "version_scope": "Issue claims apply only to the reporter's described environment. State is a dated snapshot; closed does not establish a fix or affected-version range.",
+      "commit_sha": "",
+      "sha256": "c96f451bcbafade462dd15a249939aa3300f32700048551b4fc5db2dca77d6ca",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_180f012371759cc3dcc362de6f283884",
+      "title": "App testing example",
+      "url": "https://docs.streamlit.io/develop/concepts/app-testing/examples",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:55Z",
+      "snapshot_at": "2026-10-26T06:07:55Z",
+      "version_scope": "Official documentation snapshot at the pinned docs commit; check the user's installed version before applying guidance.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "bf7218d08e6d6f614297637d675ed93b3d6ce0c56a715e6f439a774564d97308",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_35f2d151df8c3fb2deb68173f7a16de6",
+      "title": "Get started with app testing",
+      "url": "https://docs.streamlit.io/develop/concepts/app-testing/get-started",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:55Z",
+      "snapshot_at": "2026-10-26T06:07:55Z",
+      "version_scope": "Official documentation snapshot at the pinned docs commit; check the user's installed version before applying guidance.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "0c55d7ec91decbd8f69fb718efad88ad54fbf27be66359d6f057804b26fb2480",
+      "published_at": "",
+      "acquired_at": ""
+    },
+    {
+      "evidence_id": "ev_f0934d9e86aac5faca50c5fe24845a6c",
+      "title": "Working with widgets in multipage apps",
+      "url": "https://docs.streamlit.io/develop/concepts/multipage-apps/widgets",
+      "kind": "documentation",
+      "origin": "snapshot",
+      "evidence_type": "snapshot_passage",
+      "filename": "",
+      "fetched_at": "2026-10-26T06:07:55Z",
+      "snapshot_at": "2026-10-26T06:07:55Z",
+      "version_scope": "Official documentation snapshot at the pinned docs commit; check the user's installed version before applying guidance.",
+      "commit_sha": "7a0a34742a9fe4a879fe3641f83b8136bc5448d7",
+      "sha256": "7559e272c9fa52dc70f0c146eb167942463ecf644cb14d2734d276dde193fccc",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:23:46.989473+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:23:47.001610+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "8e96b3a2e6b44ef78cd0dc15fefea0d0",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:23:47.983218+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "8e96b3a2e6b44ef78cd0dc15fefea0d0",
+      "started_at": "2026-10-30T22:23:47.989962+00:00",
+      "usage": {
+        "input_tokens": 4854,
+        "output_tokens": 144,
+        "total_tokens": 4998
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 980.58,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:23:48.960170+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "32fb8b471d794fe7a962419f3c5edba8",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:23:48.963731+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "32fb8b471d794fe7a962419f3c5edba8",
+      "started_at": "2026-10-30T22:23:48.964325+00:00",
+      "latency_ms": 2.79,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:23:48.966364+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "a121eb4a69954478b3bac9fc66652521",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:23:48.968937+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "a121eb4a69954478b3bac9fc66652521",
+      "started_at": "2026-10-30T22:23:48.969389+00:00",
+      "usage": {
+        "input_tokens": 5484,
+        "output_tokens": 101,
+        "total_tokens": 5585
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 651.07,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:23:49.621331+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "search_knowledge_base",
+      "status": "started",
+      "call_id": "12125ff3511842a68d3927548863f71d",
+      "event_id": 9,
+      "created_at": "2026-10-30T22:23:49.627510+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "search_knowledge_base",
+      "status": "ok",
+      "call_id": "12125ff3511842a68d3927548863f71d",
+      "started_at": "2026-10-30T22:23:49.628664+00:00",
+      "latency_ms": 13.9,
+      "event_id": 10,
+      "created_at": "2026-10-30T22:23:49.640807+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "3c90945235ab4ccc9987804acdfe4300",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:23:49.643557+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "3c90945235ab4ccc9987804acdfe4300",
+      "started_at": "2026-10-30T22:23:49.643992+00:00",
+      "usage": {
+        "input_tokens": 8076,
+        "output_tokens": 75,
+        "total_tokens": 8151
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 623.42,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:23:50.268672+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "search_knowledge_base",
+      "status": "started",
+      "call_id": "3d9ae0ad27d24106bf0a64e4aeb26f83",
+      "event_id": 13,
+      "created_at": "2026-10-30T22:23:50.274361+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "search_knowledge_base",
+      "status": "ok",
+      "call_id": "3d9ae0ad27d24106bf0a64e4aeb26f83",
+      "started_at": "2026-10-30T22:23:50.275097+00:00",
+      "latency_ms": 8.05,
+      "event_id": 14,
+      "created_at": "2026-10-30T22:23:50.281967+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "9db51a5541c0454cab02c7a3626cb35b",
+      "event_id": 15,
+      "created_at": "2026-10-30T22:23:50.285292+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "9db51a5541c0454cab02c7a3626cb35b",
+      "started_at": "2026-10-30T22:23:50.285740+00:00",
+      "usage": {
+        "input_tokens": 10643,
+        "output_tokens": 152,
+        "total_tokens": 10795
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 1458.1,
+      "event_id": 16,
+      "created_at": "2026-10-30T22:23:51.743671+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "grep",
+      "status": "started",
+      "call_id": "511e480d99924a8da060f1f40457cfe5",
+      "event_id": 17,
+      "created_at": "2026-10-30T22:23:51.747181+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "grep",
+      "status": "completed",
+      "call_id": "511e480d99924a8da060f1f40457cfe5",
+      "started_at": "2026-10-30T22:23:51.747711+00:00",
+      "latency_ms": 3.11,
+      "event_id": 18,
+      "created_at": "2026-10-30T22:23:51.750186+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "9f96c984f5a347009899f3af14f7e72c",
+      "event_id": 19,
+      "created_at": "2026-10-30T22:23:51.752753+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "9f96c984f5a347009899f3af14f7e72c",
+      "started_at": "2026-10-30T22:23:51.753221+00:00",
+      "usage": {
+        "input_tokens": 10799,
+        "output_tokens": 91,
+        "total_tokens": 10890
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 720.53,
+      "event_id": 20,
+      "created_at": "2026-10-30T22:23:52.474487+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "search_knowledge_base",
+      "status": "started",
+      "call_id": "542ba76ad609426b9645618b4cbf2d44",
+      "event_id": 21,
+      "created_at": "2026-10-30T22:23:52.479754+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "search_knowledge_base",
+      "status": "ok",
+      "call_id": "542ba76ad609426b9645618b4cbf2d44",
+      "started_at": "2026-10-30T22:23:52.480461+00:00",
+      "latency_ms": 11.12,
+      "event_id": 22,
+      "created_at": "2026-10-30T22:23:52.490270+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "99723e1c995d4de5b79a7db3ac3f417b",
+      "event_id": 23,
+      "created_at": "2026-10-30T22:23:52.492624+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "99723e1c995d4de5b79a7db3ac3f417b",
+      "started_at": "2026-10-30T22:23:52.492962+00:00",
+      "usage": {
+        "input_tokens": 13654,
+        "output_tokens": 371,
+        "total_tokens": 14025
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2824.1,
+      "event_id": 24,
+      "created_at": "2026-10-30T22:23:55.317797+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "grep",
+      "status": "started",
+      "call_id": "cef766c79b194b699ebee89a8665dafb",
+      "event_id": 25,
+      "created_at": "2026-10-30T22:23:55.322716+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "grep",
+      "status": "completed",
+      "call_id": "cef766c79b194b699ebee89a8665dafb",
+      "started_at": "2026-10-30T22:23:55.323631+00:00",
+      "latency_ms": 3.72,
+      "event_id": 26,
+      "created_at": "2026-10-30T22:23:55.326426+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "f544873b0a8d4e1ab580f5509bd23ebb",
+      "event_id": 27,
+      "created_at": "2026-10-30T22:23:55.330963+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "f544873b0a8d4e1ab580f5509bd23ebb",
+      "started_at": "2026-10-30T22:23:55.331581+00:00",
+      "usage": {
+        "input_tokens": 14036,
+        "output_tokens": 617,
+        "total_tokens": 14653
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4031.78,
+      "event_id": 28,
+      "created_at": "2026-10-30T22:23:59.362545+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 29,
+      "created_at": "2026-10-30T22:23:59.369142+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 30,
+      "created_at": "2026-10-30T22:23:59.370289+00:00"
+    },
+    {
+      "phase": "execution",
+      "name": "start",
+      "status": "error",
+      "error_type": "BudgetExceeded",
+      "event_id": 31,
+      "created_at": "2026-10-30T22:23:59.381908+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 7,
+    "tool_calls": 6,
+    "model_calls_by_role": {
+      "investigator": 7
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1,
+      "search_knowledge_base": 3,
+      "grep": 2
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 67546,
+      "output_tokens": 1551,
+      "total_tokens": 69097
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 12583.324,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 2,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": false,
+    "independent_review_completed": false,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": false
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-04",
+  "saved_use_case_id": "issue_investigation",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-04",
+    "metadata": {
+      "use_case_id": "issue_investigation",
+      "input_sha256": "79fe14aa9733a24faa1302c87598582c3677250f067162cc58504b0ce6f8f085",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:23:46.989473+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:23:47.001610+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "8e96b3a2e6b44ef78cd0dc15fefea0d0",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:23:47.983218+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "8e96b3a2e6b44ef78cd0dc15fefea0d0",
+        "started_at": "2026-10-30T22:23:47.989962+00:00",
+        "usage": {
+          "input_tokens": 4854,
+          "output_tokens": 144,
+          "total_tokens": 4998
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 980.58,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:23:48.960170+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "32fb8b471d794fe7a962419f3c5edba8",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:23:48.963731+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "32fb8b471d794fe7a962419f3c5edba8",
+        "started_at": "2026-10-30T22:23:48.964325+00:00",
+        "latency_ms": 2.79,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:23:48.966364+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "a121eb4a69954478b3bac9fc66652521",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:23:48.968937+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "a121eb4a69954478b3bac9fc66652521",
+        "started_at": "2026-10-30T22:23:48.969389+00:00",
+        "usage": {
+          "input_tokens": 5484,
+          "output_tokens": 101,
+          "total_tokens": 5585
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 651.07,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:23:49.621331+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "search_knowledge_base",
+        "status": "started",
+        "call_id": "12125ff3511842a68d3927548863f71d",
+        "event_id": 9,
+        "created_at": "2026-10-30T22:23:49.627510+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "search_knowledge_base",
+        "status": "ok",
+        "call_id": "12125ff3511842a68d3927548863f71d",
+        "started_at": "2026-10-30T22:23:49.628664+00:00",
+        "latency_ms": 13.9,
+        "event_id": 10,
+        "created_at": "2026-10-30T22:23:49.640807+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "3c90945235ab4ccc9987804acdfe4300",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:23:49.643557+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "3c90945235ab4ccc9987804acdfe4300",
+        "started_at": "2026-10-30T22:23:49.643992+00:00",
+        "usage": {
+          "input_tokens": 8076,
+          "output_tokens": 75,
+          "total_tokens": 8151
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 623.42,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:23:50.268672+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "search_knowledge_base",
+        "status": "started",
+        "call_id": "3d9ae0ad27d24106bf0a64e4aeb26f83",
+        "event_id": 13,
+        "created_at": "2026-10-30T22:23:50.274361+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "search_knowledge_base",
+        "status": "ok",
+        "call_id": "3d9ae0ad27d24106bf0a64e4aeb26f83",
+        "started_at": "2026-10-30T22:23:50.275097+00:00",
+        "latency_ms": 8.05,
+        "event_id": 14,
+        "created_at": "2026-10-30T22:23:50.281967+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "9db51a5541c0454cab02c7a3626cb35b",
+        "event_id": 15,
+        "created_at": "2026-10-30T22:23:50.285292+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "9db51a5541c0454cab02c7a3626cb35b",
+        "started_at": "2026-10-30T22:23:50.285740+00:00",
+        "usage": {
+          "input_tokens": 10643,
+          "output_tokens": 152,
+          "total_tokens": 10795
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 1458.1,
+        "event_id": 16,
+        "created_at": "2026-10-30T22:23:51.743671+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "grep",
+        "status": "started",
+        "call_id": "511e480d99924a8da060f1f40457cfe5",
+        "event_id": 17,
+        "created_at": "2026-10-30T22:23:51.747181+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "grep",
+        "status": "completed",
+        "call_id": "511e480d99924a8da060f1f40457cfe5",
+        "started_at": "2026-10-30T22:23:51.747711+00:00",
+        "latency_ms": 3.11,
+        "event_id": 18,
+        "created_at": "2026-10-30T22:23:51.750186+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "9f96c984f5a347009899f3af14f7e72c",
+        "event_id": 19,
+        "created_at": "2026-10-30T22:23:51.752753+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "9f96c984f5a347009899f3af14f7e72c",
+        "started_at": "2026-10-30T22:23:51.753221+00:00",
+        "usage": {
+          "input_tokens": 10799,
+          "output_tokens": 91,
+          "total_tokens": 10890
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 720.53,
+        "event_id": 20,
+        "created_at": "2026-10-30T22:23:52.474487+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "search_knowledge_base",
+        "status": "started",
+        "call_id": "542ba76ad609426b9645618b4cbf2d44",
+        "event_id": 21,
+        "created_at": "2026-10-30T22:23:52.479754+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "search_knowledge_base",
+        "status": "ok",
+        "call_id": "542ba76ad609426b9645618b4cbf2d44",
+        "started_at": "2026-10-30T22:23:52.480461+00:00",
+        "latency_ms": 11.12,
+        "event_id": 22,
+        "created_at": "2026-10-30T22:23:52.490270+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "99723e1c995d4de5b79a7db3ac3f417b",
+        "event_id": 23,
+        "created_at": "2026-10-30T22:23:52.492624+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "99723e1c995d4de5b79a7db3ac3f417b",
+        "started_at": "2026-10-30T22:23:52.492962+00:00",
+        "usage": {
+          "input_tokens": 13654,
+          "output_tokens": 371,
+          "total_tokens": 14025
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 2824.1,
+        "event_id": 24,
+        "created_at": "2026-10-30T22:23:55.317797+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "grep",
+        "status": "started",
+        "call_id": "cef766c79b194b699ebee89a8665dafb",
+        "event_id": 25,
+        "created_at": "2026-10-30T22:23:55.322716+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "grep",
+        "status": "completed",
+        "call_id": "cef766c79b194b699ebee89a8665dafb",
+        "started_at": "2026-10-30T22:23:55.323631+00:00",
+        "latency_ms": 3.72,
+        "event_id": 26,
+        "created_at": "2026-10-30T22:23:55.326426+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "f544873b0a8d4e1ab580f5509bd23ebb",
+        "event_id": 27,
+        "created_at": "2026-10-30T22:23:55.330963+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "f544873b0a8d4e1ab580f5509bd23ebb",
+        "started_at": "2026-10-30T22:23:55.331581+00:00",
+        "usage": {
+          "input_tokens": 14036,
+          "output_tokens": 617,
+          "total_tokens": 14653
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 4031.78,
+        "event_id": 28,
+        "created_at": "2026-10-30T22:23:59.362545+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 29,
+        "created_at": "2026-10-30T22:23:59.369142+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 30,
+        "created_at": "2026-10-30T22:23:59.370289+00:00"
+      },
+      {
+        "phase": "execution",
+        "name": "start",
+        "status": "error",
+        "error_type": "BudgetExceeded",
+        "event_id": 31,
+        "created_at": "2026-10-30T22:23:59.381908+00:00"
+      }
+    ]
+  }
+}

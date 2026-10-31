@@ -1,0 +1,568 @@
+{
+  "id": "WF-13",
+  "eval_id": "WF-13",
+  "use_case": "incident_triage",
+  "title": "Provider error response accounting",
+  "scenario": "happy_path",
+  "question": "Review the two controlled embedding error records. Summarize their different HTTP statuses and the recorded acceptance behavior, then propose what operational information is missing.",
+  "input": {
+    "question": "Review the two controlled embedding error records. Summarize their different HTTP statuses and the recorded acceptance behavior, then propose what operational information is missing.",
+    "version": "",
+    "context": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T19:00:00Z request=example-b component=hosted_embedding status=provider_http_error http_status=429\n2026-10-28T19:00:00Z request=example-b vectors_accepted=0 response_body_retained=false\n2026-10-28T19:00:02Z request=example-c component=hosted_embedding status=provider_http_error http_status=503\n2026-10-28T19:00:02Z request=example-c vectors_accepted=0 response_body_retained=false\n",
+    "use_case": "incident_triage"
+  },
+  "input_sha256": "95fcc43616ec69ca444d183a6467f1b53a2ab4f98e6ff3c2bfc97b81117e3389",
+  "case_definition_sha256": "98e22b44182f1157647bfd22850aaeef1892053b8510f3ed16e262a7c25fb091",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/incident_provider.log",
+    "sha256": "a1730c9926d970059b53f30d661477512af093869600a1029882a0d3d687df3b"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "http_status=429",
+      "http_status=503"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "c3129d47-2559-4eb3-9249-63b0d151bf06",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The controlled embedding error record for request example-b reports an HTTP status 429 from the provider.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_3fb41caa766d7f3538414cd0657104b5",
+            "quote_id": "ev_3fb41caa766d7f3538414cd0657104b5:q1",
+            "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T19:00:00Z request=example-b component=hosted_embedding status=provider_http_error http_status=429\n2026-10-28T19:00:00Z request=example-b vectors_accepted=0 response_body_retained=false\n2026-10-28T19:00:02Z request=example-c component=hosted_embedding status=provider_http_error http_status=503\n2026-10-28T19:00:02Z request=example-c vectors_accepted=0 response_body_retained=false\n"
+          }
+        ]
+      },
+      {
+        "statement": "The controlled embedding error record for request example-c reports an HTTP status 503 from the provider.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_3fb41caa766d7f3538414cd0657104b5",
+            "quote_id": "ev_3fb41caa766d7f3538414cd0657104b5:q1",
+            "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T19:00:00Z request=example-b component=hosted_embedding status=provider_http_error http_status=429\n2026-10-28T19:00:00Z request=example-b vectors_accepted=0 response_body_retained=false\n2026-10-28T19:00:02Z request=example-c component=hosted_embedding status=provider_http_error http_status=503\n2026-10-28T19:00:02Z request=example-c vectors_accepted=0 response_body_retained=false\n"
+          }
+        ]
+      },
+      {
+        "statement": "Both records indicate that zero vectors were accepted (vectors_accepted=0) and the response body was not retained (response_body_retained=false).",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_3fb41caa766d7f3538414cd0657104b5",
+            "quote_id": "ev_3fb41caa766d7f3538414cd0657104b5:q1",
+            "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T19:00:00Z request=example-b component=hosted_embedding status=provider_http_error http_status=429\n2026-10-28T19:00:00Z request=example-b vectors_accepted=0 response_body_retained=false\n2026-10-28T19:00:02Z request=example-c component=hosted_embedding status=provider_http_error http_status=503\n2026-10-28T19:00:02Z request=example-c vectors_accepted=0 response_body_retained=false\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "Exact request payloads and headers for the example-b and example-c embedding calls.",
+      "Configuration details of the hosted_embedding client (timeout settings, max retries).",
+      "Provider-specific error messages or response bodies accompanying the HTTP 429 and 503 statuses.",
+      "Timeline of any subsequent successful retries or recovery actions after the errors.",
+      "Impact on downstream systems or user-facing features caused by the failed embeddings."
+    ],
+    "next_steps": [
+      "Verify the retry policy and back‑off strategy configured for hosted_embedding requests to understand how the system reacts to 429 and 503 responses.",
+      "Inspect provider-side logs for the timestamps corresponding to the recorded errors to determine root causes (rate limiting vs. service outage).",
+      "Confirm whether any alerting or monitoring was triggered by these errors and review the alert details.",
+      "Check if any downstream components (e.g., vector store) received partial data despite vectors_accepted=0."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote shows request=example-b with http_status=429."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote shows request=example-c with http_status=503."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Quote shows vectors_accepted=0 and response_body_retained=false for both requests."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Diagnostic to verify retry policy is relevant to observed 429/503 errors."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Inspecting provider logs at given timestamps can clarify rate limit vs outage."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Checking alerts for these errors addresses missing monitoring information."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Verifying downstream handling despite zero vectors tests possible partial data flow."
+        }
+      ],
+      "retained_findings": 3,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows request=example-b with http_status=429."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote shows request=example-c with http_status=503."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Quote shows vectors_accepted=0 and response_body_retained=false for both requests."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Diagnostic to verify retry policy is relevant to observed 429/503 errors."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Inspecting provider logs at given timestamps can clarify rate limit vs outage."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Checking alerts for these errors addresses missing monitoring information."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Verifying downstream handling despite zero vectors tests possible partial data flow."
+      }
+    ],
+    "retained_findings": 3,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_3fb41caa766d7f3538414cd0657104b5",
+      "title": "User supplied incident notes and logs",
+      "url": "",
+      "kind": "issue",
+      "origin": "user_context",
+      "evidence_type": "incident_notes",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:24:15.562883+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "a1730c9926d970059b53f30d661477512af093869600a1029882a0d3d687df3b",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:24:15.558279+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:24:15.562225+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "b67b1d816a6246b387bdf6e916b97e01",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:24:15.656382+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "b67b1d816a6246b387bdf6e916b97e01",
+      "started_at": "2026-10-30T22:24:15.656665+00:00",
+      "usage": {
+        "input_tokens": 4986,
+        "output_tokens": 90,
+        "total_tokens": 5076
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 619.52,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:24:16.276170+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "dc264de86b1f479db3c316af186437e2",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:24:16.279338+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "dc264de86b1f479db3c316af186437e2",
+      "started_at": "2026-10-30T22:24:16.279775+00:00",
+      "latency_ms": 2.01,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:24:16.281281+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "80518815b1764b2c9892cbe328a8071b",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:24:16.284252+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "80518815b1764b2c9892cbe328a8071b",
+      "started_at": "2026-10-30T22:24:16.284656+00:00",
+      "usage": {
+        "input_tokens": 5474,
+        "output_tokens": 743,
+        "total_tokens": 6217
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3656.62,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:19.940187+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 3,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:19.945814+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:19.946986+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "2ab12562bc144ee8a75c3e4c55744701",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:19.955252+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "2ab12562bc144ee8a75c3e4c55744701",
+      "started_at": "2026-10-30T22:24:19.955580+00:00",
+      "usage": {
+        "input_tokens": 2236,
+        "output_tokens": 1245,
+        "total_tokens": 3481
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5378.57,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:24:25.333870+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 3,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:24:25.337131+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12696,
+      "output_tokens": 2078,
+      "total_tokens": 14774
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 9845.663,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 3,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 2,
+    "anchors_covered": 2,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-13",
+  "saved_use_case_id": "incident_triage",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-13",
+    "metadata": {
+      "use_case_id": "incident_triage",
+      "input_sha256": "95fcc43616ec69ca444d183a6467f1b53a2ab4f98e6ff3c2bfc97b81117e3389",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:24:15.558279+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:24:15.562225+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "b67b1d816a6246b387bdf6e916b97e01",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:24:15.656382+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "b67b1d816a6246b387bdf6e916b97e01",
+        "started_at": "2026-10-30T22:24:15.656665+00:00",
+        "usage": {
+          "input_tokens": 4986,
+          "output_tokens": 90,
+          "total_tokens": 5076
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 619.52,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:24:16.276170+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "dc264de86b1f479db3c316af186437e2",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:24:16.279338+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "dc264de86b1f479db3c316af186437e2",
+        "started_at": "2026-10-30T22:24:16.279775+00:00",
+        "latency_ms": 2.01,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:24:16.281281+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "80518815b1764b2c9892cbe328a8071b",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:24:16.284252+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "80518815b1764b2c9892cbe328a8071b",
+        "started_at": "2026-10-30T22:24:16.284656+00:00",
+        "usage": {
+          "input_tokens": 5474,
+          "output_tokens": 743,
+          "total_tokens": 6217
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 3656.62,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:19.940187+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 3,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:19.945814+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:19.946986+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "2ab12562bc144ee8a75c3e4c55744701",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:19.955252+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "2ab12562bc144ee8a75c3e4c55744701",
+        "started_at": "2026-10-30T22:24:19.955580+00:00",
+        "usage": {
+          "input_tokens": 2236,
+          "output_tokens": 1245,
+          "total_tokens": 3481
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5378.57,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:24:25.333870+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 3,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:24:25.337131+00:00"
+      }
+    ]
+  }
+}

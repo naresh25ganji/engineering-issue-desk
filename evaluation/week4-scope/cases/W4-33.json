@@ -1,0 +1,260 @@
+{
+  "id": "W4-33",
+  "scenario": "known_failure",
+  "title": "Historical strict-before-now freshness error",
+  "failure_mode": "Historical seed: evaluation/week3-context-results/report.json W3-02 retained finding 0; engineering-review.md line 8 identified the equality overstatement",
+  "source": {
+    "path": "triage_desk/freshness.py",
+    "start_line": 7,
+    "end_line": 30,
+    "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+    "quote": "def corpus_freshness(sources: list[dict], *, now: datetime | None = None, max_age_days: int = 7) -> dict:\n    if not isinstance(max_age_days, int) or isinstance(max_age_days, bool) or max_age_days < 1:\n        raise ValueError('Maximum snapshot age must be a positive number of days')\n    now = now or datetime.now(timezone.utc)\n    if now.tzinfo is None:\n        raise ValueError('Snapshot age requires a timezone-aware current time')\n    snapshots = []\n    missing = 0\n    for source in sources:\n        try:\n            snapshot = datetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise ValueError('Invalid snapshot time')\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n    oldest = min(snapshots) if snapshots else None\n    age_days = (now - oldest).total_seconds() / 86400 if oldest else None\n    status = 'unknown' if missing or not oldest else 'stale' if age_days >= max_age_days else 'current'\n    return {'status': status, 'oldest_snapshot_at': oldest.isoformat() if oldest else None,\n            'age_days': round(age_days, 2) if age_days is not None else None,\n            'max_age_days': max_age_days, 'missing_or_invalid_timestamps': missing,\n            'refresh_mode': 'manual',\n            'note': 'Snapshot age measures fetch time, not whether an upstream claim or version is still correct.'}\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The function returns status 'current' only when every source provides a timezone‑aware snapshot earlier than the current time and the oldest snapshot is younger than the configured max_age_days; otherwise it returns 'stale' if the age meets or exceeds the limit, and 'unknown' whenever any timestamp is missing or invalid.",
+        "expected_supported": false,
+        "rationale": "The complete historical statement requires snapshots earlier than now; the selected strict > check accepts equality. Its otherwise clause also overstates stale when another timestamp is invalid."
+      },
+      {
+        "statement": "A valid timezone-aware snapshot equal to now is permitted by the selected future-time guard.",
+        "expected_supported": true,
+        "rationale": "Equality does not enter the snapshot > now branch."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a regression case with snapshot_at exactly equal to now.",
+        "expected_supported": true,
+        "rationale": "This directly tests the strictness error without claiming the test ran."
+      }
+    ]
+  },
+  "status": "error",
+  "error": {
+    "type": "ReviewUnavailable",
+    "code": "invalid_reason",
+    "message": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+  },
+  "latency_seconds": 3.807764,
+  "quality_review": null,
+  "filtered_report": null,
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-33",
+      "run_name": "20261030T220348Z-b9243231",
+      "prompt_version": "scope",
+      "prompt_hash": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "e1cff5b8-b6eb-4ac7-b53f-04331d0d204a",
+      "created_at": "2026-10-30T22:04:17.661021+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "8c0069b99e5b435c931efe57f9eb97f1",
+      "event_id": 2,
+      "case_id": "e1cff5b8-b6eb-4ac7-b53f-04331d0d204a",
+      "created_at": "2026-10-30T22:04:17.663016+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "8c0069b99e5b435c931efe57f9eb97f1",
+      "started_at": "2026-10-30T22:04:17.663521+00:00",
+      "usage": {
+        "input_tokens": 1909,
+        "output_tokens": 892,
+        "total_tokens": 2801
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3783.95,
+      "event_id": 3,
+      "case_id": "e1cff5b8-b6eb-4ac7-b53f-04331d0d204a",
+      "created_at": "2026-10-30T22:04:21.447997+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "error",
+      "eval_id": "W4-33",
+      "run_name": "20261030T220348Z-b9243231",
+      "prompt_hash": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+      "prompt_version": "scope",
+      "expected": {
+        "findings": [
+          false,
+          true
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          null,
+          null
+        ],
+        "next_steps": [
+          null
+        ]
+      },
+      "scores": {
+        "valid": false,
+        "exact_match": false,
+        "expected": {
+          "findings": [
+            false,
+            true
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            null,
+            null
+          ],
+          "next_steps": [
+            null
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": false,
+            "predicted": null,
+            "correct": false,
+            "error_type": "unknown"
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": true,
+            "predicted": null,
+            "correct": false,
+            "error_type": "unknown"
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": null,
+            "correct": false,
+            "error_type": "unknown"
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 3
+      },
+      "latency_seconds": 3.807764,
+      "error": {
+        "type": "ReviewUnavailable",
+        "code": "invalid_reason",
+        "message": "Evidence reviewer execution failed; inspect local audit events and finite failure code."
+      },
+      "event_id": 4,
+      "case_id": "e1cff5b8-b6eb-4ac7-b53f-04331d0d204a",
+      "created_at": "2026-10-30T22:04:21.450812+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1909,
+      "output_tokens": 892,
+      "total_tokens": 2801
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": false,
+    "exact_match": false,
+    "expected": {
+      "findings": [
+        false,
+        true
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        null,
+        null
+      ],
+      "next_steps": [
+        null
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": false,
+        "predicted": null,
+        "correct": false,
+        "error_type": "unknown"
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": true,
+        "predicted": null,
+        "correct": false,
+        "error_type": "unknown"
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": null,
+        "correct": false,
+        "error_type": "unknown"
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 3
+  },
+  "case_id": "e1cff5b8-b6eb-4ac7-b53f-04331d0d204a",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

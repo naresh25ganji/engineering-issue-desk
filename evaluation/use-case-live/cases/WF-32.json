@@ -1,0 +1,549 @@
+{
+  "id": "WF-32",
+  "eval_id": "WF-32",
+  "use_case": "test_planning",
+  "title": "Invalid responses leave query cache empty",
+  "scenario": "happy_path",
+  "question": "Plan focused checks for response validation and cache contamination using these definitions. Distinguish malformed response fixtures from observed production responses.",
+  "input": {
+    "question": "Plan focused checks for response validation and cache contamination using these definitions. Distinguish malformed response fixtures from observed production responses.",
+    "version": "",
+    "context": "# Frozen source excerpt: tests/test_hosted_embeddings.py:89-114\ndef test_serial_batches_are_bounded_and_coverage_is_complete(source_records, tmp_path, monkeypatch):\n    requests = install_http(monkeypatch, successful)\n    index = make_index(source_records, tmp_path)\n    vectors = index.embed_documents([f\"text-{i}\" for i in range(65)])\n    assert vectors.shape == (65, 4)\n    assert [len(r[\"json\"][\"input\"]) for r in requests] == [32, 32, 1]\n    assert [r[\"input_count\"] for r in index.calls] == [32, 32, 1]\n    assert sum(r[\"usage\"][\"total_tokens\"] for r in index.calls) == 54\n\n\n@pytest.mark.parametrize(\"data\", [\n    {}, {\"data\": []}, {\"data\": [{\"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 1, \"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [True, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [\"1\", 1, 1, 1]}]},\n])\ndef test_invalid_provider_response_never_becomes_a_vector(source_records, tmp_path, monkeypatch, data):\n    install_http(monkeypatch, lambda payload, number: Response(data))\n    index = make_index(source_records, tmp_path)\n    with pytest.raises(EmbeddingUnavailable): index.embed_query(\"query\")\n    assert index.calls[-1][\"status\"] == \"invalid_response\"\n    assert not index._query_cache\n",
+    "use_case": "test_planning"
+  },
+  "input_sha256": "16db345f059bb5dbc01a04097274246683e8120c6bccd118e56c55a1c69ab575",
+  "case_definition_sha256": "0b28f9d7417ea73eb8341885455ba3b96443d3611b827f3e4f31aa9c8acdcebc",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/embedding_test_definitions.py",
+    "sha256": "6f4bf275ef68dd7df3e1044a325653ea8d5489203d9ee25ec11bca8ba5aecd90"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "assert not index._query_cache"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "1f144680-8b27-4bdc-889b-926bf8c756e7",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The test `test_invalid_provider_response_never_becomes_a_vector` verifies that a malformed provider response causes `EmbeddingUnavailable` to be raised, the call status is set to \"invalid_response\", and the query cache remains empty.",
+        "category": "tests",
+        "severity": "high",
+        "support": [
+          {
+            "evidence_id": "ev_c85131bfa9459f39fbed2672c86aeae9",
+            "quote_id": "ev_c85131bfa9459f39fbed2672c86aeae9:q2",
+            "quote": ", 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [True, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [\"1\", 1, 1, 1]}]},\n])\ndef test_invalid_provider_response_never_becomes_a_vector(source_records, tmp_path, monkeypatch, data):\n    install_http(monkeypatch, lambda payload, number: Response(data))\n    index = make_index(source_records, tmp_path)\n    with pytest.raises(EmbeddingUnavailable): index.embed_query(\"query\")\n    assert index.calls[-1][\"status\"] == \"invalid_response\"\n    assert not index._query_cache\n"
+          }
+        ]
+      },
+      {
+        "statement": "The test `test_serial_batches_are_bounded_and_coverage_is_complete` checks that embedding requests are split into batches of sizes 32, 32, and 1, and that total token usage matches expectations.",
+        "category": "tests",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_c85131bfa9459f39fbed2672c86aeae9",
+            "quote_id": "ev_c85131bfa9459f39fbed2672c86aeae9:q1",
+            "quote": "# Frozen source excerpt: tests/test_hosted_embeddings.py:89-114\ndef test_serial_batches_are_bounded_and_coverage_is_complete(source_records, tmp_path, monkeypatch):\n    requests = install_http(monkeypatch, successful)\n    index = make_index(source_records, tmp_path)\n    vectors = index.embed_documents([f\"text-{i}\" for i in range(65)])\n    assert vectors.shape == (65, 4)\n    assert [len(r[\"json\"][\"input\"]) for r in requests] == [32, 32, 1]\n    assert [r[\"input_count\"] for r in index.calls] == [32, 32, 1]\n    assert sum(r[\"usage\"][\"total_tokens\"] for r in index.calls) == 54\n\n\n@pytest.mark.parametrize(\"data\", [\n    {}, {\"data\": []}, {\"data\": [{\"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 1, \"embedding\": [1, 1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"nan\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [1, 1, 1, float(\"inf\")]}]},\n    {\"data\": [{\"index\": 0, \"embedding\": [0, 0, 0, 0]}]},\n    {\"data\":"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "Exact expected embedding dimension and numeric type constraints for production responses.",
+      "Details of the cache implementation (e.g., key format, eviction policy) to verify that cache entries are correctly identified and cleared on invalid responses."
+    ],
+    "next_steps": [
+      "Add parametrized tests that feed each malformed response fixture (e.g., missing fields, wrong embedding length, NaN/Inf values) to the embedding index and assert that `EmbeddingUnavailable` is raised, `status` is \"invalid_response\", and no entry is added to the query cache."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote 0 shows the test raises EmbeddingUnavailable, checks status \"invalid_response\", and asserts empty query cache."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote 1 asserts batch sizes [32,32,1] and total token usage sum, matching the statement."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Evidence of malformed response handling supports adding parametrized tests to verify same behavior."
+        },
+        {
+          "index": 1,
+          "supported": false,
+          "reason": "No evidence of real API calls, status \"ok\", or cache population for valid responses."
+        },
+        {
+          "index": 2,
+          "supported": false,
+          "reason": "Evidence does not cover cache state after a successful query nor isolation behavior."
+        },
+        {
+          "index": 3,
+          "supported": false,
+          "reason": "No evidence of cache retention across valid then invalid responses for same query."
+        },
+        {
+          "index": 4,
+          "supported": false,
+          "reason": "Evidence shows handling of malformed data but does not indicate missing validation checks to justify adding them."
+        }
+      ],
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 4,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote 0 shows the test raises EmbeddingUnavailable, checks status \"invalid_response\", and asserts empty query cache."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote 1 asserts batch sizes [32,32,1] and total token usage sum, matching the statement."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Evidence of malformed response handling supports adding parametrized tests to verify same behavior."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "No evidence of real API calls, status \"ok\", or cache population for valid responses."
+      },
+      {
+        "index": 2,
+        "supported": false,
+        "reason": "Evidence does not cover cache state after a successful query nor isolation behavior."
+      },
+      {
+        "index": 3,
+        "supported": false,
+        "reason": "No evidence of cache retention across valid then invalid responses for same query."
+      },
+      {
+        "index": 4,
+        "supported": false,
+        "reason": "Evidence shows handling of malformed data but does not indicate missing validation checks to justify adding them."
+      }
+    ],
+    "retained_findings": 2,
+    "removed_findings": 0,
+    "removed_next_steps": 4,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_c85131bfa9459f39fbed2672c86aeae9",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:25:06.180419+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "6f4bf275ef68dd7df3e1044a325653ea8d5489203d9ee25ec11bca8ba5aecd90",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:25:06.175877+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:25:06.179806+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "d881d0001e3e4c8a83daef74b72df278",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:25:06.208488+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "d881d0001e3e4c8a83daef74b72df278",
+      "started_at": "2026-10-30T22:25:06.208826+00:00",
+      "usage": {
+        "input_tokens": 4971,
+        "output_tokens": 130,
+        "total_tokens": 5101
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 926.05,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:25:07.136071+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "3820bc0b74c9462488c2963f2c1c324e",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:25:07.141614+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "3820bc0b74c9462488c2963f2c1c324e",
+      "started_at": "2026-10-30T22:25:07.142551+00:00",
+      "latency_ms": 4.46,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:25:07.145715+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "c5b860dd90a2478e973698d55b996920",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:25:07.151835+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "c5b860dd90a2478e973698d55b996920",
+      "started_at": "2026-10-30T22:25:07.152707+00:00",
+      "usage": {
+        "input_tokens": 5998,
+        "output_tokens": 1195,
+        "total_tokens": 7193
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 6639.02,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:25:13.789908+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:25:13.796407+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:25:13.797647+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "447253a470474b7dbdd38ba705daec2e",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:25:13.805818+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "447253a470474b7dbdd38ba705daec2e",
+      "started_at": "2026-10-30T22:25:13.806219+00:00",
+      "usage": {
+        "input_tokens": 2914,
+        "output_tokens": 1778,
+        "total_tokens": 4692
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 7718.36,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:25:21.524258+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 4,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:25:21.528319+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13883,
+      "output_tokens": 3103,
+      "total_tokens": 16986
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 15426.917,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 2,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-32",
+  "saved_use_case_id": "test_planning",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-32",
+    "metadata": {
+      "use_case_id": "test_planning",
+      "input_sha256": "16db345f059bb5dbc01a04097274246683e8120c6bccd118e56c55a1c69ab575",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:25:06.175877+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:25:06.179806+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "d881d0001e3e4c8a83daef74b72df278",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:25:06.208488+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "d881d0001e3e4c8a83daef74b72df278",
+        "started_at": "2026-10-30T22:25:06.208826+00:00",
+        "usage": {
+          "input_tokens": 4971,
+          "output_tokens": 130,
+          "total_tokens": 5101
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 926.05,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:25:07.136071+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "3820bc0b74c9462488c2963f2c1c324e",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:25:07.141614+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "3820bc0b74c9462488c2963f2c1c324e",
+        "started_at": "2026-10-30T22:25:07.142551+00:00",
+        "latency_ms": 4.46,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:25:07.145715+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "c5b860dd90a2478e973698d55b996920",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:25:07.151835+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "c5b860dd90a2478e973698d55b996920",
+        "started_at": "2026-10-30T22:25:07.152707+00:00",
+        "usage": {
+          "input_tokens": 5998,
+          "output_tokens": 1195,
+          "total_tokens": 7193
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 6639.02,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:25:13.789908+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:25:13.796407+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:25:13.797647+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "447253a470474b7dbdd38ba705daec2e",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:25:13.805818+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "447253a470474b7dbdd38ba705daec2e",
+        "started_at": "2026-10-30T22:25:13.806219+00:00",
+        "usage": {
+          "input_tokens": 2914,
+          "output_tokens": 1778,
+          "total_tokens": 4692
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 7718.36,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:25:21.524258+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 2,
+        "removed_findings": 0,
+        "removed_next_steps": 4,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:25:21.528319+00:00"
+      }
+    ]
+  }
+}

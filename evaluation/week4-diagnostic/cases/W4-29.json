@@ -1,0 +1,294 @@
+{
+  "id": "W4-29",
+  "scenario": "edge",
+  "title": "Constructor excerpt leaves configuration helper unknown",
+  "failure_mode": "Call site confused with complete helper implementation",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 58,
+    "end_line": 70,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "    def __init__(self, chunks: list[dict], cache_dir: Path, model: str | None = None,\n                 dimensions: int = HOSTED_DIMENSIONS):\n        requested = (os.environ.get('TRIAGE_EMBEDDING_MODEL') or HOSTED_MODEL_NAME) if model is None else model\n        if not isinstance(requested, str) or not _MODEL_ID.fullmatch(requested):\n            raise ValueError(\"Embedding model must be a nonempty provider model identifier\")\n        if isinstance(dimensions, bool) or not isinstance(dimensions, int) or dimensions < 1:\n            raise ValueError(\"Embedding dimensions must be a positive integer\")\n        super().__init__(chunks, cache_dir)\n        original_fingerprint = self.fingerprint\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable as exc:\n            raise EmbeddingUnavailable(\"Hosted embeddings are not configured. Set the provider key/base using the existing runtime configuration; no local fallback was selected.\") from None\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The constructor rejects boolean, non-integer, and less-than-one dimensions before the selected _configuration() call.",
+        "expected_supported": true,
+        "rationale": "The dimension guard precedes the selected _configuration call."
+      },
+      {
+        "statement": "The configuration helper has no credential validation anywhere in its implementation.",
+        "expected_supported": false,
+        "rationale": "The excerpt shows a call to the helper and exception handling, but not the helper implementation."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Inspect _configuration before diagnosing missing credential validation.",
+        "expected_supported": true,
+        "rationale": "This requests the omitted helper needed to assess the claim."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.028881,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code shows boolean, non-int, and <1 dimension checks occur before the _configuration() call."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote does not include _configuration implementation; cannot confirm absence of credential validation."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Suggests inspecting _configuration, a reasonable diagnostic given no evidence about its validation."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The constructor rejects boolean, non-integer, and less-than-one dimensions before the selected _configuration() call.",
+        "support": [
+          {
+            "evidence_id": "W4-29-source",
+            "quote_id": "W4-29-quote",
+            "quote": "    def __init__(self, chunks: list[dict], cache_dir: Path, model: str | None = None,\n                 dimensions: int = HOSTED_DIMENSIONS):\n        requested = (os.environ.get('TRIAGE_EMBEDDING_MODEL') or HOSTED_MODEL_NAME) if model is None else model\n        if not isinstance(requested, str) or not _MODEL_ID.fullmatch(requested):\n            raise ValueError(\"Embedding model must be a nonempty provider model identifier\")\n        if isinstance(dimensions, bool) or not isinstance(dimensions, int) or dimensions < 1:\n            raise ValueError(\"Embedding dimensions must be a positive integer\")\n        super().__init__(chunks, cache_dir)\n        original_fingerprint = self.fingerprint\n        try:\n            key, _, base = _configuration()\n        except GenerationUnavailable as exc:\n            raise EmbeddingUnavailable(\"Hosted embeddings are not configured. Set the provider key/base using the existing runtime configuration; no local fallback was selected.\") from None\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Inspect _configuration before diagnosing missing credential validation."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-29",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_version": "diagnostic",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "70b97226-bde7-4592-981f-ddef079d60b2",
+      "created_at": "2026-10-30T22:03:32.814692+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "598766302e3b477d8f01b4ab194c5d1d",
+      "event_id": 2,
+      "case_id": "70b97226-bde7-4592-981f-ddef079d60b2",
+      "created_at": "2026-10-30T22:03:32.815842+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "598766302e3b477d8f01b4ab194c5d1d",
+      "started_at": "2026-10-30T22:03:32.816165+00:00",
+      "usage": {
+        "input_tokens": 1605,
+        "output_tokens": 604,
+        "total_tokens": 2209
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3009.49,
+      "event_id": 3,
+      "case_id": "70b97226-bde7-4592-981f-ddef079d60b2",
+      "created_at": "2026-10-30T22:03:35.826708+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-29",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "prompt_version": "diagnostic",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.028881,
+      "error": null,
+      "event_id": 4,
+      "case_id": "70b97226-bde7-4592-981f-ddef079d60b2",
+      "created_at": "2026-10-30T22:03:35.829397+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1605,
+      "output_tokens": 604,
+      "total_tokens": 2209
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "70b97226-bde7-4592-981f-ddef079d60b2",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

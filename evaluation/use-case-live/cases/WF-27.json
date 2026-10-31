@@ -1,0 +1,517 @@
+{
+  "id": "WF-27",
+  "eval_id": "WF-27",
+  "use_case": "change_review",
+  "title": "Equal count with wrong verdict indices",
+  "scenario": "edge",
+  "question": "Review this proposed simplification of verdict coverage validation. Consider duplicate or wrong indices with the expected count, and propose regression inputs. Do not claim a test has run.",
+  "input": {
+    "question": "Review this proposed simplification of verdict coverage validation. Consider duplicate or wrong indices with the expected count, and propose regression inputs. Do not claim a test has run.",
+    "version": "",
+    "context": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_review.py\n+++ b/triage_desk/agent_review.py\n@@ -1,14 +1,14 @@\n def _validate_verdicts(verdicts: list[EvidenceVerdict], count: int) -> list[dict]:\n     indices = [verdict.index for verdict in verdicts]\n-    if len(indices) != count or set(indices) != set(range(count)):\n+    if len(indices) != count:\n         raise ReviewUnavailable(code='incomplete_coverage')\n     normalized = []\n     for verdict in verdicts:\n         # Removing paired single-backtick delimiters changes presentation only.\n         # Check the resulting text so split/hidden URLs and HTML remain unsafe.\n         # Fences, doubled or unmatched delimiters remain and are rejected.\n         reason = _INLINE_CODE.sub(r'\\1', verdict.reason).strip()\n         if not reason or _REASON_UNSAFE.search(reason):\n             raise ReviewUnavailable(code='invalid_reason')\n         normalized.append({**verdict.model_dump(), 'reason': reason})\n     return sorted(normalized, key=lambda verdict: verdict['index'])\n",
+    "use_case": "change_review"
+  },
+  "input_sha256": "350536c7fbc46f97938bacbf0684711420c1b1d8a479b24eab0aa8050f121e52",
+  "case_definition_sha256": "4fb7c1ffcc80f81ebba39dd6b48ab4bbf20d8930a254799e8d7b4821e04f8873",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/verdict_coverage.diff",
+    "sha256": "65afb5946a0643897b6fcd0ed5f8d7933feda5011a03fa21441244b7b5e9ee79"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "-    if len(indices) != count or set(indices) != set(range(count)):"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "91c30bc0-dd84-4e7c-ba2c-82ad45fa6fd2",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "Because the duplicate‑index and out‑of‑range checks were removed, a verdict list containing duplicate indices or an index outside the expected range will incorrectly pass validation as long as its length equals the expected count.",
+        "category": "correctness",
+        "severity": "high",
+        "support": [
+          {
+            "evidence_id": "ev_02e05c2f2634102ec24b1d015a777049",
+            "quote_id": "ev_02e05c2f2634102ec24b1d015a777049:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_review.py\n+++ b/triage_desk/agent_review.py\n@@ -1,14 +1,14 @@\n def _validate_verdicts(verdicts: list[EvidenceVerdict], count: int) -> list[dict]:\n     indices = [verdict.index for verdict in verdicts]\n-    if len(indices) != count or set(indices) != set(range(count)):\n+    if len(indices) != count:\n         raise ReviewUnavailable(code='incomplete_coverage')\n     normalized = []\n     for verdict in verdicts:\n         # Removing paired single-backtick delimiters changes presentation only.\n         # Check the resulting text so split/hidden URLs and HTML remain unsafe.\n         # Fences, doubled or unmatched delimiters remain and are rejected.\n         reason = _INLINE_CODE.sub(r'\\1', verdict.reason).strip()\n         if not reason or _REASON_UNSAFE.search(reason):\n             raise ReviewUnavailable(code='invalid_reason')\n         normalized.append({**verdict.model_dump(), 'reason': reason})"
+          }
+        ]
+      },
+      {
+        "statement": "The simplified validation only checks that the number of verdict indices matches the expected count, removing the check that the set of indices exactly matches the range 0..count-1.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_02e05c2f2634102ec24b1d015a777049",
+            "quote_id": "ev_02e05c2f2634102ec24b1d015a777049:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_review.py\n+++ b/triage_desk/agent_review.py\n@@ -1,14 +1,14 @@\n def _validate_verdicts(verdicts: list[EvidenceVerdict], count: int) -> list[dict]:\n     indices = [verdict.index for verdict in verdicts]\n-    if len(indices) != count or set(indices) != set(range(count)):\n+    if len(indices) != count:\n         raise ReviewUnavailable(code='incomplete_coverage')\n     normalized = []\n     for verdict in verdicts:\n         # Removing paired single-backtick delimiters changes presentation only.\n         # Check the resulting text so split/hidden URLs and HTML remain unsafe.\n         # Fences, doubled or unmatched delimiters remain and are rejected.\n         reason = _INLINE_CODE.sub(r'\\1', verdict.reason).strip()\n         if not reason or _REASON_UNSAFE.search(reason):\n             raise ReviewUnavailable(code='invalid_reason')\n         normalized.append({**verdict.model_dump(), 'reason': reason})"
+          }
+        ]
+      }
+    ],
+    "missing_information": [],
+    "next_steps": [
+      "Add regression tests that construct a verdict list with duplicate indices (e.g., two verdicts both having index 0) and verify that ReviewUnavailable is raised.",
+      "Add regression tests that construct a verdict list with an index outside the expected range (e.g., an index equal to count) and verify that ReviewUnavailable is raised."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote shows validation now only checks len(indices)!=count, removing set(indices)!=set(range(count))."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "With set check removed, duplicate or out-of-range indices satisfy len check and will incorrectly pass validation."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Creating a verdict list with duplicate indices and expecting ReviewUnavailable tests the missing duplicate check."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Creating a verdict list with an out-of-range index and expecting ReviewUnavailable tests the missing range check."
+        }
+      ],
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows validation now only checks len(indices)!=count, removing set(indices)!=set(range(count))."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "With set check removed, duplicate or out-of-range indices satisfy len check and will incorrectly pass validation."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Creating a verdict list with duplicate indices and expecting ReviewUnavailable tests the missing duplicate check."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Creating a verdict list with an out-of-range index and expecting ReviewUnavailable tests the missing range check."
+      }
+    ],
+    "retained_findings": 2,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_02e05c2f2634102ec24b1d015a777049",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:24:51.016780+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "65afb5946a0643897b6fcd0ed5f8d7933feda5011a03fa21441244b7b5e9ee79",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:24:51.012319+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:24:51.016084+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "e171b9af1bc549ecb66667611b388d16",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:24:51.115055+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "e171b9af1bc549ecb66667611b388d16",
+      "started_at": "2026-10-30T22:24:51.115433+00:00",
+      "usage": {
+        "input_tokens": 4996,
+        "output_tokens": 92,
+        "total_tokens": 5088
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 649.25,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:24:51.765878+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "cbabe656f3d5419592f942f7289f180b",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:24:51.771309+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "cbabe656f3d5419592f942f7289f180b",
+      "started_at": "2026-10-30T22:24:51.772432+00:00",
+      "latency_ms": 4.82,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:24:51.775802+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "ede74c312e144bcaa6aea82a0632cc2b",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:24:51.780373+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "ede74c312e144bcaa6aea82a0632cc2b",
+      "started_at": "2026-10-30T22:24:51.781276+00:00",
+      "usage": {
+        "input_tokens": 5691,
+        "output_tokens": 669,
+        "total_tokens": 6360
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4547.7,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:56.328808+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:56.339795+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:56.341670+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "ea9a2be1e77942c8a4d5ed1f9eb4d1ba",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:56.354182+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "ea9a2be1e77942c8a4d5ed1f9eb4d1ba",
+      "started_at": "2026-10-30T22:24:56.354647+00:00",
+      "usage": {
+        "input_tokens": 2291,
+        "output_tokens": 874,
+        "total_tokens": 3165
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4101.35,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:25:00.456790+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:25:00.465619+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12978,
+      "output_tokens": 1635,
+      "total_tokens": 14613
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 9516.715,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 2,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-27",
+  "saved_use_case_id": "change_review",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-27",
+    "metadata": {
+      "use_case_id": "change_review",
+      "input_sha256": "350536c7fbc46f97938bacbf0684711420c1b1d8a479b24eab0aa8050f121e52",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:24:51.012319+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:24:51.016084+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "e171b9af1bc549ecb66667611b388d16",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:24:51.115055+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "e171b9af1bc549ecb66667611b388d16",
+        "started_at": "2026-10-30T22:24:51.115433+00:00",
+        "usage": {
+          "input_tokens": 4996,
+          "output_tokens": 92,
+          "total_tokens": 5088
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 649.25,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:24:51.765878+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "cbabe656f3d5419592f942f7289f180b",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:24:51.771309+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "cbabe656f3d5419592f942f7289f180b",
+        "started_at": "2026-10-30T22:24:51.772432+00:00",
+        "latency_ms": 4.82,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:24:51.775802+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "ede74c312e144bcaa6aea82a0632cc2b",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:24:51.780373+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "ede74c312e144bcaa6aea82a0632cc2b",
+        "started_at": "2026-10-30T22:24:51.781276+00:00",
+        "usage": {
+          "input_tokens": 5691,
+          "output_tokens": 669,
+          "total_tokens": 6360
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 4547.7,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:56.328808+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:56.339795+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:56.341670+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "ea9a2be1e77942c8a4d5ed1f9eb4d1ba",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:56.354182+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "ea9a2be1e77942c8a4d5ed1f9eb4d1ba",
+        "started_at": "2026-10-30T22:24:56.354647+00:00",
+        "usage": {
+          "input_tokens": 2291,
+          "output_tokens": 874,
+          "total_tokens": 3165
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 4101.35,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:25:00.456790+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 2,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:25:00.465619+00:00"
+      }
+    ]
+  }
+}

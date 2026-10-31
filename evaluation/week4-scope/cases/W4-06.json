@@ -1,0 +1,294 @@
+{
+  "id": "W4-06",
+  "scenario": "happy_path",
+  "title": "Naive and future snapshot handling",
+  "failure_mode": "Invalid input disclosure versus silent repair",
+  "source": {
+    "path": "triage_desk/freshness.py",
+    "start_line": 15,
+    "end_line": 22,
+    "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+    "quote": "    for source in sources:\n        try:\n            snapshot = datetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise ValueError('Invalid snapshot time')\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "A snapshot with no timezone or a time greater than now enters a ValueError path that increments missing.",
+        "expected_supported": true,
+        "rationale": "The comparison and caught ValueError branch are selected."
+      },
+      {
+        "statement": "The function silently adds UTC timezone information to every naive snapshot.",
+        "expected_supported": false,
+        "rationale": "The quote raises for missing tzinfo and has no such repair operation."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose checks for a missing snapshot_at field, a naive timestamp, and a future timestamp.",
+        "expected_supported": true,
+        "rationale": "These checks target the parsing and invalid-time branches."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 4.298921,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code raises ValueError when tzinfo is None or snapshot > now, caught and increments missing."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code does not add UTC timezone to naive snapshots; it only replaces 'Z' and raises ValueError for tzinfo None."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposal aligns with observed checks for missing field, naive and future timestamps in the code."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "A snapshot with no timezone or a time greater than now enters a ValueError path that increments missing.",
+        "support": [
+          {
+            "evidence_id": "W4-06-source",
+            "quote_id": "W4-06-quote",
+            "quote": "    for source in sources:\n        try:\n            snapshot = datetime.fromisoformat(str(source.get('snapshot_at', '')).replace('Z', '+00:00'))\n            if snapshot.tzinfo is None or snapshot > now:\n                raise ValueError('Invalid snapshot time')\n            snapshots.append(snapshot)\n        except (ValueError, TypeError):\n            missing += 1\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose checks for a missing snapshot_at field, a naive timestamp, and a future timestamp."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-06",
+      "run_name": "20261030T220348Z-b9243231",
+      "prompt_version": "scope",
+      "prompt_hash": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "e40e0cb8-ecf3-4802-b240-529d402fc720",
+      "created_at": "2026-10-30T22:03:51.549888+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "84c811296992472894ed76c492e2d595",
+      "event_id": 2,
+      "case_id": "e40e0cb8-ecf3-4802-b240-529d402fc720",
+      "created_at": "2026-10-30T22:03:51.551813+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "84c811296992472894ed76c492e2d595",
+      "started_at": "2026-10-30T22:03:51.553309+00:00",
+      "usage": {
+        "input_tokens": 1577,
+        "output_tokens": 942,
+        "total_tokens": 2519
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4275.14,
+      "event_id": 3,
+      "case_id": "e40e0cb8-ecf3-4802-b240-529d402fc720",
+      "created_at": "2026-10-30T22:03:55.828360+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-06",
+      "run_name": "20261030T220348Z-b9243231",
+      "prompt_hash": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+      "prompt_version": "scope",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 4.298921,
+      "error": null,
+      "event_id": 4,
+      "case_id": "e40e0cb8-ecf3-4802-b240-529d402fc720",
+      "created_at": "2026-10-30T22:03:55.831256+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1577,
+      "output_tokens": 942,
+      "total_tokens": 2519
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "e40e0cb8-ecf3-4802-b240-529d402fc720",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

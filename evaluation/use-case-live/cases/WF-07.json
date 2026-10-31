@@ -1,0 +1,517 @@
+{
+  "id": "WF-07",
+  "eval_id": "WF-07",
+  "use_case": "issue_investigation",
+  "title": "Publication rejects local code evidence",
+  "scenario": "edge",
+  "question": "An engineer wants to include supplied local code in a public PR summary. Explain the origin restrictions in this helper; do not publish anything.",
+  "input": {
+    "question": "An engineer wants to include supplied local code in a public PR summary. Explain the origin restrictions in this helper; do not publish anything.",
+    "version": "",
+    "context": "# Frozen source excerpt: triage_desk/review_publication.py:56-73\ndef _public_source(source):\n    if source.get('origin') not in {'snapshot', 'live'} or source.get('kind') not in {\n        'documentation', 'issue', 'release', 'contributing', 'code',\n    }:\n        raise ValueError('Publication supports must contain public source evidence only.')\n    url = canonical_http_url(source.get('url', ''))\n    parts = urlsplit(url)\n    if (parts.scheme != 'https' or parts.hostname not in _PUBLIC_HOSTS\n            or parts.port not in (None, 443) or parts.query):\n        raise ValueError('Publication supports need approved public HTTPS source links.')\n    path = unquote(parts.path)\n    if (parts.hostname == 'github.com' and\n            (not (path == '/streamlit/streamlit' or path.startswith('/streamlit/streamlit/'))\n             or '\\\\' in path or any(part in {'.', '..'} for part in path.split('/')))):\n        raise ValueError('GitHub publication evidence is limited to streamlit/streamlit.')\n    if hashlib.sha256(source['text'].encode()).hexdigest() != source.get('sha256'):\n        raise ValueError('The registered public evidence failed its integrity check.')\n    return url\n",
+    "use_case": "issue_investigation"
+  },
+  "input_sha256": "5a6d751e03875bd41c344825556564be65b761ca2b5ad1752742fe999b606a0c",
+  "case_definition_sha256": "b081fca68273c5ac2af04cf4672b4786cac1d71c2c9c466ddf30da40f4f88bd1",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/public_evidence.py",
+    "sha256": "f3e3cace6b5d945e4d3ea4b65896d35c7334930ffc7bab0e466a1b0d88fb53db"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "Publication supports must contain public source evidence only."
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "c7b76645-2c5a-43b2-8124-394f4d929365",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The helper _public_source only accepts sources whose 'origin' is either 'snapshot' or 'live' and whose 'kind' is one of 'documentation', 'issue', 'release', 'contributing', or 'code'.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_c899589563369da42b4ccb34d2bac4fc",
+            "quote_id": "ev_c899589563369da42b4ccb34d2bac4fc:q1",
+            "quote": "# Frozen source excerpt: triage_desk/review_publication.py:56-73\ndef _public_source(source):\n    if source.get('origin') not in {'snapshot', 'live'} or source.get('kind') not in {\n        'documentation', 'issue', 'release', 'contributing', 'code',\n    }:\n        raise ValueError('Publication supports must contain public source evidence only.')\n    url = canonical_http_url(source.get('url', ''))\n    parts = urlsplit(url)\n    if (parts.scheme != 'https' or parts.hostname not in _PUBLIC_HOSTS\n            or parts.port not in (None, 443) or parts.query):\n        raise ValueError('Publication supports need approved public HTTPS source links.')\n    path = unquote(parts.path)\n    if (parts.hostname == 'github.com' and\n            (not (path == '/streamlit/streamlit' or path.startswith('/streamlit/streamlit/'))\n             or '\\\\' in path or any(part in {'.', '..'} for part in path.split('/')))):\n        raise ValueError('GitHub publication evidence is limited to streamlit/streamlit.')"
+          }
+        ]
+      },
+      {
+        "statement": "It also requires the source URL to be an HTTPS link to an approved public host, with no port other than 443, no query string, and for GitHub URLs the path must be exactly '/streamlit/streamlit' or start with that prefix, without backslashes or '.'/'..' path components.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_c899589563369da42b4ccb34d2bac4fc",
+            "quote_id": "ev_c899589563369da42b4ccb34d2bac4fc:q2",
+            "quote": "\\' in path or any(part in {'.', '..'} for part in path.split('/')))):\n        raise ValueError('GitHub publication evidence is limited to streamlit/streamlit.')\n    if hashlib.sha256(source['text'].encode()).hexdigest() != source.get('sha256'):\n        raise ValueError('The registered public evidence failed its integrity check.')\n    return url\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [],
+    "next_steps": [
+      "Ensure any local code included in a public PR summary is packaged as a source with origin 'snapshot' or 'live' and kind 'code'.",
+      "Provide a HTTPS URL that points to an approved public host (e.g., github.com/streamlit/streamlit) and conforms to the path restrictions."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Code checks origin in {'snapshot','live'} and kind in the listed set, matching the statement."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Code enforces HTTPS, approved host, port 443/None, no query, and GitHub path rules as described."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Using origin 'snapshot'/'live' and kind 'code' meets the helper's acceptance criteria."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Providing an HTTPS URL to an approved host with required path satisfies the URL restrictions."
+        }
+      ],
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code checks origin in {'snapshot','live'} and kind in the listed set, matching the statement."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Code enforces HTTPS, approved host, port 443/None, no query, and GitHub path rules as described."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Using origin 'snapshot'/'live' and kind 'code' meets the helper's acceptance criteria."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Providing an HTTPS URL to an approved host with required path satisfies the URL restrictions."
+      }
+    ],
+    "retained_findings": 2,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_c899589563369da42b4ccb34d2bac4fc",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:23:57.973078+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "f3e3cace6b5d945e4d3ea4b65896d35c7334930ffc7bab0e466a1b0d88fb53db",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:23:57.967060+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:23:57.972209+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "ab3202eee2144658ab6945dcd6889a5e",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:23:58.003091+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "ab3202eee2144658ab6945dcd6889a5e",
+      "started_at": "2026-10-30T22:23:58.003459+00:00",
+      "usage": {
+        "input_tokens": 4838,
+        "output_tokens": 105,
+        "total_tokens": 4943
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 830.58,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:23:58.835046+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "23351be31f9843b2bdf05b32f7f9bee4",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:23:58.841170+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "23351be31f9843b2bdf05b32f7f9bee4",
+      "started_at": "2026-10-30T22:23:58.842247+00:00",
+      "latency_ms": 4.8,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:23:58.845561+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "8cdd5a9861604e8990e11a96d7b94686",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:23:58.851569+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "8cdd5a9861604e8990e11a96d7b94686",
+      "started_at": "2026-10-30T22:23:58.852368+00:00",
+      "usage": {
+        "input_tokens": 5578,
+        "output_tokens": 624,
+        "total_tokens": 6202
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2959.02,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:01.811731+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:01.821552+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:01.822938+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "e6a86a13f5f946d48cc3f95aea14564c",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:01.832954+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "e6a86a13f5f946d48cc3f95aea14564c",
+      "started_at": "2026-10-30T22:24:01.833315+00:00",
+      "usage": {
+        "input_tokens": 2479,
+        "output_tokens": 896,
+        "total_tokens": 3375
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3861.68,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:24:05.695776+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:24:05.705022+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12895,
+      "output_tokens": 1625,
+      "total_tokens": 14520
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 7807.049,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 2,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-07",
+  "saved_use_case_id": "issue_investigation",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-07",
+    "metadata": {
+      "use_case_id": "issue_investigation",
+      "input_sha256": "5a6d751e03875bd41c344825556564be65b761ca2b5ad1752742fe999b606a0c",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:23:57.967060+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:23:57.972209+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "ab3202eee2144658ab6945dcd6889a5e",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:23:58.003091+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "ab3202eee2144658ab6945dcd6889a5e",
+        "started_at": "2026-10-30T22:23:58.003459+00:00",
+        "usage": {
+          "input_tokens": 4838,
+          "output_tokens": 105,
+          "total_tokens": 4943
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 830.58,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:23:58.835046+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "23351be31f9843b2bdf05b32f7f9bee4",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:23:58.841170+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "23351be31f9843b2bdf05b32f7f9bee4",
+        "started_at": "2026-10-30T22:23:58.842247+00:00",
+        "latency_ms": 4.8,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:23:58.845561+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "8cdd5a9861604e8990e11a96d7b94686",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:23:58.851569+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "8cdd5a9861604e8990e11a96d7b94686",
+        "started_at": "2026-10-30T22:23:58.852368+00:00",
+        "usage": {
+          "input_tokens": 5578,
+          "output_tokens": 624,
+          "total_tokens": 6202
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 2959.02,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:01.811731+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:01.821552+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:01.822938+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "e6a86a13f5f946d48cc3f95aea14564c",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:01.832954+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "e6a86a13f5f946d48cc3f95aea14564c",
+        "started_at": "2026-10-30T22:24:01.833315+00:00",
+        "usage": {
+          "input_tokens": 2479,
+          "output_tokens": 896,
+          "total_tokens": 3375
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 3861.68,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:24:05.695776+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 2,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:24:05.705022+00:00"
+      }
+    ]
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "id": "W4-31",
+  "scenario": "edge",
+  "title": "Empty content skips a model without granting approval",
+  "failure_mode": "No-content state confused with human approval",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 360,
+    "end_line": 369,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "def test_completely_empty_report_skips_model_but_keeps_missing_information(context):\n    report = {'findings': [], 'next_steps': [], 'missing_information': ['Ask for a reproduction.'], 'sources': []}\n    model = ReviewerModel(replies=[])\n    budget = budget_for(context)\n    result = review_report(report, model, budget)\n    assert result['report'] == {key: report[key] for key in ('findings', 'next_steps', 'missing_information')}\n    assert result['quality_review']['status'] == 'no_content'\n    assert budget.model_calls == 0\n    assert model.calls == []\n    assert model.schemas == []\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The completely empty-report test expects no_content status and zero reviewer model calls while preserving missing_information.",
+        "expected_supported": true,
+        "rationale": "These are literal assertions in the selected test."
+      },
+      {
+        "statement": "Skipping the model automatically marks the report human-approved.",
+        "expected_supported": false,
+        "rationale": "The selected assertions report no_content and no approval action or approval field."
+      }
+    ],
+    "next_steps": []
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 1.662766,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "The test code asserts status 'no_content', zero model calls, and that missing_information is retained, matching the claim."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "The code does not show any 'human-approved' marking; it only checks 'no_content' status."
+      }
+    ],
+    "next_step_verdicts": [],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The completely empty-report test expects no_content status and zero reviewer model calls while preserving missing_information.",
+        "support": [
+          {
+            "evidence_id": "W4-31-source",
+            "quote_id": "W4-31-quote",
+            "quote": "def test_completely_empty_report_skips_model_but_keeps_missing_information(context):\n    report = {'findings': [], 'next_steps': [], 'missing_information': ['Ask for a reproduction.'], 'sources': []}\n    model = ReviewerModel(replies=[])\n    budget = budget_for(context)\n    result = review_report(report, model, budget)\n    assert result['report'] == {key: report[key] for key in ('findings', 'next_steps', 'missing_information')}\n    assert result['quality_review']['status'] == 'no_content'\n    assert budget.model_calls == 0\n    assert model.calls == []\n    assert model.schemas == []\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-31",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_version": "diagnostic",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "a88be424-578a-4359-8ac1-deff39ba0c93",
+      "created_at": "2026-10-30T22:03:34.284337+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "e214408c44b64839a1d4ed70219be2ee",
+      "event_id": 2,
+      "case_id": "a88be424-578a-4359-8ac1-deff39ba0c93",
+      "created_at": "2026-10-30T22:03:34.285356+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "e214408c44b64839a1d4ed70219be2ee",
+      "started_at": "2026-10-30T22:03:34.285653+00:00",
+      "usage": {
+        "input_tokens": 1501,
+        "output_tokens": 364,
+        "total_tokens": 1865
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 1650.39,
+      "event_id": 3,
+      "case_id": "a88be424-578a-4359-8ac1-deff39ba0c93",
+      "created_at": "2026-10-30T22:03:35.935961+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-31",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "prompt_version": "diagnostic",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": []
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": []
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": []
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": []
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 1.662766,
+      "error": null,
+      "event_id": 4,
+      "case_id": "a88be424-578a-4359-8ac1-deff39ba0c93",
+      "created_at": "2026-10-30T22:03:35.936876+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1501,
+      "output_tokens": 364,
+      "total_tokens": 1865
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": []
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": []
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "a88be424-578a-4359-8ac1-deff39ba0c93",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

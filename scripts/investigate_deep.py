@@ -35,6 +35,7 @@ from triage_desk.agent_tools import build_investigation_tools
 from triage_desk.cases import CaseStore
 from triage_desk.core import TriageDesk
 from triage_desk.deep_investigation import AgentSettings, InvestigationService
+from triage_desk.use_cases import USE_CASES
 
 
 class _CLIError(ValueError):
@@ -50,7 +51,9 @@ def build_parser() -> argparse.ArgumentParser:
     question.add_argument('--question')
     question.add_argument('--question-file', type=Path, help='UTF-8 issue report, at most 4500 characters.')
     start.add_argument('--version', default='')
-    start.add_argument('--code-file', type=Path, help='Optional UTF-8 reproduction or code, at most 16000 characters.')
+    start.add_argument('--use-case', choices=tuple(profile.id for profile in USE_CASES),
+                       default='issue_investigation', help='Engineering workflow (saved with the case).')
+    start.add_argument('--code-file', type=Path, help='Optional UTF-8 code, diff, criteria, or incident notes; at most 16000 characters.')
     start.add_argument('--repository-context', action='store_true',
                        help='Allow bounded static reads of app.py and triage_desk Python files; selected content is sent to Fireworks.')
     start.add_argument('--review-memory', action='store_true',
@@ -96,6 +99,8 @@ def _read_text(path: Path, maximum: int, label: str) -> str:
 def _summary(case: dict) -> dict:
     report = case.get('report') or {}
     return {'case_id': case['case_id'], 'status': case['status'],
+            'use_case_id': case.get('use_case_id', 'issue_investigation'),
+            'use_case_version': case.get('use_case_version', 1),
             'error': case.get('error', ''), 'findings_count': len(report.get('findings', []))}
 
 
@@ -107,7 +112,8 @@ def _show(store: CaseStore, case_id: str) -> dict:
                      'snapshot_at', 'version_scope', 'commit_sha', 'sha256',
                      'evidence_type', 'published_at', 'acquired_at', 'base_sha', 'filename', 'truncated')
     event_fields = ('event_id', 'phase', 'name', 'status', 'started_at', 'latency_ms',
-                    'error_type', 'error_code', 'evidence_count', 'specialist', 'usage', 'usage_reported', 'findings', 'revision')
+                    'error_type', 'error_code', 'evidence_count', 'specialist', 'usage', 'usage_reported', 'findings', 'revision',
+                    'reviewer_prompt_version')
     return {**_summary(case), 'repository_context': case.get('repository_context', False), 'memory_context': case.get('memory_context', False), 'report': case.get('report'),
             'provenance': [{key: source.get(key, '') for key in source_fields}
                            for source in store.evidence(case_id)],
@@ -233,6 +239,8 @@ def dispatch(args: argparse.Namespace) -> dict | list:
         options = {'repository_context': True} if args.repository_context else {}
         if args.review_memory:
             options['memory_context'] = True
+        if args.use_case != 'issue_investigation':
+            options['use_case'] = args.use_case
         case = service.start(question, args.version, code, **options)
     elif args.command == 'retry':
         case = service.retry(args.case_id)

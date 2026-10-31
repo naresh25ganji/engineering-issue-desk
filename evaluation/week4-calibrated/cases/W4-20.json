@@ -1,0 +1,294 @@
+{
+  "id": "W4-20",
+  "scenario": "happy_path",
+  "title": "Question and version are untrusted context",
+  "failure_mode": "Scope context versus factual evidence",
+  "source": {
+    "path": "tests/test_agent_review.py",
+    "start_line": 168,
+    "end_line": 192,
+    "sha256": "3480386932dbbe54ec9de601dc1417ed02ee50c58484528c0a5d1ead21b6b2c0",
+    "quote": "def test_original_trigger_and_reported_version_are_explicit_untrusted_review_context(context):\n    question = 'My uploaded CSV disappears when I select the preview checkbox. Investigate that checkbox event.'\n    request_context = {'question': question, 'reported_version': '1.50.0', 'code_context': 'OMITTED EXTRA CODE'}\n\n    def capture(messages):\n        system = messages[0].content\n        payload = json.loads(messages[1].content)\n        assert payload['untrusted_request_context'] == {\n            'available': True, 'is_factual_evidence': False,\n            'question': question, 'reported_version': '1.50.0',\n        }\n        assert 'User assertions are\\nnot factual evidence' in system\n        assert 'original question and reported version' in system\n        assert 'Compare proposed remedies with that reported trigger' in system\n        assert 'Source URLs are provenance only: do not fetch' in system\n        assert 'OMITTED EXTRA CODE' not in messages[1].content\n        assert [item['quote'] for item in payload['selected_quotes']] == [DOCS, CODE]\n        return response({'finding_verdicts': [verdict(0), verdict(1)],\n                         'next_step_verdicts': [verdict(0), verdict(1)]})\n\n    model = ReviewerModel(replies=[capture])\n    review_report(context[2], model, budget_for(context), context=request_context)\n    assert len(model.calls) == 1\n    # Context is sent deliberately to the reviewer, never copied into audit events.\n    assert question not in json.dumps(context[0].events(context[1]))\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The test passes the original question and reported version to the reviewer as context explicitly marked is_factual_evidence false.",
+        "expected_supported": true,
+        "rationale": "The payload assertion includes both fields and the false flag."
+      },
+      {
+        "statement": "The original question is automatically promoted into a verified source quote by the tested payload.",
+        "expected_supported": false,
+        "rationale": "The selected payload treats it as separate untrusted request context and preserves selected DOCS and CODE quotes."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Inspect a captured reviewer request to ensure extra code_context is omitted and the requested trigger remains in untrusted context.",
+        "expected_supported": true,
+        "rationale": "Those are the explicit selected assertions in this offline test."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.909398,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote asserts payload['untrusted_request_context'] includes the original question and reported_version and marks is_factual_evidence false."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote does not show the question being promoted to a verified source quote; no evidence of such promotion."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote checks that extra code_context is omitted and that untrusted_request_context retains the trigger, matching the proposed inspection."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The test passes the original question and reported version to the reviewer as context explicitly marked is_factual_evidence false.",
+        "support": [
+          {
+            "evidence_id": "W4-20-source",
+            "quote_id": "W4-20-quote",
+            "quote": "def test_original_trigger_and_reported_version_are_explicit_untrusted_review_context(context):\n    question = 'My uploaded CSV disappears when I select the preview checkbox. Investigate that checkbox event.'\n    request_context = {'question': question, 'reported_version': '1.50.0', 'code_context': 'OMITTED EXTRA CODE'}\n\n    def capture(messages):\n        system = messages[0].content\n        payload = json.loads(messages[1].content)\n        assert payload['untrusted_request_context'] == {\n            'available': True, 'is_factual_evidence': False,\n            'question': question, 'reported_version': '1.50.0',\n        }\n        assert 'User assertions are\\nnot factual evidence' in system\n        assert 'original question and reported version' in system\n        assert 'Compare proposed remedies with that reported trigger' in system\n        assert 'Source URLs are provenance only: do not fetch' in system\n        assert 'OMITTED EXTRA CODE' not in messages[1].content\n        assert [item['quote'] for item in payload['selected_quotes']] == [DOCS, CODE]\n        return response({'finding_verdicts': [verdict(0), verdict(1)],\n                         'next_step_verdicts': [verdict(0), verdict(1)]})\n\n    model = ReviewerModel(replies=[capture])\n    review_report(context[2], model, budget_for(context), context=request_context)\n    assert len(model.calls) == 1\n    # Context is sent deliberately to the reviewer, never copied into audit events.\n    assert question not in json.dumps(context[0].events(context[1]))\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Inspect a captured reviewer request to ensure extra code_context is omitted and the requested trigger remains in untrusted context."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-20",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "23f9ca43-b613-4c14-9ce5-5bbf76c9aef6",
+      "created_at": "2026-10-30T22:06:28.401325+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "5566c8fa244645f79ec4e871610875cc",
+      "event_id": 2,
+      "case_id": "23f9ca43-b613-4c14-9ce5-5bbf76c9aef6",
+      "created_at": "2026-10-30T22:06:28.402371+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "5566c8fa244645f79ec4e871610875cc",
+      "started_at": "2026-10-30T22:06:28.402626+00:00",
+      "usage": {
+        "input_tokens": 2280,
+        "output_tokens": 648,
+        "total_tokens": 2928
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2896.99,
+      "event_id": 3,
+      "case_id": "23f9ca43-b613-4c14-9ce5-5bbf76c9aef6",
+      "created_at": "2026-10-30T22:06:31.299475+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-20",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.909398,
+      "error": null,
+      "event_id": 4,
+      "case_id": "23f9ca43-b613-4c14-9ce5-5bbf76c9aef6",
+      "created_at": "2026-10-30T22:06:31.300177+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2280,
+      "output_tokens": 648,
+      "total_tokens": 2928
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "23f9ca43-b613-4c14-9ce5-5bbf76c9aef6",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

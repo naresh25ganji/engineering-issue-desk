@@ -1,0 +1,294 @@
+{
+  "id": "W4-23",
+  "scenario": "edge",
+  "title": "Abstention is not defect-free certification",
+  "failure_mode": "Empty report confused with quality certification",
+  "source": {
+    "path": "evaluation/week3-verified-results/engineering-review.md",
+    "start_line": 9,
+    "end_line": 11,
+    "sha256": "92c208522fdcbca3d57efc4205687be759de809859a1481fa6fa234b93deb737",
+    "quote": "| W3-01, reviews.py | The separate reviewer removed both findings and both remedies. The selected quotations did not show all filtering logic claimed, and the proposed fixes assumed a multi-process deployment that was not established. The empty report asks for deployment details. This demonstrates filtering and abstention; it does not establish that the module has no defects. The reviewer may be overly conservative about standard threading.Lock semantics when no authoritative reference is selected. |\n| W3-02, freshness.py | The retained statements match the inspected checks: positive non-boolean integer age, timezone-aware current time, invalid naive/future snapshots counted as missing, and stale age at or above the threshold. A snapshot equal to now is accepted. Proposed boundary tests are not claimed as run by the agent. Findings are sorted medium before low; AI verdict indices refer to the original draft order. |\n| W3-03, hosted_embeddings.py | Both draft findings were removed because the selected excerpts did not establish every HTTP/response validation or cache-invalidation claim. The remaining proposal is to document the observed fingerprint composition. No missing-key, error-leak, cache-defect, or successful runtime behavior is established by this handoff. |\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The selected inspection records removal of both W3-01 findings and explicitly says the empty report does not establish the module has no defects.",
+        "expected_supported": true,
+        "rationale": "This is an attributed description of the visible engineering note, not independent validation."
+      },
+      {
+        "statement": "W3-01 was independently certified defect-free because its final findings list was empty.",
+        "expected_supported": false,
+        "rationale": "The selected note explicitly rejects that conclusion and says deployment details were missing."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Request deployment details before applying a remedy that assumes multiple processes.",
+        "expected_supported": true,
+        "rationale": "The note identifies that missing prerequisite for the rejected remedies."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 3.732109,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote says reviewer removed findings and that empty report does not establish module has no defects."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote explicitly states empty report does not prove defect-free, contradicting claim."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote notes multi-process assumption not established; requesting deployment details before remedy is a valid diagnostic."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The selected inspection records removal of both W3-01 findings and explicitly says the empty report does not establish the module has no defects.",
+        "support": [
+          {
+            "evidence_id": "W4-23-source",
+            "quote_id": "W4-23-quote",
+            "quote": "| W3-01, reviews.py | The separate reviewer removed both findings and both remedies. The selected quotations did not show all filtering logic claimed, and the proposed fixes assumed a multi-process deployment that was not established. The empty report asks for deployment details. This demonstrates filtering and abstention; it does not establish that the module has no defects. The reviewer may be overly conservative about standard threading.Lock semantics when no authoritative reference is selected. |\n| W3-02, freshness.py | The retained statements match the inspected checks: positive non-boolean integer age, timezone-aware current time, invalid naive/future snapshots counted as missing, and stale age at or above the threshold. A snapshot equal to now is accepted. Proposed boundary tests are not claimed as run by the agent. Findings are sorted medium before low; AI verdict indices refer to the original draft order. |\n| W3-03, hosted_embeddings.py | Both draft findings were removed because the selected excerpts did not establish every HTTP/response validation or cache-invalidation claim. The remaining proposal is to document the observed fingerprint composition. No missing-key, error-leak, cache-defect, or successful runtime behavior is established by this handoff. |\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Request deployment details before applying a remedy that assumes multiple processes."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-23",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_version": "diagnostic",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "05fb3feb-9dcf-46a5-92bc-d1c336a41244",
+      "created_at": "2026-10-30T22:03:27.511244+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "352b786dfc5e4e86bf71ba9cca8e03e6",
+      "event_id": 2,
+      "case_id": "05fb3feb-9dcf-46a5-92bc-d1c336a41244",
+      "created_at": "2026-10-30T22:03:27.512375+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "352b786dfc5e4e86bf71ba9cca8e03e6",
+      "started_at": "2026-10-30T22:03:27.512704+00:00",
+      "usage": {
+        "input_tokens": 1643,
+        "output_tokens": 667,
+        "total_tokens": 2310
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3713.52,
+      "event_id": 3,
+      "case_id": "05fb3feb-9dcf-46a5-92bc-d1c336a41244",
+      "created_at": "2026-10-30T22:03:31.227016+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-23",
+      "run_name": "20261030T220308Z-8c6c8ab9",
+      "prompt_hash": "72d8412cf178e439e96dca3ac87ff0b0951e4d1160639f72fc2ac3710dd6ab26",
+      "prompt_version": "diagnostic",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 3.732109,
+      "error": null,
+      "event_id": 4,
+      "case_id": "05fb3feb-9dcf-46a5-92bc-d1c336a41244",
+      "created_at": "2026-10-30T22:03:31.229475+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1643,
+      "output_tokens": 667,
+      "total_tokens": 2310
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "05fb3feb-9dcf-46a5-92bc-d1c336a41244",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

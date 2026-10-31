@@ -1,0 +1,283 @@
+{
+  "id": "W4-02",
+  "scenario": "happy_path",
+  "title": "Latest-per-run outcome summary",
+  "failure_mode": "User outcomes are not model accuracy",
+  "source": {
+    "path": "triage_desk/reviews.py",
+    "start_line": 26,
+    "end_line": 41,
+    "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+    "quote": "def outcome_summary(path: Path) -> dict:\n    latest = {}\n    if Path(path).exists():\n        for line in Path(path).read_text().splitlines():\n            try:\n                record = json.loads(line)\n                if record.get('outcome') in OUTCOMES:\n                    latest[record['run_id']] = record\n            except (ValueError, TypeError, KeyError):\n                continue\n    first = [row for row in latest.values() if row.get('first_contact')]\n    resolved = sum(row['outcome'] == 'resolved' for row in first)\n    return {'reviewed_runs': len(latest), 'reviewed_first_contacts': len(first),\n            'user_reported_resolved_first_contacts': resolved,\n            'user_reported_first_contact_resolution': resolved / len(first) if first else None,\n            'note': 'User outcome labels on reviewed first contacts only; not an automated quality score or a claim about unreviewed users.'}\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The summary assigns each accepted record to latest by run_id, so a later accepted record replaces an earlier accepted record for that run.",
+        "expected_supported": true,
+        "rationale": "The assignment occurs while iterating the file lines."
+      },
+      {
+        "statement": "The returned resolution fraction is an automated quality score for all users.",
+        "expected_supported": false,
+        "rationale": "The note limits the fraction to user labels on reviewed first contacts and explicitly excludes an automated score."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose a fixture with two accepted records for one run to check which outcome enters the summary.",
+        "expected_supported": true,
+        "rationale": "This tests the visible replacement mechanism and makes no executed-result claim."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 6.161191,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": false,
+        "reason": "Quote shows later record overwrites earlier per run_id, but does not specify 'accepted' records; qualifier unsupported."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Note explicitly says not an automated quality score for all users, contradicting claim."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Test aligns with code behavior of overwriting per run_id; appropriate diagnostic."
+      }
+    ],
+    "retained_findings": 0,
+    "removed_findings": 2,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [],
+    "next_steps": [
+      "Propose a fixture with two accepted records for one run to check which outcome enters the summary."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-02",
+      "run_name": "20261030T215930Z-8b2288dc",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "7d9177bd-1b3d-41e5-ab65-0af6becac2b9",
+      "created_at": "2026-10-30T21:59:30.956627+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "4d5e599ac7c143ab875a04ece06794d7",
+      "event_id": 2,
+      "case_id": "7d9177bd-1b3d-41e5-ab65-0af6becac2b9",
+      "created_at": "2026-10-30T21:59:30.958360+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "4d5e599ac7c143ab875a04ece06794d7",
+      "started_at": "2026-10-30T21:59:30.958747+00:00",
+      "usage": {
+        "input_tokens": 1471,
+        "output_tokens": 973,
+        "total_tokens": 2444
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5722.08,
+      "event_id": 3,
+      "case_id": "7d9177bd-1b3d-41e5-ab65-0af6becac2b9",
+      "created_at": "2026-10-30T21:59:36.681430+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-02",
+      "run_name": "20261030T215930Z-8b2288dc",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          false,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": false,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            false,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": false,
+            "correct": false,
+            "error_type": "false_negative"
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 1,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 6.161191,
+      "error": null,
+      "event_id": 4,
+      "case_id": "7d9177bd-1b3d-41e5-ab65-0af6becac2b9",
+      "created_at": "2026-10-30T21:59:36.683929+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1471,
+      "output_tokens": 973,
+      "total_tokens": 2444
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": false,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        false,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": false,
+        "correct": false,
+        "error_type": "false_negative"
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 1,
+    "unknown_verdicts": 0
+  },
+  "case_id": "7d9177bd-1b3d-41e5-ab65-0af6becac2b9",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

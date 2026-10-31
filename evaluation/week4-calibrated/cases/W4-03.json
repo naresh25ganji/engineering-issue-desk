@@ -1,0 +1,294 @@
+{
+  "id": "W4-03",
+  "scenario": "happy_path",
+  "title": "First-contact coercion is visible",
+  "failure_mode": "Coercion is not strict type validation",
+  "source": {
+    "path": "triage_desk/reviews.py",
+    "start_line": 14,
+    "end_line": 23,
+    "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+    "quote": "def save_outcome(path: Path, run_id: str, outcome: str, *, first_contact: bool = True) -> None:\n    if not re.fullmatch(r'[a-f0-9]{32}', run_id) or outcome not in OUTCOMES:\n        raise ValueError('Choose a valid run and outcome')\n    record = {'run_id': run_id, 'outcome': outcome, 'first_contact': bool(first_contact),\n              'reviewed_at': datetime.now(timezone.utc).isoformat()}\n    path = Path(path)\n    with _LOCK:\n        path.parent.mkdir(parents=True, exist_ok=True)\n        with path.open('a', encoding='utf-8') as stream:\n            stream.write(json.dumps(record) + '\\n')\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "save_outcome stores bool(first_contact) in the record.",
+        "expected_supported": true,
+        "rationale": "The record construction uses that exact conversion."
+      },
+      {
+        "statement": "The selected code rejects all non-boolean first_contact values with ValueError.",
+        "expected_supported": false,
+        "rationale": "The validation branch checks run_id and outcome; first_contact is coerced rather than strictly checked here."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose checking how a nonempty string and an empty string for first_contact are serialized.",
+        "expected_supported": true,
+        "rationale": "The check targets the explicit boolean conversion without claiming it was run."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 4.564449,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code assigns first_contact: bool(first_contact) in the record"
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code only validates run_id and outcome; no ValueError for non-boolean first_contact"
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed test can verify how nonempty and empty strings are converted to bool and serialized"
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "save_outcome stores bool(first_contact) in the record.",
+        "support": [
+          {
+            "evidence_id": "W4-03-source",
+            "quote_id": "W4-03-quote",
+            "quote": "def save_outcome(path: Path, run_id: str, outcome: str, *, first_contact: bool = True) -> None:\n    if not re.fullmatch(r'[a-f0-9]{32}', run_id) or outcome not in OUTCOMES:\n        raise ValueError('Choose a valid run and outcome')\n    record = {'run_id': run_id, 'outcome': outcome, 'first_contact': bool(first_contact),\n              'reviewed_at': datetime.now(timezone.utc).isoformat()}\n    path = Path(path)\n    with _LOCK:\n        path.parent.mkdir(parents=True, exist_ok=True)\n        with path.open('a', encoding='utf-8') as stream:\n            stream.write(json.dumps(record) + '\\n')\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose checking how a nonempty string and an empty string for first_contact are serialized."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-03",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_version": "calibrated",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "efd704c0-d1cb-4aa9-b3c1-15d47c11ad0d",
+      "created_at": "2026-10-30T22:06:09.644018+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "aa36faf44d9c451fb911cf8e9811e269",
+      "event_id": 2,
+      "case_id": "efd704c0-d1cb-4aa9-b3c1-15d47c11ad0d",
+      "created_at": "2026-10-30T22:06:09.654563+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "aa36faf44d9c451fb911cf8e9811e269",
+      "started_at": "2026-10-30T22:06:09.654909+00:00",
+      "usage": {
+        "input_tokens": 2069,
+        "output_tokens": 698,
+        "total_tokens": 2767
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 3969.89,
+      "event_id": 3,
+      "case_id": "efd704c0-d1cb-4aa9-b3c1-15d47c11ad0d",
+      "created_at": "2026-10-30T22:06:13.622065+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-03",
+      "run_name": "20261030T220609Z-cd93dd0e",
+      "prompt_hash": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+      "prompt_version": "calibrated",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 4.564449,
+      "error": null,
+      "event_id": 4,
+      "case_id": "efd704c0-d1cb-4aa9-b3c1-15d47c11ad0d",
+      "created_at": "2026-10-30T22:06:13.624728+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 2069,
+      "output_tokens": 698,
+      "total_tokens": 2767
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "efd704c0-d1cb-4aa9-b3c1-15d47c11ad0d",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

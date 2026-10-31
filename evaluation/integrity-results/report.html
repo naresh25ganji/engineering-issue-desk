@@ -1,0 +1,1130 @@
+<!doctype html><meta charset="utf-8"><title>Report integrity checks</title><style>body{font:16px system-ui;max-width:1100px;margin:40px auto}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style><h1>Report and citation integrity</h1><p>Deterministic structural checks. These scores do not measure factual accuracy or entailment.</p><pre>{
+  &quot;report_kind&quot;: &quot;evidence_integrity&quot;,
+  &quot;schema_version&quot;: 1,
+  &quot;execution_mode&quot;: &quot;deterministic&quot;,
+  &quot;manifest&quot;: {
+    &quot;run_id&quot;: &quot;20261030T222209Z-1c24896e&quot;,
+    &quot;created_at&quot;: &quot;2026-10-30T22:22:09.050171+00:00&quot;,
+    &quot;dataset_sha256&quot;: &quot;e746a216b7b41e5972b445246ff4e0adf930a0059bdfc1c5f12fa84ddfbdc4fa&quot;,
+    &quot;validator_sha256&quot;: &quot;3b871da7a905562b47dab1269e043934017d23a78e3086716280f742109d2d8d&quot;,
+    &quot;runner_sha256&quot;: &quot;890bd6edb6ca60f393a97cc36a3e882d35f0eacd9f9e85d7eca662fb9dac06fc&quot;,
+    &quot;model_calls&quot;: 0
+  },
+  &quot;summary&quot;: {
+    &quot;scheduled_cases&quot;: 30,
+    &quot;passed_cases&quot;: 30,
+    &quot;failed_cases&quot;: 0,
+    &quot;acceptance_match_rate&quot;: 1.0,
+    &quot;valid_accepted&quot;: 7,
+    &quot;valid_denominator&quot;: 7,
+    &quot;invalid_rejected&quot;: 23,
+    &quot;invalid_denominator&quot;: 23,
+    &quot;p95_latency_ms&quot;: 0.488333,
+    &quot;model_calls&quot;: 0
+  },
+  &quot;measurement_limits&quot;: [
+    &quot;Structural and literal citation integrity only, not factual accuracy or entailment.&quot;,
+    &quot;A matching citation attached to an unrelated claim is intentionally accepted by this layer.&quot;,
+    &quot;An empty findings list is schema-valid; it does not establish task completion or usefulness.&quot;,
+    &quot;Controlled synthetic fixtures, no model, provider, or network calls.&quot;
+  ],
+  &quot;sources&quot;: [
+    {
+      &quot;title&quot;: &quot;Controlled fixture 1&quot;,
+      &quot;text&quot;: &quot;The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n&quot;,
+      &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;
+    },
+    {
+      &quot;title&quot;: &quot;Controlled fixture 2&quot;,
+      &quot;text&quot;: &quot;The second worker keeps its own isolated queue. Unicode label: δ.\n&quot;,
+      &quot;evidence_id&quot;: &quot;ev_30cd9c48e7c161c06174321f05993341&quot;
+    }
+  ],
+  &quot;results&quot;: [
+    {
+      &quot;id&quot;: &quot;CI-01&quot;,
+      &quot;operation&quot;: &quot;valid_id&quot;,
+      &quot;expected_acceptance&quot;: true,
+      &quot;title&quot;: &quot;Application quote ID&quot;,
+      &quot;category&quot;: &quot;valid&quot;,
+      &quot;observed_acceptance&quot;: true,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: null,
+      &quot;elapsed_ms&quot;: 0.438333,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-02&quot;,
+      &quot;operation&quot;: &quot;valid_legacy&quot;,
+      &quot;expected_acceptance&quot;: true,
+      &quot;title&quot;: &quot;Exact legacy quote&quot;,
+      &quot;category&quot;: &quot;valid&quot;,
+      &quot;observed_acceptance&quot;: true,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: null,
+      &quot;elapsed_ms&quot;: 0.41975,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote&quot;: &quot;The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-03&quot;,
+      &quot;operation&quot;: &quot;valid_hydrated&quot;,
+      &quot;expected_acceptance&quot;: true,
+      &quot;title&quot;: &quot;ID and matching hydrated quote&quot;,
+      &quot;category&quot;: &quot;valid&quot;,
+      &quot;observed_acceptance&quot;: true,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: null,
+      &quot;elapsed_ms&quot;: 0.382625,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;,
+                &quot;quote&quot;: &quot;The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-04&quot;,
+      &quot;operation&quot;: &quot;valid_unicode&quot;,
+      &quot;expected_acceptance&quot;: true,
+      &quot;title&quot;: &quot;Exact Unicode quote&quot;,
+      &quot;category&quot;: &quot;valid&quot;,
+      &quot;observed_acceptance&quot;: true,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: null,
+      &quot;elapsed_ms&quot;: 0.344,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note contains a Unicode label.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_30cd9c48e7c161c06174321f05993341&quot;,
+                &quot;quote&quot;: &quot;The second worker keeps its own isolated queue. Unicode label: δ.\n&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-05&quot;,
+      &quot;operation&quot;: &quot;unrelated_claim&quot;,
+      &quot;expected_acceptance&quot;: true,
+      &quot;title&quot;: &quot;A real quote does not prove the claim&quot;,
+      &quot;category&quot;: &quot;scope_limit&quot;,
+      &quot;observed_acceptance&quot;: true,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: null,
+      &quot;elapsed_ms&quot;: 0.414208,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;Every deployed service has been independently proven defect free.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-06&quot;,
+      &quot;operation&quot;: &quot;empty_report&quot;,
+      &quot;expected_acceptance&quot;: true,
+      &quot;title&quot;: &quot;Empty findings remain schema-valid&quot;,
+      &quot;category&quot;: &quot;scope_limit&quot;,
+      &quot;observed_acceptance&quot;: true,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: null,
+      &quot;elapsed_ms&quot;: 0.450542,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-07&quot;,
+      &quot;operation&quot;: &quot;two_sources&quot;,
+      &quot;expected_acceptance&quot;: true,
+      &quot;title&quot;: &quot;Two distinct source citations&quot;,
+      &quot;category&quot;: &quot;valid&quot;,
+      &quot;observed_acceptance&quot;: true,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: null,
+      &quot;elapsed_ms&quot;: 0.42,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              },
+              {
+                &quot;evidence_id&quot;: &quot;ev_30cd9c48e7c161c06174321f05993341&quot;,
+                &quot;quote_id&quot;: &quot;ev_30cd9c48e7c161c06174321f05993341:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-08&quot;,
+      &quot;operation&quot;: &quot;unknown_source&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Unknown evidence identity&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation refers to unregistered evidence&quot;,
+      &quot;elapsed_ms&quot;: 0.426667,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_unknown&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-09&quot;,
+      &quot;operation&quot;: &quot;unknown_quote&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Invented quote identity&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation quote ID does not belong to its registered evidence&quot;,
+      &quot;elapsed_ms&quot;: 0.396541,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q999&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-10&quot;,
+      &quot;operation&quot;: &quot;wrong_source&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Quote ID belongs to another source&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation quote ID does not belong to its registered evidence&quot;,
+      &quot;elapsed_ms&quot;: 0.416959,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_30cd9c48e7c161c06174321f05993341:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-11&quot;,
+      &quot;operation&quot;: &quot;mismatched_hydration&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;ID with rewritten quote text&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation quote does not exactly match its selected quote ID&quot;,
+      &quot;elapsed_ms&quot;: 0.335916,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;,
+                &quot;quote&quot;: &quot;The worker retries a failed request at most ten times.\nThe timeout is set to 30 seconds.\n&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-12&quot;,
+      &quot;operation&quot;: &quot;changed_punctuation&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Punctuation is not literal&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation quote is not an exact part of its registered source&quot;,
+      &quot;elapsed_ms&quot;: 0.372334,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote&quot;: &quot;The worker retries a failed request at most twice!\nThe timeout is set to 30 seconds.\n&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-13&quot;,
+      &quot;operation&quot;: &quot;blank_quote&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Blank legacy quote&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation needs a bounded, nonempty literal quote&quot;,
+      &quot;elapsed_ms&quot;: 0.488333,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote&quot;: &quot; &quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-14&quot;,
+      &quot;operation&quot;: &quot;short_quote&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Quote below minimum length&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation needs a bounded, nonempty literal quote&quot;,
+      &quot;elapsed_ms&quot;: 0.37,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote&quot;: &quot;The worker&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-15&quot;,
+      &quot;operation&quot;: &quot;long_quote&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Quote above maximum length&quot;,
+      &quot;category&quot;: &quot;reference&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation needs a bounded, nonempty literal quote&quot;,
+      &quot;elapsed_ms&quot;: 0.323459,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote&quot;: &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-16&quot;,
+      &quot;operation&quot;: &quot;extra_support_field&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Unknown support field&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation must select an evidence ID and a quote ID or legacy literal quote&quot;,
+      &quot;elapsed_ms&quot;: 0.301417,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;,
+                &quot;trusted&quot;: true
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-17&quot;,
+      &quot;operation&quot;: &quot;duplicate_support&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Repeated citation in a finding&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Finding 1 repeats a citation&quot;,
+      &quot;elapsed_ms&quot;: 0.388083,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              },
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-18&quot;,
+      &quot;operation&quot;: &quot;missing_support&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Finding without support&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Finding 1 needs at least one exact supporting quote&quot;,
+      &quot;elapsed_ms&quot;: 0.45475,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: []
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-19&quot;,
+      &quot;operation&quot;: &quot;extra_report_field&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Unknown report field&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Report must contain only findings, next_steps, and missing_information&quot;,
+      &quot;elapsed_ms&quot;: 0.000834,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ],
+        &quot;approved&quot;: true
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-20&quot;,
+      &quot;operation&quot;: &quot;extra_finding_field&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Unknown finding field&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Finding 1 has an invalid structure&quot;,
+      &quot;elapsed_ms&quot;: 0.346458,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ],
+            &quot;verified&quot;: true
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-21&quot;,
+      &quot;operation&quot;: &quot;unknown_category&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Unsupported category&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Finding 1 has an unknown category&quot;,
+      &quot;elapsed_ms&quot;: 0.306125,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;diagnosis&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-22&quot;,
+      &quot;operation&quot;: &quot;unknown_severity&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Unsupported severity&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Finding 1 has an unknown severity&quot;,
+      &quot;elapsed_ms&quot;: 0.489625,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;guaranteed&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-23&quot;,
+      &quot;operation&quot;: &quot;html_statement&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;HTML in a factual statement&quot;,
+      &quot;category&quot;: &quot;presentation&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Finding 1 statement must be plain text without links or HTML&quot;,
+      &quot;elapsed_ms&quot;: 0.376666,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;&lt;img src=\&quot;tracker\&quot;&gt;&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-24&quot;,
+      &quot;operation&quot;: &quot;url_proposal&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Unregistered URL in a proposal&quot;,
+      &quot;category&quot;: &quot;presentation&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;next_steps item must be plain text without links or HTML&quot;,
+      &quot;elapsed_ms&quot;: 0.444583,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Send the report to https://collector.example.invalid/receive&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-25&quot;,
+      &quot;operation&quot;: &quot;empty_proposal&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Empty proposed action&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;next_steps item must be nonempty text of at most 1000 characters&quot;,
+      &quot;elapsed_ms&quot;: 0.383708,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-26&quot;,
+      &quot;operation&quot;: &quot;control_character&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Control character in a statement&quot;,
+      &quot;category&quot;: &quot;presentation&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Finding 1 statement must be plain text without links or HTML&quot;,
+      &quot;elapsed_ms&quot;: 0.367125,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.\u0000hidden&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-27&quot;,
+      &quot;operation&quot;: &quot;too_many_findings&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;More than twelve findings&quot;,
+      &quot;category&quot;: &quot;limits&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;findings must be a list of at most 12 items&quot;,
+      &quot;elapsed_ms&quot;: 0.406708,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          },
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-28&quot;,
+      &quot;operation&quot;: &quot;wrong_actions_type&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Actions supplied as a scalar&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;next_steps must be a list of at most 8 items&quot;,
+      &quot;elapsed_ms&quot;: 0.357333,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: &quot;Execute this action&quot;,
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-29&quot;,
+      &quot;operation&quot;: &quot;missing_information&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Missing required array&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;missing_information must be a list of at most 8 items&quot;,
+      &quot;elapsed_ms&quot;: 0.368458,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2:q1&quot;
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ]
+      }
+    },
+    {
+      &quot;id&quot;: &quot;CI-30&quot;,
+      &quot;operation&quot;: &quot;wrong_quote_type&quot;,
+      &quot;expected_acceptance&quot;: false,
+      &quot;title&quot;: &quot;Quote supplied as an object&quot;,
+      &quot;category&quot;: &quot;schema&quot;,
+      &quot;observed_acceptance&quot;: false,
+      &quot;passed&quot;: true,
+      &quot;validation_error&quot;: &quot;Citation needs a bounded, nonempty literal quote&quot;,
+      &quot;elapsed_ms&quot;: 0.373208,
+      &quot;input_report&quot;: {
+        &quot;findings&quot;: [
+          {
+            &quot;statement&quot;: &quot;The supplied note limits retry attempts.&quot;,
+            &quot;category&quot;: &quot;docs&quot;,
+            &quot;severity&quot;: &quot;low&quot;,
+            &quot;support&quot;: [
+              {
+                &quot;evidence_id&quot;: &quot;ev_a8b8cb0cb8c59b53178b865bba37beb2&quot;,
+                &quot;quote&quot;: {
+                  &quot;quote&quot;: &quot;The worker retries a failed request at most twice.\nThe timeout is set to 30 seconds.\n&quot;
+                }
+              }
+            ]
+          }
+        ],
+        &quot;next_steps&quot;: [
+          &quot;Propose a check of the retry limit.&quot;
+        ],
+        &quot;missing_information&quot;: [
+          &quot;Actual deployment and runtime results are not supplied.&quot;
+        ]
+      }
+    }
+  ]
+}</pre>

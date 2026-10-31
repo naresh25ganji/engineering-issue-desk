@@ -1,0 +1,69 @@
+{
+  "dataset_sha256": "0c816f4693609be82e579ba6f1a0e6c775544e8b134a7c9fecb4851ddccb75ba",
+  "case_ids": [
+    "WF-02"
+  ],
+  "input_projection_sha256": "9d4236da71e1295a9ea5e3b6ad31f176ee8e8626e0c9b1719e5bc2ed3e3f11f9",
+  "case_definition_sha256": {
+    "WF-02": "69daf2d07f687b6a18ba70c8b15877a6112a1754ebd4c52ad3363472ec41dcfa"
+  },
+  "live": true,
+  "workers": 1,
+  "model": "accounts/fireworks/models/gpt-oss-120b",
+  "budgets": {
+    "max_model_calls": 18,
+    "max_tool_calls": 28,
+    "max_tokens": 64000,
+    "max_seconds": 180
+  },
+  "reviewer_prompt_version": "calibrated",
+  "reviewer_prompt_sha256": "af60c4368f8a0a5000947c3ce44e28965750bd6593301c8e676f872ad23b2659",
+  "orchestrator_prompt_sha256": "94a7c993b6c8bc7b4eb4f1c7b8b7c8c9cea4542f4ee67383fb477944320268f4",
+  "profiles": {
+    "issue_investigation": {
+      "version": 1,
+      "sha256": "2c6a7ad504867e701a250ff8f33335cfa04e2483347becd7e3e6dc31bf5a090e"
+    },
+    "incident_triage": {
+      "version": 1,
+      "sha256": "bf9c18b66a23c828d1613b9be39da0a5277db020f0d8f8d8928e9198d64305a9"
+    },
+    "change_review": {
+      "version": 1,
+      "sha256": "2665122ff665edc95e53f7d50d02daa7b4eb13d34dcdcaaf1c9caeaea9070f15"
+    },
+    "test_planning": {
+      "version": 1,
+      "sha256": "8c6b1f05b964734615718d800704809c057183baec4adcc1d1b83e4abd7790c5"
+    }
+  },
+  "code_sha256": {
+    "evaluation/use_cases.py": "f452766ef33310f06f926a16180907b0a3f1671f84077c537ee5ce099653437b",
+    "evaluation/agent_workflow.py": "087ada44e858623440666e94755a14dac8adb23764b2f343986e92eb3de91be4",
+    "triage_desk/use_cases.py": "6f17a204a1b4520733fd297959c633a604b82a7f59393ddf2e72c62b24964e44",
+    "triage_desk/deep_investigation.py": "86cda882ae90a2dd059d5817c03a2ef95bb83da21a6ccb36042da8510bd8e6d2",
+    "triage_desk/agent_review.py": "164d439c3f0bd1f17a3e3e7bf5efe88408110bc1e03e26375086d20552edb972",
+    "triage_desk/agent_evidence.py": "3b871da7a905562b47dab1269e043934017d23a78e3086716280f742109d2d8d",
+    "triage_desk/agent_budget.py": "6f7de5b738d179c2788ce8174b312d43ef94151941ede43b54b924a244868555",
+    "triage_desk/agent_tools.py": "95129279d1a98795084b9b850cd276d315739039129a693f1fa60e7d79170719",
+    "triage_desk/cases.py": "f6d2528e5b60e3ea9916386732f7f70a201730c936952381961de1577d6fd386",
+    "triage_desk/core.py": "c3d1e358972b84b0c17cc7123d397f68baa31d1c9c007c2c33c0223d34fe72ec",
+    "triage_desk/information_requests.py": "caccfa4980fdd02e8d163fda5e37329be22f59e46bcb714493279ef02d84c9e6",
+    "triage_desk/static_analysis.py": "42dde4f412f4e9d90adc7895d3f6787a1c4bb633bf41aaaf92a94daa26575523",
+    "triage_desk/_static_analysis_worker.py": "ed88d902ed33b7458cbbd983bd57b1fb8419862e19783e2d400fbbfc8e845a22",
+    "triage_desk/review_extensions.py": "a1ee0764b715386d17a61306dc3953e78050f88df9c188e1849f63acbf96d768"
+  },
+  "corpus_sha256": "1473a7f6a9ebd5d0772c1e225f4223759bccff241c53cbbb95b07a3710ae2ec8",
+  "repository_context": false,
+  "memory_context": false,
+  "web_search_configured": true,
+  "github_authenticated": false,
+  "run_id": "20261030T223102Z-276ecc45",
+  "created_at": "2026-10-30T22:31:02.540071+00:00",
+  "dataset_name": "Engineering Issue Desk multi-workflow full-agent regression v1",
+  "dataset_version": 1,
+  "label_status": "ai_proposed_pending_human_review",
+  "source_policy": "Context text equals the pinned UTF-8 fixture bytes. Source comments identify frozen repository origins; no file is executed. Scenario/title/expected/rubric/label fields are evaluator annotations and must never enter model inputs. Evidence anchors measure literal lexical coverage only, not entailment, correctness, or useful diagnosis. Minimum item counts are structural proxies. Expected labels and human rubrics are AI-proposed and pending actual human review.",
+  "scope": "Complete Deep Investigation graph, independent evidence review and persisted human handoff.",
+  "tracing": "Local root and child audit events only; remote tracing disabled."
+}

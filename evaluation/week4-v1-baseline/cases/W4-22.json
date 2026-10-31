@@ -1,0 +1,252 @@
+{
+  "id": "W4-22",
+  "scenario": "edge",
+  "title": "Endpoint normalization is not request behavior",
+  "failure_mode": "Helper capability extrapolated to omitted network path",
+  "source": {
+    "path": "triage_desk/hosted_embeddings.py",
+    "start_line": 35,
+    "end_line": 47,
+    "sha256": "ded80612427be66decb86f149903485f4fee8ba3f97ee9890a14536ad1405a4c",
+    "quote": "def _embedding_endpoint(base: str) -> str:\n    base = base.rstrip(\"/\")\n    if base.endswith(\"/chat/completions\"):\n        base = base[:-len(\"/chat/completions\")]\n    return base if base.endswith(\"/embeddings\") else base + \"/embeddings\"\n\n\ndef _safe_model(value, key: str) -> str:\n    if not isinstance(value, str) or not _MODEL_ID.fullmatch(value):\n        return \"\"\n    if (key and key in value) or re.match(r\"(?:sk-|gh[pousr]_|github_pat_|AKIA)\", value):\n        return \"\"\n    return value\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "_embedding_endpoint removes a trailing chat/completions suffix and ensures an embeddings suffix.",
+        "expected_supported": true,
+        "rationale": "The helper contains those two string operations."
+      },
+      {
+        "statement": "The actual embedding HTTP request follows redirects because this endpoint helper permits them.",
+        "expected_supported": false,
+        "rationale": "The selected helper contains no HTTP client configuration or request."
+      }
+    ],
+    "next_steps": []
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 1.81665,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code shows it strips '/chat/completions' and appends '/embeddings' if missing."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote contains no information about HTTP redirects or request behavior."
+      }
+    ],
+    "next_step_verdicts": [],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "_embedding_endpoint removes a trailing chat/completions suffix and ensures an embeddings suffix.",
+        "support": [
+          {
+            "evidence_id": "W4-22-source",
+            "quote_id": "W4-22-quote",
+            "quote": "def _embedding_endpoint(base: str) -> str:\n    base = base.rstrip(\"/\")\n    if base.endswith(\"/chat/completions\"):\n        base = base[:-len(\"/chat/completions\")]\n    return base if base.endswith(\"/embeddings\") else base + \"/embeddings\"\n\n\ndef _safe_model(value, key: str) -> str:\n    if not isinstance(value, str) or not _MODEL_ID.fullmatch(value):\n        return \"\"\n    if (key and key in value) or re.match(r\"(?:sk-|gh[pousr]_|github_pat_|AKIA)\", value):\n        return \"\"\n    return value\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-22",
+      "run_name": "20261030T215930Z-8b2288dc",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "baaca7e4-22b3-4bde-b112-3fafcce30332",
+      "created_at": "2026-10-30T21:59:48.548438+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "cddce55e01b941869f400a334b579816",
+      "event_id": 2,
+      "case_id": "baaca7e4-22b3-4bde-b112-3fafcce30332",
+      "created_at": "2026-10-30T21:59:48.550455+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "cddce55e01b941869f400a334b579816",
+      "started_at": "2026-10-30T21:59:48.551647+00:00",
+      "usage": {
+        "input_tokens": 1371,
+        "output_tokens": 349,
+        "total_tokens": 1720
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 1789.75,
+      "event_id": 3,
+      "case_id": "baaca7e4-22b3-4bde-b112-3fafcce30332",
+      "created_at": "2026-10-30T21:59:50.340090+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-22",
+      "run_name": "20261030T215930Z-8b2288dc",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": []
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": []
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": []
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": []
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 1.81665,
+      "error": null,
+      "event_id": 4,
+      "case_id": "baaca7e4-22b3-4bde-b112-3fafcce30332",
+      "created_at": "2026-10-30T21:59:50.340725+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1371,
+      "output_tokens": 349,
+      "total_tokens": 1720
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": []
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": []
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "baaca7e4-22b3-4bde-b112-3fafcce30332",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

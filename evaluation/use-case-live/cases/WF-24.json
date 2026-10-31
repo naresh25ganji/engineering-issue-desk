@@ -1,0 +1,660 @@
+{
+  "id": "WF-24",
+  "eval_id": "WF-24",
+  "use_case": "change_review",
+  "title": "Existing query-cache logic in patch context",
+  "scenario": "happy_path",
+  "question": "Which query-cache operations remain in the context of this proposed patch? Separate unchanged cache behavior from the removed line and propose a focused check.",
+  "input": {
+    "question": "Which query-cache operations remain in the context of this proposed patch? Separate unchanged cache behavior from the removed line and propose a focused check.",
+    "version": "",
+    "context": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:\n                 self._query_cache.popitem(last=False)\n         return value.copy()\n",
+    "use_case": "change_review"
+  },
+  "input_sha256": "31ce04132102f6a0edbc93972bd942ad3b0026f1daf2076230b4dbed4ddc2a91",
+  "case_definition_sha256": "6dfe2cb7c174e4a7c47c28dcf6d96df78291449eb356802a553589f5af90b042",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/query_guard.diff",
+    "sha256": "c29f31f0a1fb6af8245478dffdbeddcbc9121a96160d283c8f1d138a58e8e177"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "if identity in self._query_cache:"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "9d78d0bd-954c-4ca9-bd6a-22aac5993e43",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The patch removes the call to `self._runtime_key()` that was intended to prevent reuse of old query vectors after a changed endpoint.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:"
+          }
+        ]
+      },
+      {
+        "statement": "The cache lookup `if identity in self._query_cache:` remains unchanged.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:"
+          }
+        ]
+      },
+      {
+        "statement": "When a cache hit occurs, the entry is moved to the end of the LRU order with `self._query_cache.move_to_end(identity)`.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:"
+          }
+        ]
+      },
+      {
+        "statement": "A cached vector is returned as a copy via `return self._query_cache[identity].copy()`.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:"
+          }
+        ]
+      },
+      {
+        "statement": "After a fresh request, the result is stored in the cache with `self._query_cache[identity] = value.copy()`.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:"
+          }
+        ]
+      },
+      {
+        "statement": "The newly cached entry is moved to the end of the LRU order with `self._query_cache.move_to_end(identity)`.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/hosted_embeddings.py\n+++ b/triage_desk/hosted_embeddings.py\n@@ -1,16 +1,15 @@\n     def embed_query(self, question: str) -> np.ndarray:\n         if not isinstance(question, str) or not question.strip():\n             raise ValueError(\"Embedding query must be nonempty text\")\n-        self._runtime_key()  # A changed endpoint must not reuse old query vectors.\n         identity = hashlib.sha256(question.encode()).hexdigest()\n         with self._query_lock:\n             if identity in self._query_cache:\n                 self._query_cache.move_to_end(identity)\n                 return self._query_cache[identity].copy()\n         value = self._request([question], \"query\")[0]\n         with self._query_lock:\n             self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:"
+          }
+        ]
+      },
+      {
+        "statement": "Cache eviction is performed while the cache size exceeds `QUERY_CACHE_SIZE` using `self._query_cache.popitem(last=False)`.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q2",
+            "quote": "   self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:\n                 self._query_cache.popitem(last=False)\n         return value.copy()\n"
+          }
+        ]
+      },
+      {
+        "statement": "The method returns a copy of the freshly obtained value with `return value.copy()`.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+            "quote_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be:q2",
+            "quote": "   self._query_cache[identity] = value.copy()\n             self._query_cache.move_to_end(identity)\n             while len(self._query_cache) > QUERY_CACHE_SIZE:\n                 self._query_cache.popitem(last=False)\n         return value.copy()\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [],
+    "next_steps": [
+      "Add a unit test that verifies `_runtime_key()` is not called during `embed_query` after the patch.",
+      "Create a focused test that confirms the cache key is derived solely from the question string and that identical questions hit the cache while different questions do not.",
+      "Validate that the LRU eviction behavior still respects `QUERY_CACHE_SIZE` by inserting more than the limit and checking that the oldest entry is removed."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote 0 includes a removed line '-        self._runtime_key()' confirming the call is eliminated."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote 0 contains 'if identity in self._query_cache:' unchanged."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Quote 0 shows 'self._query_cache.move_to_end(identity)' inside the cache‑hit block."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Quote 0 returns 'self._query_cache[identity].copy()' for a cache hit."
+        },
+        {
+          "index": 4,
+          "supported": true,
+          "reason": "Quote 1 assigns 'self._query_cache[identity] = value.copy()' after a fresh request."
+        },
+        {
+          "index": 5,
+          "supported": true,
+          "reason": "Quote 1 moves the new entry with 'self._query_cache.move_to_end(identity)'."
+        },
+        {
+          "index": 6,
+          "supported": true,
+          "reason": "Quote 1 evicts items via 'self._query_cache.popitem(last=False)' when size exceeds QUERY_CACHE_SIZE."
+        },
+        {
+          "index": 7,
+          "supported": true,
+          "reason": "Quote 1 returns the fresh value with 'return value.copy()'."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "A test can observe that the removed call is absent; evidence shows the line is gone, making the diagnostic feasible."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Code derives identity solely from the question string; a test can verify cache hits for identical strings and misses for different ones."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "LRU eviction logic is present; inserting beyond QUERY_CACHE_SIZE and checking removal of the oldest entry is a valid diagnostic."
+        }
+      ],
+      "retained_findings": 8,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote 0 includes a removed line '-        self._runtime_key()' confirming the call is eliminated."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote 0 contains 'if identity in self._query_cache:' unchanged."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Quote 0 shows 'self._query_cache.move_to_end(identity)' inside the cache‑hit block."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Quote 0 returns 'self._query_cache[identity].copy()' for a cache hit."
+      },
+      {
+        "index": 4,
+        "supported": true,
+        "reason": "Quote 1 assigns 'self._query_cache[identity] = value.copy()' after a fresh request."
+      },
+      {
+        "index": 5,
+        "supported": true,
+        "reason": "Quote 1 moves the new entry with 'self._query_cache.move_to_end(identity)'."
+      },
+      {
+        "index": 6,
+        "supported": true,
+        "reason": "Quote 1 evicts items via 'self._query_cache.popitem(last=False)' when size exceeds QUERY_CACHE_SIZE."
+      },
+      {
+        "index": 7,
+        "supported": true,
+        "reason": "Quote 1 returns the fresh value with 'return value.copy()'."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "A test can observe that the removed call is absent; evidence shows the line is gone, making the diagnostic feasible."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Code derives identity solely from the question string; a test can verify cache hits for identical strings and misses for different ones."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "LRU eviction logic is present; inserting beyond QUERY_CACHE_SIZE and checking removal of the oldest entry is a valid diagnostic."
+      }
+    ],
+    "retained_findings": 8,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_d4f9945fe378c33bfc4cb2d4e9a559be",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:24:44.376899+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "c29f31f0a1fb6af8245478dffdbeddcbc9121a96160d283c8f1d138a58e8e177",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:24:44.371352+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:24:44.376183+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "97fdc1d3f95b46aaadeca5e0393bead3",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:24:44.405524+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "97fdc1d3f95b46aaadeca5e0393bead3",
+      "started_at": "2026-10-30T22:24:44.405818+00:00",
+      "usage": {
+        "input_tokens": 4986,
+        "output_tokens": 114,
+        "total_tokens": 5100
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 969.24,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:24:45.376499+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "a0e2dc0bde094f68ba2da0cf4a518a23",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:24:45.381962+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "a0e2dc0bde094f68ba2da0cf4a518a23",
+      "started_at": "2026-10-30T22:24:45.383457+00:00",
+      "latency_ms": 4.24,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:24:45.386602+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "06663424f7f6443ca5c46a96882402db",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:24:45.391383+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "06663424f7f6443ca5c46a96882402db",
+      "started_at": "2026-10-30T22:24:45.391785+00:00",
+      "usage": {
+        "input_tokens": 5691,
+        "output_tokens": 1522,
+        "total_tokens": 7213
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 6436.58,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:51.828341+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 8,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:51.840034+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:51.841997+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "01ac745db81c4d1c9fa0a0b8e96d8cb4",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:51.855062+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "01ac745db81c4d1c9fa0a0b8e96d8cb4",
+      "started_at": "2026-10-30T22:24:51.855605+00:00",
+      "usage": {
+        "input_tokens": 2632,
+        "output_tokens": 1592,
+        "total_tokens": 4224
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 6992.29,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:24:58.848504+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 8,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:24:58.858091+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13309,
+      "output_tokens": 3228,
+      "total_tokens": 16537
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 14564.799,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 8,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-24",
+  "saved_use_case_id": "change_review",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-24",
+    "metadata": {
+      "use_case_id": "change_review",
+      "input_sha256": "31ce04132102f6a0edbc93972bd942ad3b0026f1daf2076230b4dbed4ddc2a91",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:24:44.371352+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:24:44.376183+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "97fdc1d3f95b46aaadeca5e0393bead3",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:24:44.405524+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "97fdc1d3f95b46aaadeca5e0393bead3",
+        "started_at": "2026-10-30T22:24:44.405818+00:00",
+        "usage": {
+          "input_tokens": 4986,
+          "output_tokens": 114,
+          "total_tokens": 5100
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 969.24,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:24:45.376499+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "a0e2dc0bde094f68ba2da0cf4a518a23",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:24:45.381962+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "a0e2dc0bde094f68ba2da0cf4a518a23",
+        "started_at": "2026-10-30T22:24:45.383457+00:00",
+        "latency_ms": 4.24,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:24:45.386602+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "06663424f7f6443ca5c46a96882402db",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:24:45.391383+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "06663424f7f6443ca5c46a96882402db",
+        "started_at": "2026-10-30T22:24:45.391785+00:00",
+        "usage": {
+          "input_tokens": 5691,
+          "output_tokens": 1522,
+          "total_tokens": 7213
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 6436.58,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:51.828341+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 8,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:51.840034+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:51.841997+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "01ac745db81c4d1c9fa0a0b8e96d8cb4",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:51.855062+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "01ac745db81c4d1c9fa0a0b8e96d8cb4",
+        "started_at": "2026-10-30T22:24:51.855605+00:00",
+        "usage": {
+          "input_tokens": 2632,
+          "output_tokens": 1592,
+          "total_tokens": 4224
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 6992.29,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:24:58.848504+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 8,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:24:58.858091+00:00"
+      }
+    ]
+  }
+}

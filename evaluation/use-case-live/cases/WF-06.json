@@ -1,0 +1,607 @@
+{
+  "id": "WF-06",
+  "eval_id": "WF-06",
+  "use_case": "issue_investigation",
+  "title": "Nested path controls",
+  "scenario": "edge",
+  "question": "A user submitted triage_desk/../.env and a path containing a newline. Inspect the actual path checks and propose focused rejection cases without reading any host file.",
+  "input": {
+    "question": "A user submitted triage_desk/../.env and a path containing a newline. Inspect the actual path checks and propose focused rejection cases without reading any host file.",
+    "version": "",
+    "context": "# Frozen source excerpt: triage_desk/repository_context.py:74-86\n    def _parts(self, path: str) -> tuple[str, ...]:\n        if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n            raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n        parts = tuple(path.split('/'))\n        if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                or any(not part or part in {'.', '..'} for part in parts)\n                or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                or self._sensitive(path)):\n            raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n            raise RepositoryContextError('Only app.py and triage_desk Python source files are available.')\n        return parts\n",
+    "use_case": "issue_investigation"
+  },
+  "input_sha256": "b56560fbcc2e82b8aa7a4801a4ea77aca9fd2cdc7a75e2db6572dd80200385ab",
+  "case_definition_sha256": "1a9b723083f365d1750ee65f6ad90b5df43830b38cab3281a0adeedb96adc707",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/repository_paths.py",
+    "sha256": "7b378d31bd5ba16761841e369f960c5ef751be68b93e5ec6e67df456958e6309"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "any(part.startswith('.') or part in _EXCLUDED for part in parts)"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "9d44732f-0df8-4f1f-948b-d79552ffebce",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "Paths that start with a dot, contain any excluded names, or are deemed sensitive by the `_sensitive` helper are rejected.",
+        "category": "security",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_7b7d5b8de03e6f07e42142ced9319731",
+            "quote_id": "ev_7b7d5b8de03e6f07e42142ced9319731:q1",
+            "quote": "# Frozen source excerpt: triage_desk/repository_context.py:74-86\n    def _parts(self, path: str) -> tuple[str, ...]:\n        if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n            raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n        parts = tuple(path.split('/'))\n        if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                or any(not part or part in {'.', '..'} for part in parts)\n                or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                or self._sensitive(path)):\n            raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n            raise RepositoryContextError('Only"
+          }
+        ]
+      },
+      {
+        "statement": "The path validation rejects any non‑string, empty, overly long (>500 characters), or containing a backslash character.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_7b7d5b8de03e6f07e42142ced9319731",
+            "quote_id": "ev_7b7d5b8de03e6f07e42142ced9319731:q1",
+            "quote": "# Frozen source excerpt: triage_desk/repository_context.py:74-86\n    def _parts(self, path: str) -> tuple[str, ...]:\n        if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n            raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n        parts = tuple(path.split('/'))\n        if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                or any(not part or part in {'.', '..'} for part in parts)\n                or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                or self._sensitive(path)):\n            raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n            raise RepositoryContextError('Only"
+          }
+        ]
+      },
+      {
+        "statement": "The validation also rejects paths that contain any control characters (Unicode code point < 32) or the DEL character (code point 127), which includes newline characters.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_7b7d5b8de03e6f07e42142ced9319731",
+            "quote_id": "ev_7b7d5b8de03e6f07e42142ced9319731:q1",
+            "quote": "# Frozen source excerpt: triage_desk/repository_context.py:74-86\n    def _parts(self, path: str) -> tuple[str, ...]:\n        if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n            raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n        parts = tuple(path.split('/'))\n        if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                or any(not part or part in {'.', '..'} for part in parts)\n                or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                or self._sensitive(path)):\n            raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n            raise RepositoryContextError('Only"
+          }
+        ]
+      },
+      {
+        "statement": "Absolute paths, paths whose depth exceeds MAX_DEPTH + 1, empty path components, or components equal to '.' or '..' are rejected.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_7b7d5b8de03e6f07e42142ced9319731",
+            "quote_id": "ev_7b7d5b8de03e6f07e42142ced9319731:q1",
+            "quote": "# Frozen source excerpt: triage_desk/repository_context.py:74-86\n    def _parts(self, path: str) -> tuple[str, ...]:\n        if (not isinstance(path, str) or not path or len(path) > 500 or '\\\\' in path\n                or any(ord(character) < 32 or ord(character) == 127 for character in path)):\n            raise RepositoryContextError('Use a project-relative Python source path from the repository inventory.')\n        parts = tuple(path.split('/'))\n        if (PurePosixPath(path).is_absolute() or len(parts) > MAX_DEPTH + 1\n                or any(not part or part in {'.', '..'} for part in parts)\n                or any(part.startswith('.') or part in _EXCLUDED for part in parts)\n                or self._sensitive(path)):\n            raise RepositoryContextError('The requested path is outside the repository source allowlist.')\n        if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n            raise RepositoryContextError('Only"
+          }
+        ]
+      },
+      {
+        "statement": "Only the file `app.py` or Python files located under the `triage_desk` directory (ending with `.py`) are allowed; all other paths are rejected.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_7b7d5b8de03e6f07e42142ced9319731",
+            "quote_id": "ev_7b7d5b8de03e6f07e42142ced9319731:q2",
+            "quote": "       if path != 'app.py' and not (len(parts) >= 2 and parts[0] == 'triage_desk' and parts[-1].endswith('.py')):\n            raise RepositoryContextError('Only app.py and triage_desk Python source files are available.')\n        return parts\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "The concrete value of `MAX_DEPTH` is not visible in the provided excerpt; knowing it would help define depth‑related test boundaries.",
+      "The contents of the `_EXCLUDED` set and the implementation of the `_sensitive` helper are not shown; their rules may affect additional rejection cases."
+    ],
+    "next_steps": [
+      "Add explicit unit tests that submit a path containing a newline character and verify that RepositoryContextError is raised.",
+      "Add tests for backslash characters, absolute paths, and traversal components ('..') to confirm rejection.",
+      "Create test cases for paths that exceed the maximum allowed depth and for paths with hidden or excluded directory names."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Code checks non-string, empty, >500 length, backslash and raises RepositoryContextError."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Code rejects characters with ord<32 or ==127, covering newline."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Code rejects absolute paths, depth>MAX_DEPTH+1, empty parts, '.' or '..'."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Code rejects parts starting with '.' or in _EXCLUDED and when _sensitive(path) true."
+        },
+        {
+          "index": 4,
+          "supported": true,
+          "reason": "Code allows only 'app.py' or triage_desk/... .py files; others raise error."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Adding a test for newline path will trigger control‑char check and raise RepositoryContextError."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Tests for backslash, absolute paths, and '..' will hit validation branches and raise error."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Tests for depth limit and hidden/excluded names will exercise those checks and raise error."
+        },
+        {
+          "index": 3,
+          "supported": false,
+          "reason": "Documentation does not modify validation behavior; not a diagnostic or remedy."
+        }
+      ],
+      "retained_findings": 5,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code checks non-string, empty, >500 length, backslash and raises RepositoryContextError."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Code rejects characters with ord<32 or ==127, covering newline."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Code rejects absolute paths, depth>MAX_DEPTH+1, empty parts, '.' or '..'."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Code rejects parts starting with '.' or in _EXCLUDED and when _sensitive(path) true."
+      },
+      {
+        "index": 4,
+        "supported": true,
+        "reason": "Code allows only 'app.py' or triage_desk/... .py files; others raise error."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Adding a test for newline path will trigger control‑char check and raise RepositoryContextError."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Tests for backslash, absolute paths, and '..' will hit validation branches and raise error."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Tests for depth limit and hidden/excluded names will exercise those checks and raise error."
+      },
+      {
+        "index": 3,
+        "supported": false,
+        "reason": "Documentation does not modify validation behavior; not a diagnostic or remedy."
+      }
+    ],
+    "retained_findings": 5,
+    "removed_findings": 0,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_7b7d5b8de03e6f07e42142ced9319731",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:23:56.552705+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "7b378d31bd5ba16761841e369f960c5ef751be68b93e5ec6e67df456958e6309",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:23:56.548114+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:23:56.551997+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "5ce61c6e77cf40f4b8bfea39c9a3cc5e",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:23:56.661671+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "5ce61c6e77cf40f4b8bfea39c9a3cc5e",
+      "started_at": "2026-10-30T22:23:56.662034+00:00",
+      "usage": {
+        "input_tokens": 4857,
+        "output_tokens": 132,
+        "total_tokens": 4989
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 1178.95,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:23:57.840842+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "7f07e569599946019912b47c37d19e18",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:23:57.843489+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "7f07e569599946019912b47c37d19e18",
+      "started_at": "2026-10-30T22:23:57.843912+00:00",
+      "latency_ms": 1.91,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:23:57.845305+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "40502617af57496287ab38c30bba9697",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:23:57.847730+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "40502617af57496287ab38c30bba9697",
+      "started_at": "2026-10-30T22:23:57.848097+00:00",
+      "usage": {
+        "input_tokens": 5608,
+        "output_tokens": 1216,
+        "total_tokens": 6824
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5490.41,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:03.338571+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 5,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:03.347617+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:03.349020+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "0144208de6e8415b9cd25cbf934fb26e",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:03.359606+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "0144208de6e8415b9cd25cbf934fb26e",
+      "started_at": "2026-10-30T22:24:03.359995+00:00",
+      "usage": {
+        "input_tokens": 2596,
+        "output_tokens": 2078,
+        "total_tokens": 4674
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 9998.76,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:24:13.358351+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 5,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:24:13.361924+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13061,
+      "output_tokens": 3426,
+      "total_tokens": 16487
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 16872.1,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 5,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-06",
+  "saved_use_case_id": "issue_investigation",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-06",
+    "metadata": {
+      "use_case_id": "issue_investigation",
+      "input_sha256": "b56560fbcc2e82b8aa7a4801a4ea77aca9fd2cdc7a75e2db6572dd80200385ab",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:23:56.548114+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:23:56.551997+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "5ce61c6e77cf40f4b8bfea39c9a3cc5e",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:23:56.661671+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "5ce61c6e77cf40f4b8bfea39c9a3cc5e",
+        "started_at": "2026-10-30T22:23:56.662034+00:00",
+        "usage": {
+          "input_tokens": 4857,
+          "output_tokens": 132,
+          "total_tokens": 4989
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 1178.95,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:23:57.840842+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "7f07e569599946019912b47c37d19e18",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:23:57.843489+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "7f07e569599946019912b47c37d19e18",
+        "started_at": "2026-10-30T22:23:57.843912+00:00",
+        "latency_ms": 1.91,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:23:57.845305+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "40502617af57496287ab38c30bba9697",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:23:57.847730+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "40502617af57496287ab38c30bba9697",
+        "started_at": "2026-10-30T22:23:57.848097+00:00",
+        "usage": {
+          "input_tokens": 5608,
+          "output_tokens": 1216,
+          "total_tokens": 6824
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5490.41,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:03.338571+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 5,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:03.347617+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:03.349020+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "0144208de6e8415b9cd25cbf934fb26e",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:03.359606+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "0144208de6e8415b9cd25cbf934fb26e",
+        "started_at": "2026-10-30T22:24:03.359995+00:00",
+        "usage": {
+          "input_tokens": 2596,
+          "output_tokens": 2078,
+          "total_tokens": 4674
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 9998.76,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:24:13.358351+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 5,
+        "removed_findings": 0,
+        "removed_next_steps": 1,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:24:13.361924+00:00"
+      }
+    ]
+  }
+}

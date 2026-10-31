@@ -186,6 +186,9 @@ def _render_report(case: dict) -> None:
                    + ' findings retained, ' + str(quality.get('removed_findings', 0))
                    + ' findings and ' + str(quality.get('removed_next_steps', 0))
                    + ' proposed steps removed. This review can make mistakes.')
+        guarded = quality.get('information_request_safety', {})
+        if isinstance(guarded, dict) and guarded.get('converted_count', 0):
+            st.caption('Information requests were adjusted to ask for redacted configuration or credential presence, without credential values.')
         with st.expander('Evidence review decisions'):
             for label, key in [('Draft finding', 'finding_verdicts'), ('Proposed step', 'next_step_verdicts')]:
                 for verdict in quality.get(key, []):
@@ -281,6 +284,37 @@ def _render_timeline(events: list[dict]) -> None:
             st.text(_progress_text(event))
 
 
+def _case_workflow_label(case: dict) -> str:
+    from .use_cases import get_use_case
+    try:
+        return get_use_case(case.get('use_case_id', 'issue_investigation'),
+                            case.get('use_case_version', 1)).label
+    except ValueError:
+        return 'Unavailable workflow: ' + _plain(case.get('use_case_id'), limit=100)
+
+
+def _select_workflow_example(question: str) -> None:
+    st.session_state['deep_question'] = question
+
+
+def _select_workflow_sample(sample: dict) -> None:
+    """Load only request inputs; reference labels and rubrics never enter a case."""
+    st.session_state['deep_question'] = sample['question']
+    st.session_state['deep_version'] = sample.get('version', '')
+    st.session_state['deep_code_context'] = sample['context']['text']
+
+
+def _workflow_samples(root: Path, workflow_id: str) -> list[dict]:
+    try:
+        data = json.loads((root / 'evaluation' / 'workflow-cases.json').read_text(encoding='utf-8'))
+        return [case for case in data['cases'] if case.get('use_case') == workflow_id
+                and isinstance(case.get('question'), str)
+                and isinstance(case.get('context'), dict)
+                and isinstance(case['context'].get('text'), str)]
+    except (OSError, ValueError, TypeError, KeyError):
+        return []
+
+
 def render_deep_investigation(root: Path, desk, *, service=None) -> None:
     """Render without running an agent until a user submits a form.
 
@@ -296,8 +330,8 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
     readiness = settings.readiness()
     ready = bool(readiness.get('ready'))
     st.subheader('Deep Investigation')
-    st.caption('Investigate an issue with specialist research, supporting sources, and your review.')
-    st.caption('Starting an investigation sends the report, supplied code, and selected evidence to Fireworks. '
+    st.caption('Investigate issues, triage incidents, review changes, or plan tests with supporting evidence and your review.')
+    st.caption('Starting an investigation sends the request, supplied context, and selected evidence to Fireworks. '
                'Web research sends search queries and requested page URLs to Keenable.')
     with st.container(border=True):
         model = _plain(readiness.get('model'), limit=250) or 'Not selected'
@@ -316,13 +350,43 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
     notice = st.session_state.pop('deep_notice', None)
     if notice:
         st.success(notice)
+    from .use_cases import USE_CASES, get_use_case
+    profile = get_use_case(st.selectbox('Workflow', [item.id for item in USE_CASES],
+                                      format_func=lambda value: get_use_case(value).label,
+                                      key='deep_use_case'))
+    st.markdown('**' + profile.label + '**')
+    st.caption(profile.description)
+    with st.expander('What to provide and what a useful result includes'):
+        st.markdown('**Provide**')
+        for detail in profile.required_details:
+            st.text('• ' + detail)
+        st.markdown('**Review the result for**')
+        for criterion in profile.success_criteria:
+            st.text('• ' + criterion)
+    example = st.selectbox('Starter example', ['', *profile.examples],
+                           format_func=lambda value: value or 'Choose an example',
+                           key='deep_example_' + profile.id)
+    st.button('Use selected example', disabled=not example, key='deep_use_example_' + profile.id,
+              on_click=_select_workflow_example, args=(example,))
+    samples = {sample['id']: sample for sample in _workflow_samples(root, profile.id)}
+    if samples:
+        with st.expander('Try a sample with evidence'):
+            sample_id = st.selectbox('Sample case', ['', *samples],
+                                     format_func=lambda value: (value + ' · ' + samples[value]['title'])
+                                     if value else 'Choose a sample', key='deep_sample_' + profile.id)
+            st.caption('Loads a request and a frozen code, diff, or log example. Synthetic logs and unapplied patches are labeled in the supplied context. Loading does not start a model run.')
+            st.button('Load sample inputs', disabled=not sample_id,
+                      key='deep_load_sample_' + profile.id, on_click=_select_workflow_sample,
+                      args=(samples.get(sample_id, {}),))
     with st.form('deep_new_investigation'):
-        question = st.text_area('Issue report', height=130, max_chars=4500,
-                                placeholder='Describe the behavior, expected result, and steps to reproduce.',
+        question = st.text_area('Issue report' if profile.id == 'issue_investigation' else 'Request',
+                                height=130, max_chars=4500, placeholder=profile.question_placeholder,
                                 key='deep_question')
-        version = st.text_input('Streamlit version (optional)', max_chars=100, key='deep_version')
-        code_context = st.text_area('Code or traceback (optional)', height=110, max_chars=16000,
-                                   key='deep_code_context')
+        version = st.text_input('Streamlit version (optional)' if profile.id == 'issue_investigation'
+                                else 'Application or library version (optional)',
+                                max_chars=100, key='deep_version')
+        code_context = st.text_area(profile.context_label + ' (optional)', height=110, max_chars=16000,
+                                   placeholder=profile.context_placeholder, key='deep_code_context')
         repository_context = st.checkbox('Include related application code', value=False,
                                          key='deep_repository_context',
                                          help='Allow bounded static reads of app.py and Python files under triage_desk. Selected code is sent to Fireworks. No code is executed.')
@@ -338,7 +402,8 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
                     lambda progress: service.start(question.strip(), version=version.strip(),
                                                    code_context=code_context.strip(), progress=progress,
                                                    **({'repository_context': True} if repository_context else {}),
-                                                   **({'memory_context': True} if memory_context else {})),
+                                                   **({'memory_context': True} if memory_context else {}),
+                                                   **({'use_case': profile.id} if profile.id != 'issue_investigation' else {})),
                     'Investigating your report…',
                 )
                 st.session_state['deep_case_picker'] = case['case_id']
@@ -360,7 +425,7 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
         case = by_id[case_id]
         question = ' '.join(_plain(case.get('question'), limit=100).split())
         status = _STATUS_LABELS.get(case.get('status'), _plain(case.get('status'), limit=100))
-        return question[:65] + ' · ' + status + ' · ' + case_id[:8]
+        return _case_workflow_label(case) + ' · ' + question[:65] + ' · ' + status + ' · ' + case_id[:8]
 
     selected = st.selectbox('Saved investigations', options, format_func=case_label, key='deep_case_picker')
     if not selected:
@@ -378,6 +443,8 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
     st.divider()
     st.text(_STATUS_LABELS.get(case.get('status'), _plain(case.get('status'), limit=100)))
     st.text('Case: ' + _plain(case.get('case_id'), limit=100))
+    st.caption('Saved workflow: ' + _case_workflow_label(case) + ' · version '
+               + str(case.get('use_case_version', 1)))
     st.caption('Related application code: ' + ('Enabled for this case' if case.get('repository_context') else 'Not enabled for this case'))
     st.caption('Earlier human reviews: ' + ('Enabled for this case' if case.get('memory_context') else 'Not enabled for this case'))
     st.text(_plain(case.get('question')))
@@ -386,7 +453,7 @@ def render_deep_investigation(root: Path, desk, *, service=None) -> None:
     if case.get('updated_at'):
         st.text('Updated: ' + _local_time(case.get('updated_at')))
     if case.get('code_context'):
-        with st.expander('Submitted code or traceback'):
+        with st.expander('Submitted context'):
             st.text(_plain(case['code_context']))
     if case.get('error'):
         st.warning('This investigation stopped before completion.')

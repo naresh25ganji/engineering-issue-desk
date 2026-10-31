@@ -1,0 +1,294 @@
+{
+  "id": "W4-05",
+  "scenario": "happy_path",
+  "title": "Positive integer freshness limit",
+  "failure_mode": "Boolean subclass and numeric boundary",
+  "source": {
+    "path": "triage_desk/freshness.py",
+    "start_line": 7,
+    "end_line": 12,
+    "sha256": "48adfd3357bd0c1dc803fb1cae1e69f5c69ca529f3bbaaef4579e67e18e01b91",
+    "quote": "def corpus_freshness(sources: list[dict], *, now: datetime | None = None, max_age_days: int = 7) -> dict:\n    if not isinstance(max_age_days, int) or isinstance(max_age_days, bool) or max_age_days < 1:\n        raise ValueError('Maximum snapshot age must be a positive number of days')\n    now = now or datetime.now(timezone.utc)\n    if now.tzinfo is None:\n        raise ValueError('Snapshot age requires a timezone-aware current time')\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "corpus_freshness rejects boolean, non-integer, and less-than-one max_age_days values.",
+        "expected_supported": true,
+        "rationale": "All three conditions appear in the guard."
+      },
+      {
+        "statement": "A fractional max_age_days value is accepted as long as it is positive.",
+        "expected_supported": false,
+        "rationale": "The guard rejects values that are not int."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose boundary tests using True, 0, 0.5, and 1 for max_age_days.",
+        "expected_supported": true,
+        "rationale": "Each input targets a visible validation boundary without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.855427,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Code raises ValueError for booleans, non‑ints, and values <1, matching claim."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Code rejects non‑int values; fractional max_age_days is not accepted."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed tests target the exact rejection conditions shown in the code."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "corpus_freshness rejects boolean, non-integer, and less-than-one max_age_days values.",
+        "support": [
+          {
+            "evidence_id": "W4-05-source",
+            "quote_id": "W4-05-quote",
+            "quote": "def corpus_freshness(sources: list[dict], *, now: datetime | None = None, max_age_days: int = 7) -> dict:\n    if not isinstance(max_age_days, int) or isinstance(max_age_days, bool) or max_age_days < 1:\n        raise ValueError('Maximum snapshot age must be a positive number of days')\n    now = now or datetime.now(timezone.utc)\n    if now.tzinfo is None:\n        raise ValueError('Snapshot age requires a timezone-aware current time')\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose boundary tests using True, 0, 0.5, and 1 for max_age_days."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-05",
+      "run_name": "20261030T220348Z-b9243231",
+      "prompt_version": "scope",
+      "prompt_hash": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "d47d9162-0160-4d53-94e7-330fd8d6b7b1",
+      "created_at": "2026-10-30T22:03:51.549487+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "f0278ffa50f8425089e68881be824c43",
+      "event_id": 2,
+      "case_id": "d47d9162-0160-4d53-94e7-330fd8d6b7b1",
+      "created_at": "2026-10-30T22:03:51.551470+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "f0278ffa50f8425089e68881be824c43",
+      "started_at": "2026-10-30T22:03:51.551893+00:00",
+      "usage": {
+        "input_tokens": 1616,
+        "output_tokens": 705,
+        "total_tokens": 2321
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2832.31,
+      "event_id": 3,
+      "case_id": "d47d9162-0160-4d53-94e7-330fd8d6b7b1",
+      "created_at": "2026-10-30T22:03:54.384485+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-05",
+      "run_name": "20261030T220348Z-b9243231",
+      "prompt_hash": "de6551b0427f4df75ea2373b4e4cda027b3e78ef6275b2c0777f1d9028592983",
+      "prompt_version": "scope",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.855427,
+      "error": null,
+      "event_id": 4,
+      "case_id": "d47d9162-0160-4d53-94e7-330fd8d6b7b1",
+      "created_at": "2026-10-30T22:03:54.387351+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1616,
+      "output_tokens": 705,
+      "total_tokens": 2321
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "d47d9162-0160-4d53-94e7-330fd8d6b7b1",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

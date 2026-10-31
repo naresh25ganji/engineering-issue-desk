@@ -1,0 +1,294 @@
+{
+  "id": "W4-21",
+  "scenario": "edge",
+  "title": "Bounded prefix cannot prove whole-file absence",
+  "failure_mode": "Whole-source absence inferred from bounded excerpt",
+  "source": {
+    "path": "triage_desk/reviews.py",
+    "start_line": 1,
+    "end_line": 11,
+    "sha256": "d09c81b8c5fa390b8dcf48f508247b501c8706112582ad1873dc8d5aeef6b8ea",
+    "quote": "\"\"\"Local user outcome labels, storing no report text, answers or credentials.\"\"\"\nfrom __future__ import annotations\n\nfrom datetime import datetime, timezone\nimport json\nfrom pathlib import Path\nimport re\nimport threading\n\nOUTCOMES = {'resolved', 'needs_followup', 'human_handoff'}\n_LOCK = threading.Lock()\n"
+  },
+  "context": {
+    "question": "Statically review the selected evidence. Separate supported observations from unverified outcomes and propose focused checks.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The selected file prefix imports threading and initializes _LOCK by calling threading.Lock().",
+        "expected_supported": true,
+        "rationale": "Both statements are literally present."
+      },
+      {
+        "statement": "No function anywhere in this module validates outcome labels or handles malformed input.",
+        "expected_supported": false,
+        "rationale": "A short prefix cannot establish whole-file absence or describe omitted function bodies."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Inspect the relevant function bodies before making claims about validation behavior.",
+        "expected_supported": true,
+        "rationale": "The requested inspection addresses information absent from the bounded prefix."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.246478,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows 'import threading' and '_LOCK = threading.Lock()' confirming import and initialization."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Quote does not show any functions; cannot infer absence of validation logic across whole module."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Inspecting function bodies is a valid diagnostic to verify whether validation exists."
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The selected file prefix imports threading and initializes _LOCK by calling threading.Lock().",
+        "support": [
+          {
+            "evidence_id": "W4-21-source",
+            "quote_id": "W4-21-quote",
+            "quote": "\"\"\"Local user outcome labels, storing no report text, answers or credentials.\"\"\"\nfrom __future__ import annotations\n\nfrom datetime import datetime, timezone\nimport json\nfrom pathlib import Path\nimport re\nimport threading\n\nOUTCOMES = {'resolved', 'needs_followup', 'human_handoff'}\n_LOCK = threading.Lock()\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Inspect the relevant function bodies before making claims about validation behavior."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-21",
+      "run_name": "20261030T220440Z-496c6334",
+      "prompt_version": "authority",
+      "prompt_hash": "29544ae366a35ea651617f74bd55c60d66876d4b2bf2e9ed83d85d965d37b3c1",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "fea8dce5-e81b-4558-8fec-f33eceed77ea",
+      "created_at": "2026-10-30T22:04:56.336367+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "a6fddfb21bba44709bc7ea386da7f403",
+      "event_id": 2,
+      "case_id": "fea8dce5-e81b-4558-8fec-f33eceed77ea",
+      "created_at": "2026-10-30T22:04:56.338372+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "a6fddfb21bba44709bc7ea386da7f403",
+      "started_at": "2026-10-30T22:04:56.338861+00:00",
+      "usage": {
+        "input_tokens": 1694,
+        "output_tokens": 509,
+        "total_tokens": 2203
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2219.76,
+      "event_id": 3,
+      "case_id": "fea8dce5-e81b-4558-8fec-f33eceed77ea",
+      "created_at": "2026-10-30T22:04:58.559276+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-21",
+      "run_name": "20261030T220440Z-496c6334",
+      "prompt_hash": "29544ae366a35ea651617f74bd55c60d66876d4b2bf2e9ed83d85d965d37b3c1",
+      "prompt_version": "authority",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.246478,
+      "error": null,
+      "event_id": 4,
+      "case_id": "fea8dce5-e81b-4558-8fec-f33eceed77ea",
+      "created_at": "2026-10-30T22:04:58.561882+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1694,
+      "output_tokens": 509,
+      "total_tokens": 2203
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "fea8dce5-e81b-4558-8fec-f33eceed77ea",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

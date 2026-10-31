@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-10-30T22:32:44.128524+00:00",
+  "tests": {
+    "command": "uv run pytest -q",
+    "passed": 879,
+    "failed": 0,
+    "seconds": 15.14
+  },
+  "app_checks": {
+    "views": [
+      "full_workflow",
+      "incident_filter",
+      "reviewer_regression",
+      "integrity"
+    ],
+    "exceptions": 0,
+    "model_calls_during_browsing": 0
+  },
+  "new_workflows": [
+    "incident_triage",
+    "change_review",
+    "test_planning"
+  ],
+  "new_cases": {
+    "full_workflow": 40,
+    "reviewer_regression": 30,
+    "deterministic_integrity": 30
+  },
+  "full_workflow_targets_met": {
+    "handoff": false,
+    "structural_contract": false,
+    "quoted_anchor_recall": true,
+    "latency": true,
+    "reported_tokens": true
+  },
+  "human_semantic_review": "pending",
+  "post_fix_smoke": "evaluation/workflow-guard-smoke/report.json",
+  "observed_smoke_information_requests": [],
+  "observed_smoke_guard_conversions": 0,
+  "limits": [
+    "Full40case results predate the narrow information-request follow-up fix and remain unchanged.",
+    "Interactive app retains baseline evidence review; recorded full-agent experiment selected calibrated explicitly.",
+    "Provisional reference labels and structural checks do not establish human semantic accuracy."
+  ],
+  "files_sha256": {
+    "triage_desk/use_cases.py": "6f17a204a1b4520733fd297959c633a604b82a7f59393ddf2e72c62b24964e44",
+    "triage_desk/cases.py": "f6d2528e5b60e3ea9916386732f7f70a201730c936952381961de1577d6fd386",
+    "triage_desk/deep_investigation.py": "86cda882ae90a2dd059d5817c03a2ef95bb83da21a6ccb36042da8510bd8e6d2",
+    "triage_desk/information_requests.py": "caccfa4980fdd02e8d163fda5e37329be22f59e46bcb714493279ef02d84c9e6",
+    "triage_desk/agent_ui.py": "d8bdb71748b8b8c4fddcd30ddbaff9a2d9781921f3da7d7c9ddfd74057720aef",
+    "triage_desk/evaluation_lab.py": "6727e4a6e836032e3d604eddd816dca40e5d50d034ed91833ccff40c3a2cfef9",
+    "triage_desk/workflow_evaluation_ui.py": "f90c25e5cceb47e2327320b81b186e3cefe8e00777b348a6c2b9d1b627229f83",
+    "evaluation/use_cases.py": "f452766ef33310f06f926a16180907b0a3f1671f84077c537ee5ce099653437b",
+    "evaluation/integrity.py": "890bd6edb6ca60f393a97cc36a3e882d35f0eacd9f9e85d7eca662fb9dac06fc",
+    "evaluation/workflow-cases.json": "0c816f4693609be82e579ba6f1a0e6c775544e8b134a7c9fecb4851ddccb75ba",
+    "evaluation/reviewer-regression-cases.json": "1b7b2fac74ee74f4257986effb2d57070f99085a57e02f02fa07762e804c7b70"
+  }
+}

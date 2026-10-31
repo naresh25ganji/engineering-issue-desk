@@ -1,0 +1,299 @@
+{
+  "id": "W4-59",
+  "scenario": "edge",
+  "title": "Static label extension requirement",
+  "failure_mode": "Static label extension requirement",
+  "source": {
+    "path": "evaluation/fixtures/workflows/static_header.py",
+    "start_line": 1,
+    "end_line": 9,
+    "sha256": "9b819c08375b0f22bb43d754fc40a728b70f21234393269598eb4cdf26601df7",
+    "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n",
+    "title": "static_header.py",
+    "kind": "code",
+    "origin": "snapshot",
+    "evidence_type": "frozen_repository_excerpt",
+    "filename": "evaluation/fixtures/workflows/static_header.py"
+  },
+  "context": {
+    "question": "Review the supplied engineering evidence and the complete claims. Distinguish a supported static observation or diagnostic from runtime outcomes not established by the quote.",
+    "reported_version": ""
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "annotations": {
+    "findings": [
+      {
+        "statement": "The filename validator regex requires labels to end with .py.",
+        "expected_supported": true,
+        "rationale": "The regex literally ends with the escaped .py suffix."
+      },
+      {
+        "statement": "The validator accepts notebook.ipynb as a valid Python source label.",
+        "expected_supported": false,
+        "rationale": "The selected source does not establish the complete assertion; static definitions, proposed changes, or controlled logs are not additional runtime or production evidence."
+      }
+    ],
+    "next_steps": [
+      {
+        "proposal": "Propose an invalid_header case using a relative filename ending in .ipynb.",
+        "expected_supported": true,
+        "rationale": "The diagnostic addresses the selected literal branch or evidence gap without asserting execution."
+      }
+    ]
+  },
+  "status": "completed",
+  "error": null,
+  "latency_seconds": 2.510407,
+  "quality_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Regex pattern ends with \\.py, enforcing .py suffix"
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Pattern rejects non‑.py extensions, so notebook.ipynb would be invalid"
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed .ipynb case matches the regex rejection path, valid diagnostic"
+      }
+    ],
+    "retained_findings": 1,
+    "removed_findings": 1,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "filtered_report": {
+    "findings": [
+      {
+        "statement": "The filename validator regex requires labels to end with .py.",
+        "support": [
+          {
+            "evidence_id": "W4-59-source",
+            "quote_id": "W4-59-quote",
+            "quote": "# Frozen source excerpt: triage_desk/static_analysis.py:70-77\ndef _safe_label(value: str) -> str:\n    if not isinstance(value, str):\n        raise StaticAnalysisUnavailable('invalid_header')\n    path = PurePosixPath(value)\n    if (len(value) > 500 or not re.fullmatch(r'[A-Za-z0-9_./-]+\\.py', value)\n            or path.is_absolute() or any(part in {'.', '..'} or part.startswith('.') for part in value.split('/'))):\n        raise StaticAnalysisUnavailable('invalid_header')\n    return value\n"
+          }
+        ]
+      }
+    ],
+    "next_steps": [
+      "Propose an invalid_header case using a relative filename ending in .ipynb."
+    ],
+    "missing_information": []
+  },
+  "events": [
+    {
+      "phase": "evaluation",
+      "name": "week4_case",
+      "status": "started",
+      "eval_id": "W4-59",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_version": "baseline",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "model": "accounts/fireworks/models/gpt-oss-120b",
+      "event_id": 1,
+      "case_id": "6f252d0a-6eed-4d52-8bb7-ff29b41e80c5",
+      "created_at": "2026-10-30T22:23:02.940517+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "3e62b3bc4b0246ce9d719d71bb34da9f",
+      "event_id": 2,
+      "case_id": "6f252d0a-6eed-4d52-8bb7-ff29b41e80c5",
+      "created_at": "2026-10-30T22:23:02.941757+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "3e62b3bc4b0246ce9d719d71bb34da9f",
+      "started_at": "2026-10-30T22:23:02.942195+00:00",
+      "usage": {
+        "input_tokens": 1392,
+        "output_tokens": 587,
+        "total_tokens": 1979
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2490.07,
+      "event_id": 3,
+      "case_id": "6f252d0a-6eed-4d52-8bb7-ff29b41e80c5",
+      "created_at": "2026-10-30T22:23:05.432831+00:00"
+    },
+    {
+      "phase": "evaluation_result",
+      "name": "week4_case",
+      "status": "completed",
+      "eval_id": "W4-59",
+      "run_name": "20261030T222250Z-4d15ef67",
+      "prompt_hash": "5668991214a306aa9ba8520aaaf5cf6328877374b11b5457f428e1c207b24bfe",
+      "prompt_version": "baseline",
+      "expected": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "predicted": {
+        "findings": [
+          true,
+          false
+        ],
+        "next_steps": [
+          true
+        ]
+      },
+      "scores": {
+        "valid": true,
+        "exact_match": true,
+        "expected": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "predicted": {
+          "findings": [
+            true,
+            false
+          ],
+          "next_steps": [
+            true
+          ]
+        },
+        "items": [
+          {
+            "kind": "findings",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "findings",
+            "index": 1,
+            "expected": false,
+            "predicted": false,
+            "correct": true,
+            "error_type": null
+          },
+          {
+            "kind": "next_steps",
+            "index": 0,
+            "expected": true,
+            "predicted": true,
+            "correct": true,
+            "error_type": null
+          }
+        ],
+        "false_positives": 0,
+        "false_negatives": 0,
+        "unknown_verdicts": 0
+      },
+      "latency_seconds": 2.510407,
+      "error": null,
+      "event_id": 4,
+      "case_id": "6f252d0a-6eed-4d52-8bb7-ff29b41e80c5",
+      "created_at": "2026-10-30T22:23:05.437210+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 1,
+    "tool_calls": 0,
+    "model_calls_by_role": {
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {},
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 1392,
+      "output_tokens": 587,
+      "total_tokens": 1979
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "estimated_cost_usd": null,
+  "scores": {
+    "valid": true,
+    "exact_match": true,
+    "expected": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "predicted": {
+      "findings": [
+        true,
+        false
+      ],
+      "next_steps": [
+        true
+      ]
+    },
+    "items": [
+      {
+        "kind": "findings",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "findings",
+        "index": 1,
+        "expected": false,
+        "predicted": false,
+        "correct": true,
+        "error_type": null
+      },
+      {
+        "kind": "next_steps",
+        "index": 0,
+        "expected": true,
+        "predicted": true,
+        "correct": true,
+        "error_type": null
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "unknown_verdicts": 0
+  },
+  "case_id": "6f252d0a-6eed-4d52-8bb7-ff29b41e80c5",
+  "model": "accounts/fireworks/models/gpt-oss-120b"
+}

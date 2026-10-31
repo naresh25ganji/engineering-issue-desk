@@ -1,0 +1,560 @@
+{
+  "id": "WF-29",
+  "eval_id": "WF-29",
+  "use_case": "change_review",
+  "title": "Budget boundary comparison regression",
+  "scenario": "known_failure",
+  "question": "Review the proposed change from >= to > at a call budget boundary. Explain the counter comparison and propose equality-boundary checks; treat all runtime outcomes as unmeasured.",
+  "input": {
+    "question": "Review the proposed change from >= to > at a call budget boundary. Explain the counter comparison and propose equality-boundary checks; treat all runtime outcomes as unmeasured.",
+    "version": "",
+    "context": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_budget.py\n+++ b/triage_desk/agent_budget.py\n@@ -1,24 +1,24 @@\n     @contextmanager\n     def call(self, phase, name):\n         with self.lock:\n             self.check()\n             field = 'model_calls' if phase == 'model' else 'tool_calls'\n             maximum = self.max_model_calls if phase == 'model' else self.max_tool_calls\n-            if getattr(self, field) >= maximum:\n+            if getattr(self, field) > maximum:\n                 raise BudgetExceeded(f'The investigation reached its {phase}-call limit.')\n             setattr(self, field, getattr(self, field) + 1)\n         started = time.monotonic()\n         # Do not persist tool arguments: they can include user code or credentials.\n         call_id = uuid.uuid4().hex\n         self.event(phase=phase, name=name, status='started', call_id=call_id)\n         event = {'phase': phase + '_result', 'name': name, 'status': 'completed', 'call_id': call_id,\n                  'started_at': datetime.now(timezone.utc).isoformat()}\n         try:\n             yield event\n         except Exception as exc:\n             event['status'] = 'limited' if isinstance(exc, BudgetExceeded) else 'error'\n             event['error_type'] = type(exc).__name__\n             raise\n         finally:\n             event['latency_ms'] = round((time.monotonic() - started) * 1000, 2)\n             self.event(**event)\n",
+    "use_case": "change_review"
+  },
+  "input_sha256": "1fc77087d40a4cbe30eae70bdd4c296bb94b192de0bae3bc13b82a4b595e68df",
+  "case_definition_sha256": "3822ca8a5a0dec315c244f3b3afd01be35d16bac22943bca5b21afbb58d8d7f5",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/budget_guard.diff",
+    "sha256": "3834e325f40839d01f92c98931459a8451d18e02d53246f4533889cd35e925b2"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "+            if getattr(self, field) > maximum:"
+    ],
+    "behavior_notes": "Known failure class: off-by-one budget checks. Assess the proposed code only; no executed overrun is supplied.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "c22e2c2e-6e26-4320-b212-b1351e216b64",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The original implementation raised BudgetExceeded when the number of calls was greater than or equal to the configured maximum.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_fcf3381686f64a5044ee902eb803f1b3",
+            "quote_id": "ev_fcf3381686f64a5044ee902eb803f1b3:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_budget.py\n+++ b/triage_desk/agent_budget.py\n@@ -1,24 +1,24 @@\n     @contextmanager\n     def call(self, phase, name):\n         with self.lock:\n             self.check()\n             field = 'model_calls' if phase == 'model' else 'tool_calls'\n             maximum = self.max_model_calls if phase == 'model' else self.max_tool_calls\n-            if getattr(self, field) >= maximum:\n+            if getattr(self, field) > maximum:\n                 raise BudgetExceeded(f'The investigation reached its {phase}-call limit.')\n             setattr(self, field, getattr(self, field) + 1)\n         started = time.monotonic()\n         # Do not persist tool arguments: they can include user code or credentials.\n         call_id = uuid.uuid4().hex\n         self.event(phase=phase, name=name, status='started', call_id=call_id)\n         event = {'phase': phase + '_result', 'name': name, 'status': 'completed', 'call_id':"
+          }
+        ]
+      },
+      {
+        "statement": "The proposed change replaces the >= comparison with >, so BudgetExceeded is raised only when the call count exceeds the maximum.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_fcf3381686f64a5044ee902eb803f1b3",
+            "quote_id": "ev_fcf3381686f64a5044ee902eb803f1b3:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_budget.py\n+++ b/triage_desk/agent_budget.py\n@@ -1,24 +1,24 @@\n     @contextmanager\n     def call(self, phase, name):\n         with self.lock:\n             self.check()\n             field = 'model_calls' if phase == 'model' else 'tool_calls'\n             maximum = self.max_model_calls if phase == 'model' else self.max_tool_calls\n-            if getattr(self, field) >= maximum:\n+            if getattr(self, field) > maximum:\n                 raise BudgetExceeded(f'The investigation reached its {phase}-call limit.')\n             setattr(self, field, getattr(self, field) + 1)\n         started = time.monotonic()\n         # Do not persist tool arguments: they can include user code or credentials.\n         call_id = uuid.uuid4().hex\n         self.event(phase=phase, name=name, status='started', call_id=call_id)\n         event = {'phase': phase + '_result', 'name': name, 'status': 'completed', 'call_id':"
+          }
+        ]
+      },
+      {
+        "statement": "With the > comparison, the system will allow exactly the maximum number of calls without raising, effectively increasing the allowed call budget by one relative to the original intent.",
+        "category": "correctness",
+        "severity": "medium",
+        "support": [
+          {
+            "evidence_id": "ev_fcf3381686f64a5044ee902eb803f1b3",
+            "quote_id": "ev_fcf3381686f64a5044ee902eb803f1b3:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_budget.py\n+++ b/triage_desk/agent_budget.py\n@@ -1,24 +1,24 @@\n     @contextmanager\n     def call(self, phase, name):\n         with self.lock:\n             self.check()\n             field = 'model_calls' if phase == 'model' else 'tool_calls'\n             maximum = self.max_model_calls if phase == 'model' else self.max_tool_calls\n-            if getattr(self, field) >= maximum:\n+            if getattr(self, field) > maximum:\n                 raise BudgetExceeded(f'The investigation reached its {phase}-call limit.')\n             setattr(self, field, getattr(self, field) + 1)\n         started = time.monotonic()\n         # Do not persist tool arguments: they can include user code or credentials.\n         call_id = uuid.uuid4().hex\n         self.event(phase=phase, name=name, status='started', call_id=call_id)\n         event = {'phase': phase + '_result', 'name': name, 'status': 'completed', 'call_id':"
+          }
+        ]
+      },
+      {
+        "statement": "The comparison uses getattr(self, field) to retrieve the current count of model_calls or tool_calls based on the phase argument.",
+        "category": "correctness",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_fcf3381686f64a5044ee902eb803f1b3",
+            "quote_id": "ev_fcf3381686f64a5044ee902eb803f1b3:q1",
+            "quote": "# Proposed patch for static review only; not applied or executed.\n--- a/triage_desk/agent_budget.py\n+++ b/triage_desk/agent_budget.py\n@@ -1,24 +1,24 @@\n     @contextmanager\n     def call(self, phase, name):\n         with self.lock:\n             self.check()\n             field = 'model_calls' if phase == 'model' else 'tool_calls'\n             maximum = self.max_model_calls if phase == 'model' else self.max_tool_calls\n-            if getattr(self, field) >= maximum:\n+            if getattr(self, field) > maximum:\n                 raise BudgetExceeded(f'The investigation reached its {phase}-call limit.')\n             setattr(self, field, getattr(self, field) + 1)\n         started = time.monotonic()\n         # Do not persist tool arguments: they can include user code or credentials.\n         call_id = uuid.uuid4().hex\n         self.event(phase=phase, name=name, status='started', call_id=call_id)\n         event = {'phase': phase + '_result', 'name': name, 'status': 'completed', 'call_id':"
+          }
+        ]
+      }
+    ],
+    "missing_information": [],
+    "next_steps": [
+      "Consider adding an explicit equality check (e.g., if getattr(self, field) == maximum: raise BudgetExceeded) before incrementing the counter to enforce a strict budget limit."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote shows original line using >=, confirming original raised on count >= maximum."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote shows changed line using >, confirming proposed replacement raises only when count exceeds maximum."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Quote includes getattr(self, field) in the condition and field set based on phase, matching statement."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Given > comparison before increment, count == maximum passes, allowing max calls; thus budget effectively increased by one."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Proposed equality check would modify the same pre-increment condition, directly enforcing strict limit."
+        },
+        {
+          "index": 1,
+          "supported": false,
+          "reason": "Checking after increment still allows max calls, not preventing the one‑call budget increase observed."
+        }
+      ],
+      "retained_findings": 4,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote shows original line using >=, confirming original raised on count >= maximum."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote shows changed line using >, confirming proposed replacement raises only when count exceeds maximum."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Quote includes getattr(self, field) in the condition and field set based on phase, matching statement."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Given > comparison before increment, count == maximum passes, allowing max calls; thus budget effectively increased by one."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposed equality check would modify the same pre-increment condition, directly enforcing strict limit."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Checking after increment still allows max calls, not preventing the one‑call budget increase observed."
+      }
+    ],
+    "retained_findings": 4,
+    "removed_findings": 0,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_fcf3381686f64a5044ee902eb803f1b3",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:24:57.987479+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "3834e325f40839d01f92c98931459a8451d18e02d53246f4533889cd35e925b2",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:24:57.982943+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:24:57.986885+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "2c444e9fab6f472ca4e0d4d279b64a54",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:24:58.016241+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "2c444e9fab6f472ca4e0d4d279b64a54",
+      "started_at": "2026-10-30T22:24:58.016589+00:00",
+      "usage": {
+        "input_tokens": 4997,
+        "output_tokens": 142,
+        "total_tokens": 5139
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 853.94,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:24:58.871623+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "6bf20e5e1c334f17af51204031760fa8",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:24:58.931795+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "6bf20e5e1c334f17af51204031760fa8",
+      "started_at": "2026-10-30T22:24:58.932154+00:00",
+      "latency_ms": 1.54,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:24:58.933201+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "00110229a1b24724ab38cc27afec1e15",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:24:58.934971+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "00110229a1b24724ab38cc27afec1e15",
+      "started_at": "2026-10-30T22:24:58.935276+00:00",
+      "usage": {
+        "input_tokens": 5845,
+        "output_tokens": 1137,
+        "total_tokens": 6982
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5027.33,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:25:03.964123+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 4,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:25:03.974934+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:25:03.976428+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "ba16b67d88ea4c50a353194cb2d2e2e5",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:25:03.987851+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "ba16b67d88ea4c50a353194cb2d2e2e5",
+      "started_at": "2026-10-30T22:25:03.988547+00:00",
+      "usage": {
+        "input_tokens": 2354,
+        "output_tokens": 1857,
+        "total_tokens": 4211
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 8216.37,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:25:12.204121+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 4,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:25:12.207471+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 13196,
+      "output_tokens": 3136,
+      "total_tokens": 16332
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 14293.57,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 4,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-29",
+  "saved_use_case_id": "change_review",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-29",
+    "metadata": {
+      "use_case_id": "change_review",
+      "input_sha256": "1fc77087d40a4cbe30eae70bdd4c296bb94b192de0bae3bc13b82a4b595e68df",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:24:57.982943+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:24:57.986885+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "2c444e9fab6f472ca4e0d4d279b64a54",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:24:58.016241+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "2c444e9fab6f472ca4e0d4d279b64a54",
+        "started_at": "2026-10-30T22:24:58.016589+00:00",
+        "usage": {
+          "input_tokens": 4997,
+          "output_tokens": 142,
+          "total_tokens": 5139
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 853.94,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:24:58.871623+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "6bf20e5e1c334f17af51204031760fa8",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:24:58.931795+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "6bf20e5e1c334f17af51204031760fa8",
+        "started_at": "2026-10-30T22:24:58.932154+00:00",
+        "latency_ms": 1.54,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:24:58.933201+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "00110229a1b24724ab38cc27afec1e15",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:24:58.934971+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "00110229a1b24724ab38cc27afec1e15",
+        "started_at": "2026-10-30T22:24:58.935276+00:00",
+        "usage": {
+          "input_tokens": 5845,
+          "output_tokens": 1137,
+          "total_tokens": 6982
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5027.33,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:25:03.964123+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 4,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:25:03.974934+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:25:03.976428+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "ba16b67d88ea4c50a353194cb2d2e2e5",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:25:03.987851+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "ba16b67d88ea4c50a353194cb2d2e2e5",
+        "started_at": "2026-10-30T22:25:03.988547+00:00",
+        "usage": {
+          "input_tokens": 2354,
+          "output_tokens": 1857,
+          "total_tokens": 4211
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 8216.37,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:25:12.204121+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 4,
+        "removed_findings": 0,
+        "removed_next_steps": 1,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:25:12.207471+00:00"
+      }
+    ]
+  }
+}

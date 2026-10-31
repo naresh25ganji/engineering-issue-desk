@@ -1,0 +1,520 @@
+{
+  "id": "WF-15",
+  "eval_id": "WF-15",
+  "use_case": "incident_triage",
+  "title": "Observed tokens with missing usage",
+  "scenario": "happy_path",
+  "question": "Summarize the model calls and token-usage completeness in this controlled log. Keep observed totals separate from the unknown complete total and request missing telemetry.",
+  "input": {
+    "question": "Summarize the model calls and token-usage completeness in this controlled log. Keep observed totals separate from the unknown complete total and request missing telemetry.",
+    "version": "",
+    "context": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T20:00:00Z phase=model name=investigator status=started call_id=m1\n2026-10-28T20:00:02Z phase=model_result name=investigator status=completed call_id=m1 input_tokens=150 output_tokens=40 total_tokens=190\n2026-10-28T20:00:03Z phase=model name=correctness_security status=started call_id=m2\n2026-10-28T20:00:04Z phase=model_result name=correctness_security status=completed call_id=m2 usage=unavailable\n",
+    "use_case": "incident_triage"
+  },
+  "input_sha256": "86f73d14dfb02d73e2580bbcd2e478b6779a5dc478a40d50840e0f26a87bbc13",
+  "case_definition_sha256": "cd04e85c112479a3c03fa47846ff51b339843d969278e172f8da51cff91cad83",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/incident_usage.log",
+    "sha256": "b4e9f3320a060e5e8127814dcb696d97c3d6dff0c591a5f3e9cf04b67c2d0b13"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "total_tokens=190",
+      "usage=unavailable"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "5d0877ad-c78f-4e7f-b2fb-79116581b17e",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The log shows a completed model call to \"investigator\" (call_id=m1) with input_tokens=150, output_tokens=40, total_tokens=190.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_a97735ab3a461b27aeb5ef1d0f7f369f",
+            "quote_id": "ev_a97735ab3a461b27aeb5ef1d0f7f369f:q1",
+            "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T20:00:00Z phase=model name=investigator status=started call_id=m1\n2026-10-28T20:00:02Z phase=model_result name=investigator status=completed call_id=m1 input_tokens=150 output_tokens=40 total_tokens=190\n2026-10-28T20:00:03Z phase=model name=correctness_security status=started call_id=m2\n2026-10-28T20:00:04Z phase=model_result name=correctness_security status=completed call_id=m2 usage=unavailable\n"
+          }
+        ]
+      },
+      {
+        "statement": "The log records a completed model call to \"correctness_security\" (call_id=m2) but token usage is marked as unavailable.",
+        "category": "docs",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_a97735ab3a461b27aeb5ef1d0f7f369f",
+            "quote_id": "ev_a97735ab3a461b27aeb5ef1d0f7f369f:q1",
+            "quote": "Synthetic operational log: controlled example, not a production incident.\n2026-10-28T20:00:00Z phase=model name=investigator status=started call_id=m1\n2026-10-28T20:00:02Z phase=model_result name=investigator status=completed call_id=m1 input_tokens=150 output_tokens=40 total_tokens=190\n2026-10-28T20:00:03Z phase=model name=correctness_security status=started call_id=m2\n2026-10-28T20:00:04Z phase=model_result name=correctness_security status=completed call_id=m2 usage=unavailable\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [
+      "Token usage (input, output, total) for the \"correctness_security\" model call (call_id=m2).",
+      "Any additional model calls not present in the provided snippet that may affect the overall token usage total."
+    ],
+    "next_steps": [
+      "Request telemetry or log entries that provide token usage details for the \"correctness_security\" model call (call_id=m2)."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote directly shows investigator call completed with input_tokens=150, output_tokens=40, total_tokens=190."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote shows correctness_security call completed with usage=unavailable, matching statement."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Requesting telemetry to obtain missing token usage is a diagnostic aligned with observed unavailable usage."
+        },
+        {
+          "index": 1,
+          "supported": false,
+          "reason": "Aggregating total tokens assumes usage data for all calls, but evidence shows missing usage for correctness_security."
+        }
+      ],
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote directly shows investigator call completed with input_tokens=150, output_tokens=40, total_tokens=190."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote shows correctness_security call completed with usage=unavailable, matching statement."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Requesting telemetry to obtain missing token usage is a diagnostic aligned with observed unavailable usage."
+      },
+      {
+        "index": 1,
+        "supported": false,
+        "reason": "Aggregating total tokens assumes usage data for all calls, but evidence shows missing usage for correctness_security."
+      }
+    ],
+    "retained_findings": 2,
+    "removed_findings": 0,
+    "removed_next_steps": 1,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_a97735ab3a461b27aeb5ef1d0f7f369f",
+      "title": "User supplied incident notes and logs",
+      "url": "",
+      "kind": "issue",
+      "origin": "user_context",
+      "evidence_type": "incident_notes",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:24:22.990405+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "b4e9f3320a060e5e8127814dcb696d97c3d6dff0c591a5f3e9cf04b67c2d0b13",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:24:22.985575+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:24:22.989747+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "ea448afa116545ecbbd3d5be46dd3e5f",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:24:23.019116+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "ea448afa116545ecbbd3d5be46dd3e5f",
+      "started_at": "2026-10-30T22:24:23.019410+00:00",
+      "usage": {
+        "input_tokens": 4990,
+        "output_tokens": 133,
+        "total_tokens": 5123
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 901.97,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:24:23.922614+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "08fd58ac63314ae2b0affb787b91bb90",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:24:23.927818+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "08fd58ac63314ae2b0affb787b91bb90",
+      "started_at": "2026-10-30T22:24:23.928589+00:00",
+      "latency_ms": 3.91,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:24:23.931521+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "496f50fb4d534527b23ae281bfb45044",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:24:23.935376+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "496f50fb4d534527b23ae281bfb45044",
+      "started_at": "2026-10-30T22:24:23.935879+00:00",
+      "usage": {
+        "input_tokens": 5544,
+        "output_tokens": 573,
+        "total_tokens": 6117
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 2649.86,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:24:26.586358+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 2,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:24:26.597581+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:24:26.600338+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "2547583cb26f4a6987ebe060fe2d080c",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:24:26.613997+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "2547583cb26f4a6987ebe060fe2d080c",
+      "started_at": "2026-10-30T22:24:26.614473+00:00",
+      "usage": {
+        "input_tokens": 2151,
+        "output_tokens": 1140,
+        "total_tokens": 3291
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 4678.16,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:24:31.292967+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 2,
+      "removed_findings": 0,
+      "removed_next_steps": 1,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:24:31.299670+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12685,
+      "output_tokens": 1846,
+      "total_tokens": 14531
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 8388.343,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 2,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 2,
+    "anchors_covered": 2,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-15",
+  "saved_use_case_id": "incident_triage",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-15",
+    "metadata": {
+      "use_case_id": "incident_triage",
+      "input_sha256": "86f73d14dfb02d73e2580bbcd2e478b6779a5dc478a40d50840e0f26a87bbc13",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:24:22.985575+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:24:22.989747+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "ea448afa116545ecbbd3d5be46dd3e5f",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:24:23.019116+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "ea448afa116545ecbbd3d5be46dd3e5f",
+        "started_at": "2026-10-30T22:24:23.019410+00:00",
+        "usage": {
+          "input_tokens": 4990,
+          "output_tokens": 133,
+          "total_tokens": 5123
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 901.97,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:24:23.922614+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "08fd58ac63314ae2b0affb787b91bb90",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:24:23.927818+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "08fd58ac63314ae2b0affb787b91bb90",
+        "started_at": "2026-10-30T22:24:23.928589+00:00",
+        "latency_ms": 3.91,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:24:23.931521+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "496f50fb4d534527b23ae281bfb45044",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:24:23.935376+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "496f50fb4d534527b23ae281bfb45044",
+        "started_at": "2026-10-30T22:24:23.935879+00:00",
+        "usage": {
+          "input_tokens": 5544,
+          "output_tokens": 573,
+          "total_tokens": 6117
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 2649.86,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:24:26.586358+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 2,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:24:26.597581+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:24:26.600338+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "2547583cb26f4a6987ebe060fe2d080c",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:24:26.613997+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "2547583cb26f4a6987ebe060fe2d080c",
+        "started_at": "2026-10-30T22:24:26.614473+00:00",
+        "usage": {
+          "input_tokens": 2151,
+          "output_tokens": 1140,
+          "total_tokens": 3291
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 4678.16,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:24:31.292967+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 2,
+        "removed_findings": 0,
+        "removed_next_steps": 1,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:24:31.299670+00:00"
+      }
+    ]
+  }
+}

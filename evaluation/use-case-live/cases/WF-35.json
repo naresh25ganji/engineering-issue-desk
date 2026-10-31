@@ -1,0 +1,572 @@
+{
+  "id": "WF-35",
+  "eval_id": "WF-35",
+  "use_case": "test_planning",
+  "title": "Invalid path regression inventory",
+  "scenario": "happy_path",
+  "question": "Turn the shown parameterized path cases into a concise review of coverage and propose one meaningful additional boundary case. Do not read the requested paths or claim test execution.",
+  "input": {
+    "question": "Turn the shown parameterized path cases into a concise review of coverage and propose one meaningful additional boundary case. Do not read the requested paths or claim test execution.",
+    "version": "",
+    "context": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n",
+    "use_case": "test_planning"
+  },
+  "input_sha256": "fcc58e69b2805f9fcd8e8d7bdb638d7fc21bf188c7670fab8189cdcd65a9e496",
+  "case_definition_sha256": "111c3cd71a1d7f8b013f8100c370f7fe59426723e95a60b568f0f8596db3fb8e",
+  "fixture": {
+    "path": "evaluation/fixtures/workflows/path_test_definitions.py",
+    "sha256": "a2ea63b9612e48360170a4a3a20d98565ecb58ad7e4ae57eae680b84b8510545"
+  },
+  "expected": {
+    "min_findings": 1,
+    "min_next_steps": 1,
+    "required_tools": [
+      "read_case_evidence"
+    ],
+    "evidence_anchors": [
+      "triage_desk//generation.py"
+    ],
+    "behavior_notes": "Assess only the supplied frozen evidence. Proposals are not executed results; human review is required.",
+    "human_rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ]
+  },
+  "label_review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": ""
+  },
+  "attempted": true,
+  "status": "awaiting_review",
+  "case_id": "ffdb9f15-fa80-48f2-9496-818bbf50831d",
+  "error": null,
+  "handoff_observed": true,
+  "persisted_case_observed": true,
+  "report": {
+    "findings": [
+      {
+        "statement": "The parametrized test includes absolute paths such as '/etc/passwd' and '/tmp/app.py'.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_f0599778afb5b00a31261472eee2e184",
+            "quote_id": "ev_f0599778afb5b00a31261472eee2e184:q1",
+            "quote": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n"
+          }
+        ]
+      },
+      {
+        "statement": "It includes relative traversal attempts like '../outside.py' and 'triage_desk/nested/../../app.py'.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_f0599778afb5b00a31261472eee2e184",
+            "quote_id": "ev_f0599778afb5b00a31261472eee2e184:q1",
+            "quote": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n"
+          }
+        ]
+      },
+      {
+        "statement": "It includes dot-prefixed hidden files and directories such as '.env', '.git/config', '.cache/private.py', and 'triage_desk/.private/hidden.py'.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_f0599778afb5b00a31261472eee2e184",
+            "quote_id": "ev_f0599778afb5b00a31261472eee2e184:q1",
+            "quote": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n"
+          }
+        ]
+      },
+      {
+        "statement": "It includes malformed path forms like double slash 'triage_desk//generation.py', backslash 'triage_desk\\\\generation.py', and a trailing newline in 'triage_desk/generation.py\\n'.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_f0599778afb5b00a31261472eee2e184",
+            "quote_id": "ev_f0599778afb5b00a31261472eee2e184:q1",
+            "quote": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n"
+          }
+        ]
+      },
+      {
+        "statement": "It also tests seemingly normal file paths such as './app.py' and 'triage_desk/readme.md' which are expected to raise RepositoryContextError.",
+        "category": "tests",
+        "severity": "low",
+        "support": [
+          {
+            "evidence_id": "ev_f0599778afb5b00a31261472eee2e184",
+            "quote_id": "ev_f0599778afb5b00a31261472eee2e184:q1",
+            "quote": "# Frozen source excerpt: tests/test_repository_context.py:61-70\n@pytest.mark.parametrize('path', [\n    '../outside.py', '/etc/passwd', '/tmp/app.py', '.env', '.git/config', '.cache/private.py',\n    'tests/hidden.py', 'data/hidden.py', 'unrelated.py', 'triage_desk/../.env', './app.py',\n    'triage_desk//generation.py', 'triage_desk\\\\generation.py', 'triage_desk/generation.py\\n',\n    'triage_desk/.private/hidden.py', 'triage_desk/tests/hidden.py', 'triage_desk/readme.md',\n    'triage_desk/nested/../../app.py',\n])\ndef test_read_rejects_traversal_absolute_hidden_and_nonallowlisted_paths(project, path):\n    with pytest.raises(repository.RepositoryContextError):\n        repository.RepositoryContext(project).read(path)\n"
+          }
+        ]
+      }
+    ],
+    "missing_information": [],
+    "next_steps": [
+      "Add a new parametrized test case for a Windows-style absolute path, e.g., 'C:\\\\Windows\\\\system32\\\\config.sys', to verify that RepositoryContext.read correctly rejects platform-specific absolute paths."
+    ],
+    "quality_review": {
+      "status": "completed",
+      "finding_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Quote lists '/etc/passwd' and '/tmp/app.py' in the parametrized paths."
+        },
+        {
+          "index": 1,
+          "supported": true,
+          "reason": "Quote includes '../outside.py' and 'triage_desk/nested/../../app.py'."
+        },
+        {
+          "index": 2,
+          "supported": true,
+          "reason": "Quote contains '.env', '.git/config', '.cache/private.py', and 'triage_desk/.private/hidden.py'."
+        },
+        {
+          "index": 3,
+          "supported": true,
+          "reason": "Quote shows 'triage_desk//generation.py', 'triage_desk\\\\generation.py', and 'triage_desk/generation.py\\n'."
+        },
+        {
+          "index": 4,
+          "supported": true,
+          "reason": "Quote includes './app.py' and 'triage_desk/readme.md' and expects RepositoryContextError via pytest.raises."
+        }
+      ],
+      "next_step_verdicts": [
+        {
+          "index": 0,
+          "supported": true,
+          "reason": "Proposes adding a Windows-style absolute path test to check the same rejection safeguard not covered by current evidence."
+        }
+      ],
+      "retained_findings": 5,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+    }
+  },
+  "independent_ai_review": {
+    "status": "completed",
+    "finding_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Quote lists '/etc/passwd' and '/tmp/app.py' in the parametrized paths."
+      },
+      {
+        "index": 1,
+        "supported": true,
+        "reason": "Quote includes '../outside.py' and 'triage_desk/nested/../../app.py'."
+      },
+      {
+        "index": 2,
+        "supported": true,
+        "reason": "Quote contains '.env', '.git/config', '.cache/private.py', and 'triage_desk/.private/hidden.py'."
+      },
+      {
+        "index": 3,
+        "supported": true,
+        "reason": "Quote shows 'triage_desk//generation.py', 'triage_desk\\\\generation.py', and 'triage_desk/generation.py\\n'."
+      },
+      {
+        "index": 4,
+        "supported": true,
+        "reason": "Quote includes './app.py' and 'triage_desk/readme.md' and expects RepositoryContextError via pytest.raises."
+      }
+    ],
+    "next_step_verdicts": [
+      {
+        "index": 0,
+        "supported": true,
+        "reason": "Proposes adding a Windows-style absolute path test to check the same rejection safeguard not covered by current evidence."
+      }
+    ],
+    "retained_findings": 5,
+    "removed_findings": 0,
+    "removed_next_steps": 0,
+    "reviewer_model": "accounts/fireworks/models/gpt-oss-120b"
+  },
+  "sources": [
+    {
+      "evidence_id": "ev_f0599778afb5b00a31261472eee2e184",
+      "title": "User supplied reproduction code",
+      "url": "",
+      "kind": "code",
+      "origin": "user_code",
+      "evidence_type": "",
+      "filename": "",
+      "fetched_at": "2026-10-30T22:25:20.646011+00:00",
+      "snapshot_at": "",
+      "version_scope": "",
+      "commit_sha": "",
+      "sha256": "a2ea63b9612e48360170a4a3a20d98565ecb58ad7e4ae57eae680b84b8510545",
+      "published_at": "",
+      "acquired_at": ""
+    }
+  ],
+  "events": [
+    {
+      "phase": "configuration",
+      "name": "evidence_review_prompt",
+      "status": "selected",
+      "event_id": 1,
+      "created_at": "2026-10-30T22:25:20.641604+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "investigation",
+      "status": "started",
+      "revision": 0,
+      "event_id": 2,
+      "created_at": "2026-10-30T22:25:20.645294+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "ec337a4399924824bfbfda5a3cfc31cd",
+      "event_id": 3,
+      "created_at": "2026-10-30T22:25:20.674240+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "ec337a4399924824bfbfda5a3cfc31cd",
+      "started_at": "2026-10-30T22:25:20.674511+00:00",
+      "usage": {
+        "input_tokens": 4985,
+        "output_tokens": 141,
+        "total_tokens": 5126
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 910.86,
+      "event_id": 4,
+      "created_at": "2026-10-30T22:25:21.585265+00:00"
+    },
+    {
+      "phase": "tool",
+      "name": "read_case_evidence",
+      "status": "started",
+      "call_id": "fd984c20dbd048fbaec755d0e9eb390a",
+      "event_id": 5,
+      "created_at": "2026-10-30T22:25:21.587124+00:00"
+    },
+    {
+      "phase": "tool_result",
+      "name": "read_case_evidence",
+      "status": "completed",
+      "call_id": "fd984c20dbd048fbaec755d0e9eb390a",
+      "started_at": "2026-10-30T22:25:21.587463+00:00",
+      "latency_ms": 1.56,
+      "event_id": 6,
+      "created_at": "2026-10-30T22:25:21.588559+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "investigator",
+      "status": "started",
+      "call_id": "870e485e7fb64fac9d7966a92e6505e9",
+      "event_id": 7,
+      "created_at": "2026-10-30T22:25:21.590236+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "investigator",
+      "status": "completed",
+      "call_id": "870e485e7fb64fac9d7966a92e6505e9",
+      "started_at": "2026-10-30T22:25:21.590579+00:00",
+      "usage": {
+        "input_tokens": 5591,
+        "output_tokens": 1436,
+        "total_tokens": 7027
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 6097.57,
+      "event_id": 8,
+      "created_at": "2026-10-30T22:25:27.688593+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_validation",
+      "status": "completed",
+      "findings": 5,
+      "event_id": 9,
+      "created_at": "2026-10-30T22:25:27.697199+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "started",
+      "event_id": 10,
+      "created_at": "2026-10-30T22:25:27.698632+00:00"
+    },
+    {
+      "phase": "model",
+      "name": "evidence_reviewer",
+      "status": "started",
+      "call_id": "190cc21fd10e46b2a048cdf562e2aa6f",
+      "event_id": 11,
+      "created_at": "2026-10-30T22:25:27.709612+00:00"
+    },
+    {
+      "phase": "model_result",
+      "name": "evidence_reviewer",
+      "status": "completed",
+      "call_id": "190cc21fd10e46b2a048cdf562e2aa6f",
+      "started_at": "2026-10-30T22:25:27.710074+00:00",
+      "usage": {
+        "input_tokens": 2347,
+        "output_tokens": 1306,
+        "total_tokens": 3653
+      },
+      "usage_reported": true,
+      "finish_reason": "tool_calls",
+      "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+      "tool_call_count": 1,
+      "invalid_tool_call_count": 0,
+      "latency_ms": 5315.56,
+      "event_id": 12,
+      "created_at": "2026-10-30T22:25:33.026346+00:00"
+    },
+    {
+      "phase": "stage",
+      "name": "evidence_review",
+      "status": "completed",
+      "retained_findings": 5,
+      "removed_findings": 0,
+      "removed_next_steps": 0,
+      "event_id": 13,
+      "created_at": "2026-10-30T22:25:33.034090+00:00"
+    }
+  ],
+  "accounting": {
+    "model_calls": 3,
+    "tool_calls": 1,
+    "model_calls_by_role": {
+      "investigator": 2,
+      "evidence_reviewer": 1
+    },
+    "tool_calls_by_name": {
+      "read_case_evidence": 1
+    },
+    "errors_by_role_or_tool": {},
+    "unfinished_call_records": 0,
+    "reported_token_usage": {
+      "input_tokens": 12923,
+      "output_tokens": 2883,
+      "total_tokens": 15806
+    },
+    "model_calls_missing_usage_by_field": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0
+    },
+    "usage_complete": true,
+    "note": "Counts are observed dispatch records, not billing totals. Usage is summed only when reported; no cost or missing tokens are inferred."
+  },
+  "elapsed_ms": 12469.762,
+  "automatic_citation_integrity": {
+    "status": "passed",
+    "checked_supports": 5,
+    "failed_supports": 0,
+    "meaning": "Exact quote/source integrity only; not entailment, accuracy, or human validation."
+  },
+  "scores": {
+    "identity_preserved": true,
+    "persisted_handoff": true,
+    "independent_review_completed": true,
+    "min_findings_met": true,
+    "min_next_steps_met": true,
+    "required_tools_met": true,
+    "quoted_anchor_recall": 1.0,
+    "anchors_checked": 1,
+    "anchors_covered": 1,
+    "contract_passed": true
+  },
+  "human_review": {
+    "status": "pending",
+    "accuracy": null,
+    "relevance": null,
+    "citation_entailment": null,
+    "rubric": [
+      "Ground each factual observation in the supplied source and preserve its scope.",
+      "Separate a proposed diagnostic or change from a verified fix or test result.",
+      "Describe missing information needed to decide the user question."
+    ],
+    "notes": ""
+  },
+  "workspace": ".cache/use-case-evals/20261030T222346Z-3661804e/WF-35",
+  "saved_use_case_id": "test_planning",
+  "saved_use_case_version": 1,
+  "trace": {
+    "name": "engineering_workflow_evaluation",
+    "case_id": "WF-35",
+    "metadata": {
+      "use_case_id": "test_planning",
+      "input_sha256": "fcc58e69b2805f9fcd8e8d7bdb638d7fc21bf188c7670fab8189cdcd65a9e496",
+      "reviewer_prompt_version": "calibrated",
+      "remote_tracing": false
+    },
+    "children": [
+      {
+        "phase": "configuration",
+        "name": "evidence_review_prompt",
+        "status": "selected",
+        "event_id": 1,
+        "created_at": "2026-10-30T22:25:20.641604+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "investigation",
+        "status": "started",
+        "revision": 0,
+        "event_id": 2,
+        "created_at": "2026-10-30T22:25:20.645294+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "ec337a4399924824bfbfda5a3cfc31cd",
+        "event_id": 3,
+        "created_at": "2026-10-30T22:25:20.674240+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "ec337a4399924824bfbfda5a3cfc31cd",
+        "started_at": "2026-10-30T22:25:20.674511+00:00",
+        "usage": {
+          "input_tokens": 4985,
+          "output_tokens": 141,
+          "total_tokens": 5126
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 910.86,
+        "event_id": 4,
+        "created_at": "2026-10-30T22:25:21.585265+00:00"
+      },
+      {
+        "phase": "tool",
+        "name": "read_case_evidence",
+        "status": "started",
+        "call_id": "fd984c20dbd048fbaec755d0e9eb390a",
+        "event_id": 5,
+        "created_at": "2026-10-30T22:25:21.587124+00:00"
+      },
+      {
+        "phase": "tool_result",
+        "name": "read_case_evidence",
+        "status": "completed",
+        "call_id": "fd984c20dbd048fbaec755d0e9eb390a",
+        "started_at": "2026-10-30T22:25:21.587463+00:00",
+        "latency_ms": 1.56,
+        "event_id": 6,
+        "created_at": "2026-10-30T22:25:21.588559+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "investigator",
+        "status": "started",
+        "call_id": "870e485e7fb64fac9d7966a92e6505e9",
+        "event_id": 7,
+        "created_at": "2026-10-30T22:25:21.590236+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "investigator",
+        "status": "completed",
+        "call_id": "870e485e7fb64fac9d7966a92e6505e9",
+        "started_at": "2026-10-30T22:25:21.590579+00:00",
+        "usage": {
+          "input_tokens": 5591,
+          "output_tokens": 1436,
+          "total_tokens": 7027
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 6097.57,
+        "event_id": 8,
+        "created_at": "2026-10-30T22:25:27.688593+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_validation",
+        "status": "completed",
+        "findings": 5,
+        "event_id": 9,
+        "created_at": "2026-10-30T22:25:27.697199+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "started",
+        "event_id": 10,
+        "created_at": "2026-10-30T22:25:27.698632+00:00"
+      },
+      {
+        "phase": "model",
+        "name": "evidence_reviewer",
+        "status": "started",
+        "call_id": "190cc21fd10e46b2a048cdf562e2aa6f",
+        "event_id": 11,
+        "created_at": "2026-10-30T22:25:27.709612+00:00"
+      },
+      {
+        "phase": "model_result",
+        "name": "evidence_reviewer",
+        "status": "completed",
+        "call_id": "190cc21fd10e46b2a048cdf562e2aa6f",
+        "started_at": "2026-10-30T22:25:27.710074+00:00",
+        "usage": {
+          "input_tokens": 2347,
+          "output_tokens": 1306,
+          "total_tokens": 3653
+        },
+        "usage_reported": true,
+        "finish_reason": "tool_calls",
+        "returned_model": "accounts/fireworks/models/gpt-oss-120b",
+        "tool_call_count": 1,
+        "invalid_tool_call_count": 0,
+        "latency_ms": 5315.56,
+        "event_id": 12,
+        "created_at": "2026-10-30T22:25:33.026346+00:00"
+      },
+      {
+        "phase": "stage",
+        "name": "evidence_review",
+        "status": "completed",
+        "retained_findings": 5,
+        "removed_findings": 0,
+        "removed_next_steps": 0,
+        "event_id": 13,
+        "created_at": "2026-10-30T22:25:33.034090+00:00"
+      }
+    ]
+  }
+}
