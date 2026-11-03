@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Engineering Issue Desk — Week 4 architecture</title>
+  <desc id="desc">An engineer uses Streamlit to start a LangGraph and Deep Agents investigation. A separate Fireworks evidence reviewer filters the cited draft before human review. Week 4 tests that same reviewer on 40 fixed cases across five prompt variants, then scores its verdicts against separate reference labels and saves results and local traces. Reference labels are AI-proposed and await human review.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#607184"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #17283b; }
+      .title { font-size: 42px; font-weight: 700; }
+      .subtitle { font-size: 24px; fill: #607184; }
+      .label { font-size: 18px; font-weight: 700; letter-spacing: 2px; fill: #607184; }
+      .heading { font-size: 27px; font-weight: 700; }
+      .body { font-size: 22px; fill: #506176; }
+      .note { font-size: 20px; fill: #607184; }
+      .box { fill: #fff; stroke: #d4dce5; stroke-width: 2; }
+      .focus { fill: #eaf7f1; stroke: #21805d; stroke-width: 2.5; }
+      .flow { fill: none; stroke: #607184; stroke-width: 2.5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="#fff"/>
+  <text x="64" y="80" class="title">Engineering Issue Desk</text>
+  <text x="64" y="120" class="subtitle">Week 4 · Evaluate the evidence reviewer</text>
+
+  <text x="64" y="178" class="label">APPLICATION FLOW</text>
+  <rect x="64" y="202" width="330" height="150" rx="16" class="box"/>
+  <text x="90" y="245" class="heading">Engineer</text>
+  <text x="90" y="285" class="body">Streamlit</text>
+  <text x="90" y="318" class="body">Issue + supplied evidence</text>
+
+  <rect x="444" y="202" width="330" height="150" rx="16" class="box"/>
+  <text x="470" y="245" class="heading">Investigator</text>
+  <text x="470" y="285" class="body">LangGraph + Deep Agents</text>
+  <text x="470" y="318" class="body">Research → cited draft</text>
+
+  <rect x="824" y="202" width="330" height="150" rx="16" class="focus"/>
+  <text x="850" y="245" class="heading">Evidence reviewer</text>
+  <text x="850" y="285" class="body">Fireworks model</text>
+  <text x="850" y="318" class="body">Filter unsupported items</text>
+
+  <rect x="1204" y="202" width="330" height="150" rx="16" class="box"/>
+  <text x="1230" y="245" class="heading">Human review</text>
+  <text x="1230" y="285" class="body">Inspect report + evidence</text>
+  <text x="1230" y="318" class="body">Approve / revise / reject</text>
+
+  <path d="M396 277H437" class="flow"/>
+  <path d="M776 277H817" class="flow"/>
+  <path d="M1156 277H1197" class="flow"/>
+
+  <path d="M989 354V406H800V483" fill="none" stroke="#21805d" stroke-width="2.5" stroke-dasharray="7 7"/>
+  <text x="1010" y="402" class="note">Same review component</text>
+
+  <text x="64" y="461" class="label">WEEK 4 EVALUATION</text>
+  <rect x="64" y="483" width="1470" height="254" rx="20" fill="#f5f7fa"/>
+  <path d="M800 483V513" fill="none" stroke="#21805d" stroke-width="2.5" stroke-dasharray="7 7"/>
+  <rect x="96" y="515" width="350" height="150" rx="16" class="box"/>
+  <text x="122" y="558" class="heading">Frozen inputs</text>
+  <text x="122" y="598" class="body">40 cases + source quotes</text>
+  <text x="122" y="631" class="body">5 prompt variants</text>
+
+  <rect x="600" y="515" width="400" height="150" rx="16" class="focus"/>
+  <text x="626" y="558" class="heading">Reviewer runner</text>
+  <text x="626" y="598" class="body">Actual Fireworks reviewer call</text>
+  <text x="626" y="631" class="body">Verdicts + reasons per item</text>
+
+  <rect x="1136" y="515" width="366" height="150" rx="16" class="box"/>
+  <text x="1162" y="558" class="heading">Score + compare</text>
+  <text x="1162" y="598" class="body">Agreement, latency, tokens</text>
+  <text x="1162" y="631" class="body">Workbook + Evaluation tab</text>
+
+  <path d="M448 590H590" class="flow"/>
+  <path d="M1002 590H1126" class="flow"/>
+  <text x="122" y="707" class="note">Reference labels → scoring only; kept out of model inputs</text>
+
+  <text x="64" y="800" class="body">Local records preserve case IDs, prompt versions, verdicts, model usage, and timing.</text>
+  <text x="64" y="842" class="note">Labels are AI-proposed and await human review. Production keeps the baseline prompt.</text>
+</svg>

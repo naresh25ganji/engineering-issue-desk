@@ -21,6 +21,7 @@ _DOCUMENTS = {
 _DIAGRAMS = {
     'System architecture': 'week3-system-architecture.svg',
     'Investigation sequence': 'week3-investigation-sequence.svg',
+    'Week 4 architecture': 'week4-architecture.svg',
 }
 _LOCAL_LINK = re.compile(r'(!?)\[([^\]\n]+)\]\((?!https?://|#)([^)\n]+)\)')
 

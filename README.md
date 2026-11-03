@@ -35,6 +35,8 @@ uv run python -m evaluation.integrity --output-dir evaluation/integrity-new
 
 ## Week 4 reviewer evaluation
 
+Submission visuals: [minimal architecture diagram](docs/week4-architecture.png) ([editable SVG](docs/week4-architecture.svg)) and [two-minute video script](docs/WEEK4_DEMO.md).
+
 Week 4 evaluates the **independent evidence-review component** of the Week 3 agent on 40 fixed repository-derived cases, with 119 finding/proposal labels. It measures exact case verdict agreement, rejection of unsupported items, retention of supported items, p95 latency, and reported tokens. It does not measure the entire investigator. The reference labels are AI-proposed and still need human review; their agreement scores are development diagnostics.
 
 Read the [evaluation framework and results](docs/WEEK4_EVALUATION.md), [frozen case dataset](evaluation/week4-cases.json), and [registered improvement hypotheses](evaluation/week4-hypotheses.json). The app's **Evaluation** tab displays run metrics, actual case evidence/verdicts, and paired fixes/regressions. The **Project guide** includes the Week 4 evaluation and demo guide. The runner makes real Fireworks calls only with `--live`, keeps expected labels out of model requests, saves each completed case for recovery, and exports readable HTML, JSON, scored CSV, and a separate human-label review CSV. LangSmith recording is disabled for this spreadsheet track.
