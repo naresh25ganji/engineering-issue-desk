@@ -14,6 +14,7 @@ _DOCUMENTS = {
     'Validation': 'VALIDATION.md',
     'Week 3 submission': 'WEEK3_SUBMISSION.md',
     'Week 4 evaluation': 'WEEK4_EVALUATION.md',
+    'Week 4 submission': 'WEEK4_SUBMISSION.md',
     'Week 4 demo guide': 'WEEK4_DEMO.md',
     'Engineering workflows': 'ENGINEERING_WORKFLOWS.md',
     'Submission readiness': 'SUBMISSION_READINESS.md',

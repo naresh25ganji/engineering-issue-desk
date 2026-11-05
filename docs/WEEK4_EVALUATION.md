@@ -1,5 +1,7 @@
 # Week 4 evaluation of the Engineering Issue Desk
 
+The [submission handoff](WEEK4_SUBMISSION.md) links the final Word write-up, native Google Doc, workbook, and recorded demo in Drive.
+
 This project evaluates the independent evidence reviewer used by the Week 3 Deep Investigation agent. The reviewer decides which cited findings and proposed next steps reach a human. Unsupported advice can waste an engineer's time; rejecting supported observations can make the investigation unhelpful. This is a component evaluation, and does not measure the full investigator's research, delegation, or end-to-end usefulness.
 
 ## Evaluation framework

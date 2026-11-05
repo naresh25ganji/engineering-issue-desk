@@ -35,6 +35,8 @@ uv run python -m evaluation.integrity --output-dir evaluation/integrity-new
 
 ## Week 4 reviewer evaluation
 
+[Final submission documents and Drive links](docs/WEEK4_SUBMISSION.md) include the Word write-up, native Google Doc, workbook, and recorded demo.
+
 Submission visuals: [minimal architecture diagram](docs/week4-architecture.png) ([editable SVG](docs/week4-architecture.svg)) and [two-minute video script](docs/WEEK4_DEMO.md).
 
 Week 4 evaluates the **independent evidence-review component** of the Week 3 agent on 40 fixed repository-derived cases, with 119 finding/proposal labels. It measures exact case verdict agreement, rejection of unsupported items, retention of supported items, p95 latency, and reported tokens. It does not measure the entire investigator. The reference labels are AI-proposed and still need human review; their agreement scores are development diagnostics.
