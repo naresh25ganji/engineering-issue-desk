@@ -1,5 +1,7 @@
 # Engineering Issue Desk
 
+Week 5 implementation: [Qwen3 support ticket router lab](week5-ticket-router/README.md), with a Colab LoRA notebook, frozen dataset, CPU baselines, and matched evaluation.
+
 Investigate engineering reports, triage supplied incident logs, review changes, and plan regression tests with exact source evidence and saved human review. The built-in knowledge base covers a bounded snapshot of Streamlit documentation, release notes, contribution guidance, and public issue reports. Supplied code, logs, and diffs provide case-specific context; source authority and version scope stay visible.
 
 This independent course project does not establish a private application's root cause, prove a duplicate, promise a fix, inspect arbitrary host files, or execute supplied programs. Week 3 adds a Deep Agents investigator with Fireworks, Keenable, saved cases, and resumable human review. The investigator cannot publish; an approved report can use a separate human-confirmed PR summary workflow.

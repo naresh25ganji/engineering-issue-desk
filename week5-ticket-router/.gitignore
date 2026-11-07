@@ -1,0 +1,11 @@
+.venv/
+.cache/
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.env
+outputs/
+vendor/
+models/
+*.zip
+
