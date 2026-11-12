@@ -32,8 +32,10 @@ def build_archive(root: Path, output: Path) -> dict:
             continue
         workbook = (relative.parts[:2] == ('outputs', 'week4') and len(relative.parts) == 3
                     and relative.suffix.lower() == '.xlsx')
+        week6_artifact = (relative.parts[:2] == ('outputs', 'week6')
+                          and relative.suffix.lower() in {'.docx', '.png', '.html', '.json', '.csv', '.txt'})
         allowed = ((len(relative.parts) == 1 and relative.name in ROOT_FILES)
-                   or relative.parts[0] in SOURCE_DIRECTORIES or workbook)
+                   or relative.parts[0] in SOURCE_DIRECTORIES or workbook or week6_artifact)
         if not allowed or not path.is_file():
             continue
         if path.name.startswith('.env') and path.name != '.env.example':

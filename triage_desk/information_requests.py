@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 
 
-POLICY_VERSION = 1
+POLICY_VERSION = 2
 SAFE_CONFIGURATION_REQUEST = (
     'Confirm whether the required credential is configured (yes/no); provide the provider name, '
     'configuration variable names, an endpoint without credentials or secret query parameters, '
@@ -24,9 +24,13 @@ _CREDENTIAL = (
 )
 _CREDENTIAL_REFERENCE = re.compile(r'\b' + _CREDENTIAL + r'\b', re.I)
 _DISCLOSURE_START = re.compile(
-    r'^\s*(?:(?:please|kindly)\s+)?(?:provide|share|paste|send|show|reveal|print|dump|supply|'
-    r'disclose|include|request|need|missing|required)\b|'
-    r'^\s*(?:can|could|would)\s+you\s+(?:provide|share|paste|send|show|reveal|print|dump|supply|disclose)\b', re.I)
+    r'(?:^|[,;:]\s*)\s*(?:(?:please|kindly)\s+)?(?:provide|share|paste|send|show|reveal|print|dump|supply|'
+    r'disclose|include|request|need|missing|required|upload|attach|return|give(?:\s+me)?|tell\s+me)\b|'
+    r'^\s*(?:can|could|would)\s+you\s+(?:provide|share|paste|send|show|reveal|print|dump|supply|disclose|'
+    r'upload|attach|return|give(?:\s+me)?|tell\s+me)\b', re.I)
+_EXECUTION_START = re.compile(r'^\s*(?:(?:please|kindly)\s+)?(?:run|execute|evaluate)\b', re.I)
+_SECRET_FILE = re.compile(
+    r'(?<![\w.])(?:\.env(?:\.(?:local|development|production|test|staging))?|secrets\.toml)(?![\w.])', re.I)
 _VALUE_QUESTION_START = re.compile(r'^\s*(?:what|which)\s+(?:is|are)\b', re.I)
 _OUTPUT_START = re.compile(
     r'^\s*(?:the\s+)?(?:(?:actual|specific|full|raw|exact|current|runtime)\s+)*(?:values?|contents?|outputs?|results?)\b', re.I)
@@ -71,10 +75,18 @@ def _sanitize_request(text: str) -> str:
     presence_or_names = bool(_PRESENCE.search(body) or _NAMES.search(body))
     credential_output = bool(_VALUE_WORDS.search(body)) and bool(
         _KEY_HELPER.search(body) or (_CONFIG_HELPER.search(body) and _KEY_RETURN.search(body)))
+    if _EXECUTION_START.search(body) and credential_output:
+        request_shape = True
+    # Diagnostic files may hold credentials even when the request never names
+    # an API key. Preserve explicitly redacted files and credential-free examples.
+    secret_file_request = bool(_SECRET_FILE.search(body)) and disclosure_request
+    redacted_file = (secret_file_request and bool(_EXISTING_REDACTION.search(body))
+                     and not raw_values and not explicit_values)
     # Source inspection can describe a credential-bearing return statement
     # without requesting its runtime value. Preserve that inspection, with a
     # redaction instruction. Explicit raw-value disclosure still takes priority.
-    unsafe = (request_shape and (credential or credential_output)
+    unsafe = (request_shape and (credential or credential_output or secret_file_request)
+              and not redacted_file
               and (not helper_source or raw_values or explicit_values)
               and (not presence_or_names or raw_values or explicit_values))
     if unsafe:

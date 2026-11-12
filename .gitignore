@@ -11,3 +11,5 @@ __pycache__/
 !evaluation/fixtures/workflows/*.log
 .DS_Store
 artifacts/
+outputs/week6/*.webm
+outputs/week6/*.mp4

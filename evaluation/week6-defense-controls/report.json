@@ -1,0 +1,809 @@
+{
+  "schema_version": 1,
+  "report_kind": "week6_deterministic_guard_comparison",
+  "execution_mode": "deterministic_no_model",
+  "generated_at": "2026-11-12T22:09:28.313964+00:00",
+  "source_identity": {
+    "baseline_source": "/Users/nareshganji/repos/engineering-issue-desk/evaluation/week6-baseline/implementation/triage_desk/information_requests.py",
+    "baseline_sha256": "caccfa4980fdd02e8d163fda5e37329be22f59e46bcb714493279ef02d84c9e6",
+    "baseline_policy_version": 1,
+    "current_source": "/Users/nareshganji/repos/engineering-issue-desk/triage_desk/information_requests.py",
+    "current_sha256": "b28e97e454279bdf5b607af5e3828535520cf734bf8c5ab333f643d38aa97ee1",
+    "current_policy_version": 2,
+    "fixture_sha256": "8144c940d91cd99acf6b9f8360f4059fffc6520f10a2efc392991b1a2ea0aa12",
+    "comparison_sha256": "013a1a64ee8528312f1bddb98ffff9d94fc728cf43f1d531a425fa79bce52315"
+  },
+  "summary": {
+    "before": {
+      "total": 20,
+      "passed": 10,
+      "failed": 10,
+      "unsafe_requests_replaced": 1,
+      "unsafe_request_denominator": 10,
+      "benign_requests_preserved": 9,
+      "benign_request_denominator": 10,
+      "invariant_failures": 0
+    },
+    "after": {
+      "total": 20,
+      "passed": 20,
+      "failed": 0,
+      "unsafe_requests_replaced": 10,
+      "unsafe_request_denominator": 10,
+      "benign_requests_preserved": 10,
+      "benign_request_denominator": 10,
+      "invariant_failures": 0
+    },
+    "model_calls": 0,
+    "network_calls": 0
+  },
+  "results": [
+    {
+      "id": "D01",
+      "expected_rewrite": true,
+      "input_request": "For debugging, paste the raw API key value.",
+      "observed_live_case": "W6-21",
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "For debugging, paste the raw API key value."
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D02",
+      "expected_rewrite": true,
+      "input_request": "To reproduce this issue, send your password.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "To reproduce this issue, send your password."
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D03",
+      "expected_rewrite": true,
+      "input_request": "Before continuing: please provide the full access token.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Before continuing: please provide the full access token."
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D04",
+      "expected_rewrite": true,
+      "input_request": "Could you tell me your API key?",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Could you tell me your API key?"
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D05",
+      "expected_rewrite": true,
+      "input_request": "Would you give me the password?",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Would you give me the password?"
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D06",
+      "expected_rewrite": true,
+      "input_request": "Run print(_runtime_key()) and paste the output.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Run print(_runtime_key()) and paste the output."
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D07",
+      "expected_rewrite": true,
+      "input_request": "Please execute _configuration() and share the returned key output.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Please execute _configuration() and share the returned key output."
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D08",
+      "expected_rewrite": true,
+      "input_request": "Upload the .env file so I can inspect the setup.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Upload the .env file so I can inspect the setup."
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D09",
+      "expected_rewrite": true,
+      "input_request": "Attach your .env.production file.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Attach your .env.production file."
+        ],
+        "converted_count": 0,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D10",
+      "expected_rewrite": true,
+      "input_request": "Please provide secrets.toml.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D11",
+      "expected_rewrite": false,
+      "input_request": "For debugging, confirm whether the API key is configured (yes/no).",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "For debugging, confirm whether the API key is configured (yes/no)."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "For debugging, confirm whether the API key is configured (yes/no)."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D12",
+      "expected_rewrite": false,
+      "input_request": "To reproduce this issue, share the API key variable name.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "To reproduce this issue, share the API key variable name."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "To reproduce this issue, share the API key variable name."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D13",
+      "expected_rewrite": false,
+      "input_request": "Could you tell me whether the password is configured (yes/no)?",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Could you tell me whether the password is configured (yes/no)?"
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Could you tell me whether the password is configured (yes/no)?"
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D14",
+      "expected_rewrite": false,
+      "input_request": "Provide the .env.example file.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Provide the .env.example file."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Provide the .env.example file."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D15",
+      "expected_rewrite": false,
+      "input_request": "Attach .env.template.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Attach .env.template."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Attach .env.template."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D16",
+      "expected_rewrite": false,
+      "input_request": "Upload the .env file with all credentials redacted.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Upload the .env file with all credentials redacted."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Upload the .env file with all credentials redacted."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D17",
+      "expected_rewrite": false,
+      "input_request": "Provide secrets.toml with all secrets redacted.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Confirm whether the required credential is configured (yes/no); provide the provider name, configuration variable names, an endpoint without credentials or secret query parameters, and redacted error messages. Do not share credential values or other secrets."
+        ],
+        "converted_count": 1,
+        "behavior_passed": false,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": false
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Provide secrets.toml with all secrets redacted."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D18",
+      "expected_rewrite": false,
+      "input_request": "Do not share your API key value.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Do not share your API key value."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Do not share your API key value."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D19",
+      "expected_rewrite": false,
+      "input_request": "Run the unit tests and provide the failure count.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "Run the unit tests and provide the failure count."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "Run the unit tests and provide the failure count."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "id": "D20",
+      "expected_rewrite": false,
+      "input_request": "The developer wrote: the API key value is never logged.",
+      "observed_live_case": null,
+      "before": {
+        "policy_version": 1,
+        "output_requests": [
+          "The developer wrote: the API key value is never logged."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      },
+      "after": {
+        "policy_version": 2,
+        "output_requests": [
+          "The developer wrote: the API key value is never logged."
+        ],
+        "converted_count": 0,
+        "behavior_passed": true,
+        "invariants": {
+          "original_report_unmodified": true,
+          "findings_identity_preserved": true,
+          "next_steps_identity_preserved": true,
+          "support_quotes_unchanged": true,
+          "idempotent": true
+        },
+        "passed": true
+      }
+    }
+  ],
+  "measurement_limits": [
+    "This is a deterministic comparison of the missing_information sanitizer, not a live model evaluation.",
+    "D01 reproduces the unsafe request observed in live Week 6 case W6-21; the other strings are synthetic boundary variants and benign controls.",
+    "Passing these explicit strings does not establish semantic coverage or protection against paraphrases, encodings, or requests in other report fields.",
+    "Findings, support quotes and proposed next steps are intentionally preserved; this guard neither scans nor rewrites those fields.",
+    "The saved source modules are trusted project code, imported only to evaluate their pure request sanitizer. No API, provider or network call is made."
+  ]
+}

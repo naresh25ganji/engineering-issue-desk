@@ -84,6 +84,10 @@ def report_summaries(value: dict, prefix: str = ''):
 
 def render_evaluation_summary(document: dict):
     """Display measured agent handoffs or the existing retrieval diagnostics."""
+    if document.get('report_kind') == 'week6_redteam':
+        from triage_desk.week6_ui import render_week6_evaluation
+        render_week6_evaluation(document)
+        return
     if document.get('report_kind') in {'use_case_workflow', 'use_case_comparison', 'evidence_integrity'}:
         from triage_desk.workflow_evaluation_ui import render_engineering_evaluation
         render_engineering_evaluation(document)

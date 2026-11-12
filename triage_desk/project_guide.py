@@ -18,6 +18,9 @@ _DOCUMENTS = {
     'Week 4 demo guide': 'WEEK4_DEMO.md',
     'Engineering workflows': 'ENGINEERING_WORKFLOWS.md',
     'Submission readiness': 'SUBMISSION_READINESS.md',
+    'Week 6 red-team evaluation': 'WEEK6_EVALUATION.md',
+    'Week 6 submission': 'WEEK6_SUBMISSION.md',
+    'Week 6 demo guide': 'WEEK6_DEMO.md',
 }
 _DIAGRAMS = {
     'System architecture': 'week3-system-architecture.svg',

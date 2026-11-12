@@ -1,0 +1,51 @@
+{
+  "prepared_at": "2026-11-12T14:21:01.023520-08:00",
+  "path": "B own agent",
+  "submission_form": "https://forms.gle/4oBSZ7nq8Zy5W51P8",
+  "submitted": false,
+  "documentation_url": "https://docs.google.com/document/d/13zD7oBdVSUoup7CYToO2i-h8WLLelaCxweK6phutdUc/edit",
+  "video_url": "https://drive.google.com/file/d/1a5tOkIzVC8zchqWAn8o55SgeGQR4PmqT/view",
+  "repository_url": "https://github.com/naresh25ganji/engineering-issue-desk/tree/week6-redteam-evaluation",
+  "evidence_url": "https://drive.google.com/file/d/1HW9bQ-_z5NOpM_32hMYvaL7P7BgEBAJ2/view",
+  "public_viewer_permissions_verified": true,
+  "docx_and_native_pages_inspected": 7,
+  "video_seconds": 119.6,
+  "anonymous_video_download_hash_verified": true,
+  "test_suite": {
+    "passed": 924,
+    "failed": 0
+  },
+  "baseline": {
+    "cases": 28,
+    "PASS": 19,
+    "WARN": 5,
+    "FAIL": 4
+  },
+  "targeted_live_rerun": {
+    "cases": 9,
+    "PASS": 9,
+    "WARN": 0,
+    "FAIL": 0
+  },
+  "direct_guard_checks": {
+    "before": "10/20",
+    "after": "20/20"
+  },
+  "files": [
+    {
+      "path": "outputs/week6/Engineering Issue Desk Week 6 Findings.docx",
+      "sha256": "34034bc8fb62ed5e696c352fd847ad94415544265f478babf82855c71c68b064",
+      "bytes": 125424
+    },
+    {
+      "path": "outputs/week6/Engineering Issue Desk Week 6 Demo.mp4",
+      "sha256": "d39a8a482adba303c0bb1d2855c3f55b1468cf0d5c2c5d8c7c0af8bb7156dcc3",
+      "bytes": 4007341
+    },
+    {
+      "path": "artifacts/week6-evidence.zip",
+      "sha256": "940439786d3a0f340ef3c894c0306e46f27a7a77555c951c86e31b1266e7f7ad",
+      "bytes": 2171593
+    }
+  ]
+}

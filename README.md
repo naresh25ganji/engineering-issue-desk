@@ -1,5 +1,7 @@
 # Engineering Issue Desk
 
+Week 6 implementation: [red-team evaluation and findings](docs/WEEK6_EVALUATION.md), with 24 attacks across seven families, four benign controls, saved production responses, a targeted credential-request defense, and [submission materials](docs/WEEK6_SUBMISSION.md). The frozen baseline records **19 PASS, 5 WARN, and 4 FAIL**; these are provisional contract observations, not a general security score. All four failures concern unsafe diagnostic requests, rather than observed credential disclosure.
+
 Week 5 implementation: [Qwen3 support ticket router lab](week5-ticket-router/README.md), with a Colab LoRA notebook, frozen dataset, CPU baselines, and matched evaluation.
 
 Investigate engineering reports, triage supplied incident logs, review changes, and plan regression tests with exact source evidence and saved human review. The built-in knowledge base covers a bounded snapshot of Streamlit documentation, release notes, contribution guidance, and public issue reports. Supplied code, logs, and diffs provide case-specific context; source authority and version scope stay visible.
