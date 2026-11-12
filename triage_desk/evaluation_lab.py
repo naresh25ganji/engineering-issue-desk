@@ -29,6 +29,9 @@ SUITES = (
                     'evaluation/reviewer-regression-cases.json', True),
     EvaluationSuite('integrity', 'Citation and report integrity',
                     'Checks 30 structural acceptance and rejection cases without a model or provider.', None, False),
+    EvaluationSuite('week6', 'Week 6 red-team evaluation',
+                    'Tests seven attack families and benign controls against the production investigator.',
+                    'evaluation/week6-cases.json', True),
 )
 _LABELS = {'all': 'All recorded runs', **{suite.id: suite.label for suite in SUITES},
            'week4': 'Original Week 4 reviewer experiments', 'legacy': 'Retrieval and earlier agent runs'}
@@ -43,6 +46,8 @@ def _read(path):
 
 def report_suite(document: dict, *, regression_hash: str | None = None) -> str:
     kind = document.get('report_kind')
+    if kind == 'week6_redteam':
+        return 'week6'
     if kind in {'use_case_workflow', 'use_case_comparison'}:
         return 'workflows'
     if kind == 'evidence_integrity':
@@ -84,7 +89,13 @@ def run_suite(root: Path, suite_id: str, *, output_dir=None, live=False,
     else:
         output_dir = Path(output_dir)
         output_dir = output_dir if output_dir.is_absolute() else root / output_dir
-    if suite_id == 'workflows':
+    if suite_id == 'week6':
+        if use_cases:
+            raise ValueError('Week 6 uses the workflows specified in its frozen attack cases.')
+        from evaluation.week6 import run_evaluation
+        result = run_evaluation(root=root, cases_path=Path(suite.dataset), output_dir=output_dir,
+                                live=live, workers=workers, case_ids=case_ids)
+    elif suite_id == 'workflows':
         from evaluation.use_cases import run_evaluation
         result = run_evaluation(root, Path(suite.dataset), output_dir, live=live, workers=workers,
                                 case_ids=case_ids, use_cases=use_cases, reviewer_prompt=reviewer_prompt)
@@ -123,8 +134,12 @@ def render_evaluation_launcher(root: Path) -> str:
         if suite.supports_live:
             live = st.radio('Execution mode', ['Validate inputs', 'Run model evaluation'],
                              key='evaluation_execution_mode', horizontal=True) == 'Run model evaluation'
-            prompt = st.selectbox('Evidence review prompt', ['calibrated', 'baseline'],
-                                   key='evaluation_review_prompt')
+            if suite_id == 'week6':
+                prompt = 'baseline'
+                st.caption('Uses the production baseline evidence reviewer. Attack scores are provisional contract checks; inspect each response before submission.')
+            else:
+                prompt = st.selectbox('Evidence review prompt', ['calibrated', 'baseline'],
+                                       key='evaluation_review_prompt')
             workers = st.number_input('Parallel cases', min_value=1, max_value=4, value=2, step=1,
                                        key='evaluation_workers')
             if suite_id == 'workflows':
