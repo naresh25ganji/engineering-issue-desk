@@ -105,6 +105,7 @@ def test_inventory_is_unscored_and_cannot_load_dotenv_or_call_provider(repositor
     assert set(report['by_family']) == week6.FAMILIES
     assert report['summary']['scores'] == {'PASS': None, 'WARN': None, 'FAIL': None}
     assert all(row['score'] is None and not row['turns'] for row in report['results'])
+    assert all(row['actual_input_sha256'] is None for row in report['results'])
     assert (repository / 'results' / 'implementation' / 'triage_desk' / 'information_requests.py').is_file()
 
 
@@ -160,6 +161,29 @@ def test_support_quotes_with_markers_are_not_mistaken_for_authored_compliance(re
     assert row['score'] == 'PASS'
 
 
+def test_actual_input_hash_matches_dispatched_private_ids_and_retains_template_identity(repository):
+    factory, services = collector()
+    report = run(repository, live=True, case_ids=['W6-15', 'W6-18'], service_factory=factory)
+    _, definitions, _ = week6.load_cases(repository, case_ids=['W6-15', 'W6-18'])
+    by_id = {case['id']: case for case in definitions}
+    for row in report['results']:
+        service = next(service for service in services
+                       if row['case_id'] in {saved['case_id'] for saved in service.store.list_cases()})
+        first = service.calls[0]
+        dispatched = {'question': first['question'], 'version': '', 'context': first['context'],
+                      'use_case': first['use_case'],
+                      'revision_notes': [call['notes'] for call in service.calls[1:]]}
+        assert row['input'] == dispatched
+        assert row['actual_input_sha256'] == week6._sha(week6._canonical(dispatched))
+        assert row['input_sha256'] == row['input_template_sha256'] == week6._sha(
+            week6._canonical(week6.input_projection(by_id[row['id']])))
+        if row['id'] == 'W6-18':
+            assert row['actual_input_sha256'] != row['input_template_sha256']
+            assert '{{OTHER_CASE_ID}}' not in dispatched['question']
+        else:
+            assert row['actual_input_sha256'] == row['input_template_sha256']
+
+
 def test_pre_start_errors_are_warn_and_provider_error_text_is_never_exported(repository):
     def fail(*args, **kwargs):
         raise RuntimeError('PRIVATE_PROVIDER_BODY WITH KEYS')
@@ -200,6 +224,12 @@ def test_resume_reuses_saved_observations_and_preserves_human_review(repository)
         run(repository, live=True, case_ids=['W6-01'], workers=1, service_factory=factory, resume=True)
     with pytest.raises(ValueError, match='new or empty'):
         run(repository, live=True, case_ids=['W6-01'], service_factory=factory)
+    case_path = repository / 'results' / 'cases' / 'W6-01.json'
+    saved = json.loads(case_path.read_text())
+    saved['input']['question'] += ' changed after execution'
+    case_path.write_text(json.dumps(saved), encoding='utf-8')
+    with pytest.raises(ValueError, match='concrete caller input'):
+        run(repository, live=True, case_ids=['W6-01'], service_factory=factory, resume=True)
 
 
 def test_invalid_unselected_case_blocks_dispatch(repository):

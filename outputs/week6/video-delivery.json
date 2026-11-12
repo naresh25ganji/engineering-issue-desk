@@ -1,0 +1,20 @@
+{
+  "duration_seconds": 119.6,
+  "resolution": "1440x1000",
+  "capture_format": "VP8 WebM",
+  "delivery_format": "H264 MP4 yuv420p faststart",
+  "audio": "none; explanatory captions are burned into actual browser capture",
+  "files": [
+    {
+      "path": "outputs/week6/Engineering Issue Desk Week 6 Demo.webm",
+      "bytes": 10888983,
+      "sha256": "eeb615b32f7bbd4992fa80c4c28ad72b631eaacce07079430db589b925c3b7b9"
+    },
+    {
+      "path": "outputs/week6/Engineering Issue Desk Week 6 Demo.mp4",
+      "bytes": 4007341,
+      "sha256": "d39a8a482adba303c0bb1d2855c3f55b1468cf0d5c2c5d8c7c0af8bb7156dcc3"
+    }
+  ],
+  "drive_url": "https://drive.google.com/file/d/1a5tOkIzVC8zchqWAn8o55SgeGQR4PmqT/view"
+}

@@ -6,7 +6,18 @@ The live submission form was inspected read-only on November 12, 2026. It adds a
 
 ## Deliverables
 
-The final run directory, results, Google Doc link, and verification status will be added here after the live evaluation. An input inventory is not a completed attack run and must not be submitted as observed results.
+The full baseline records **19 PASS, 5 WARN, and 4 FAIL** across 28 cases. The four failures are unsafe diagnostic requests, not actual credential disclosures. The targeted policy 2 rerun records **9/9 PASS**; direct sanitizer controls improve from **10/20 to 20/20**. Final repository verification passed **924 tests**.
+
+| Submission link | Prepared artifact |
+| --- | --- |
+| [Project documentation](https://docs.google.com/document/d/13zD7oBdVSUoup7CYToO2i-h8WLLelaCxweK6phutdUc/edit) | Native Google Doc with findings, controls, one complete failure transcript, and before/after screenshots |
+| [Video demo](https://drive.google.com/file/d/1a5tOkIzVC8zchqWAn8o55SgeGQR4PmqT/view) | Two-minute captioned browser recording, delivered as H264 MP4 |
+| [GitHub repository branch](https://github.com/naresh25ganji/engineering-issue-desk/tree/week6-redteam-evaluation) | Week 6 implementation, tests, frozen evidence, and reproducible builders |
+| [Complete evidence archive](https://drive.google.com/file/d/1HW9bQ-_z5NOpM_32hMYvaL7P7BgEBAJ2/view) | All recorded prompts/responses, events, source snapshots, controls, and screenshots |
+
+The Word backup is `outputs/week6/Engineering Issue Desk Week 6 Findings.docx`. The local source bundle is `artifacts/engineering-issue-desk-week6.zip`, generated with `uv run python scripts/package_submission.py --output artifacts/engineering-issue-desk-week6.zip`. The recording has readable on-screen captions and no narration track.
+
+The source DOCX and converted native Google Doc were each rendered and visually inspected on all seven pages. Native readback verified five tables, two images, the copied failure text, the recorded counts, and all three artifact links. Drive metadata confirms anyone-with-link **viewer** access for the Google Doc, video, and evidence archive, with public search discovery disabled. An anonymous video download matched the local MP4 SHA256 exactly. Drive may continue processing its streaming preview after the original file becomes downloadable.
 
 The evidence layout separates the original live findings, targeted follow-up, and deterministic control checks:
 
@@ -15,7 +26,7 @@ The evidence layout separates the original live findings, targeted follow-up, an
 | `evaluation/week6-baseline/report.html` and `report.json` | Original full live evaluation, retaining observed failures |
 | `evaluation/week6-defended/report.html` and `report.json` | Separate targeted live rerun after the credential-request control change; not a repeat of the whole suite |
 | `evaluation/week6-defense-controls/report.json` | Direct before-and-after sanitizer comparison with zero model and network calls; not live agent outcomes |
-| `outputs/week6/Engineering Issue Desk Week 6 Demo.webm` | Captioned capture of the actual application and saved evidence |
+| `outputs/week6/Engineering Issue Desk Week 6 Demo.mp4` | Captioned delivery video; original WebM capture and hash manifest are retained locally |
 | `outputs/week6/screenshots/` | Actual report and application screenshots used as evidence |
 
 Use the generated final files and their recorded counts when assessing completion. A missing artifact in this layout is not an observed result.
@@ -71,7 +82,7 @@ The recorder requires Playwright's small FFmpeg support package. If unavailable,
 
 - Confirm the Google Doc opens and the complete evidence links are accessible to the intended grader.
 - Review the findings, especially ambiguous results and any remaining human-review fields.
-- Record the required video demonstration using [the recording guide](WEEK6_DEMO.md), upload it to Drive, and verify the submitted link's access.
+- Review the completed [video demonstration](https://drive.google.com/file/d/1a5tOkIzVC8zchqWAn8o55SgeGQR4PmqT/view). The [recording guide](WEEK6_DEMO.md) and script support a fresh recording if desired.
 - Submit the document URL through the [course submission form](https://forms.gle/4oBSZ7nq8Zy5W51P8).
 
 The course form is not submitted by creating the document or evidence package.

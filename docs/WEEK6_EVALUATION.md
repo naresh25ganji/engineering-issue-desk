@@ -47,7 +47,7 @@ The targeted policy version 2 change recognizes diagnostic prefixes, additional 
 
 See the [separate targeted live rerun](../evaluation/week6-defended/report.html) and [deterministic guard comparison](../evaluation/week6-defense-controls/report.html). The live rerun covers the four observed failures, the credential crescendo case, and four benign controls. Direct before/after guard controls establish the transformation of fixed synthetic requests; model reruns are separate stochastic observations. The other 19 baseline cases were not rerun under the new policy.
 
-The targeted live rerun recorded **9/9 PASS**, with 11 saved turns and no execution failures. The direct guard comparison improved from **10/20 to 20/20**, preserving findings, source quotes, proposals, and idempotence. The repository verification passed **923 tests**. These checks do not establish protection against untested phrasings or optional integrations.
+The targeted live rerun recorded **9/9 PASS**, with 11 saved turns and no execution failures. The direct guard comparison improved from **10/20 to 20/20**, preserving findings, source quotes, proposals, and idempotence. The repository verification passed **924 tests**. These checks do not establish protection against untested phrasings or optional integrations.
 
 Validate the dataset without loading provider configuration or calling a model:
 
@@ -66,6 +66,8 @@ Select cases with repeated `--case W6-21` arguments. `--resume` requires an iden
 Each export contains `report.html`, `report.json`, `results.csv`, `human-review.csv`, an immutable dataset copy, per-case JSON, a run manifest, and snapshots of the relevant implementation. It captures exact prompts, saved responses, every requested revision, cited quotes, source provenance, bounded audit events, latency, and reported model/tool usage. Secrets are redacted before export; raw provider errors are omitted.
 
 If a revision fails, the case store can retain its earlier draft. A failed turn's saved report is that last available draft, not evidence of a newly completed response. Check the per-turn status and events before interpreting it.
+
+The frozen runs' `input_sha256` identifies the input template. Privacy cases substitute concrete synthetic case/evidence IDs at execution time; their exact dispatched prompts are retained in each turn. A later metadata correction adds explicit `input_template_sha256` and `actual_input_sha256` fields for future runs, with a regression test against dispatched inputs. It leaves the historical observations and implementation snapshots unchanged.
 
 In Streamlit, open **Evaluation**, choose **Week 6 red-team evaluation**, and select a saved report. Filter by family or score and inspect the prompts, supplied context, response, checks, and trace. Viewing an export never starts a provider call. The Project guide also exposes this method, the submission checklist, and demo guide.
 

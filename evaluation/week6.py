@@ -44,6 +44,7 @@ MEASUREMENT_LIMITS = [
     'Citation checks establish literal source identity, not entailment. Paraphrased attacks, indirect credential requests, denial wording, and fabricated explanations require manual review.',
     'Crescendo cases use the production saved-review revision API. These are three-turn draft revisions, not a general chat session; requested revisions are authorized, but approval/publication is never invoked.',
     'PII cases use a separate synthetic saved case in the same isolated store. Its canary is withheld from the attacked case inputs, and per-case evidence ownership should prevent access. No real personal data is used.',
+    'input_sha256 and input_template_sha256 identify the frozen input template. For live executions, actual_input_sha256 identifies the concrete caller input after synthetic case/evidence IDs are substituted. Older frozen runs predate the additional hash fields.',
     'The model has its configured Fireworks credential for inference, but optional web-search and GitHub credentials, repository context, and historical review memory are disabled. Public tool names are not secrets.',
     'Reports include exact caller prompts, saved rendered responses, cited quotes, bounded audit events and source provenance. Local SQLite checkpoints retain full execution state; exports omit raw provider errors and unrelated source bodies.',
     'All scheduled cases, including errors and not-run cases, remain visible. Usage counts only observed audit records; missing tokens and monetary cost are unknown. Remote tracing is disabled.',
@@ -142,8 +143,12 @@ def _default_service(workspace, *, source_root, settings, reviewer_prompt_versio
 
 
 def _base_row(case):
+    # Preserve input_sha256 as the template identity for existing consumers and
+    # resume checks. Private-fixture IDs are substituted only at execution time.
+    template_hash = _sha(_canonical(input_projection(case)))
     return {'id': case['id'], 'title': case['title'], 'family': case['family'], 'kind': case['kind'],
-        'input': input_projection(case), 'input_sha256': _sha(_canonical(input_projection(case))),
+        'input': input_projection(case), 'input_sha256': template_hash,
+        'input_template_sha256': template_hash, 'actual_input_sha256': None,
         'case_definition_sha256': _sha(_canonical(case)), 'expected_boundary': case['expected_boundary'],
         'recommended_defense': case['recommended_defense'], 'attempted': False, 'status': 'not_run',
         'case_id': None, 'turns': [], 'sources': [], 'events': [], 'error': None, 'score': None,
@@ -253,6 +258,7 @@ def _execute(case, *, root, run_id, output, settings, service_factory, reviewer_
                 inputs['question'] = inputs['question'].replace('{{OTHER_CASE_ID}}', sibling).replace('{{OTHER_EVIDENCE_ID}}', evidence)
                 row['private_fixture'] = {'case_id': sibling, 'evidence_id': evidence,
                     'canary_sha256': _sha(case['forbidden_marker'].encode()), 'canary_sent_to_attacked_case': False}
+            row['actual_input_sha256'] = _sha(_canonical(inputs))
             row['attempted'] = True
             actions = [('start', inputs['question'])] + [('revise', note) for note in inputs['revision_notes']]
             last_event_id = 0
@@ -425,6 +431,9 @@ def run_evaluation(root=ROOT, cases_path=DEFAULT_CASES, output_dir='evaluation/w
             if (row.get('id') != case['id'] or row.get('case_definition_sha256') != _sha(_canonical(case))
                     or row.get('input_sha256') != _sha(_canonical(input_projection(case)))):
                 raise ValueError('Saved case does not match the immutable case definition.')
+            if (row.get('actual_input_sha256') is not None
+                    and row['actual_input_sha256'] != _sha(_canonical(row['input']))):
+                raise ValueError('Saved concrete caller input does not match its execution hash.')
             # Preserve completed cases and their actual failures. An interrupted
             # partial case remains WARN rather than silently rerunning a prompt.
             score_case(case, row)

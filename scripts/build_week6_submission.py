@@ -100,14 +100,20 @@ def choose_examples(rows, selected_ids):
     return selected[:3]
 
 
-def _copy_text(doc, label, text):
+def _copy_text(doc, label, text, *, compact_blank_lines=False):
     p = paragraph(doc, label)
     p.runs[0].bold = True
     p.paragraph_format.keep_with_next = True
-    # Preserve every character other than Word's paragraph representation of
-    # newlines. Splitting paragraphs keeps long transcripts readable in Docs.
+    # Prompts and context retain their line structure. Response wording is
+    # complete; paragraph spacing can represent empty lines in the Word copy.
+    previous = None
     for line in text.split('\n'):
+        if compact_blank_lines and not line:
+            if previous is not None:
+                previous.paragraph_format.space_after = Pt(6)
+            continue
         p = paragraph(doc, line)
+        previous = p
         p.paragraph_format.space_after = Pt(4)
         p.paragraph_format.line_spacing = 1.04
         p.paragraph_format.widow_control = True
@@ -156,11 +162,11 @@ def defense_section(doc, baseline, args):
                   f'{_counts(repeated)}. Its scope is the selected cases below, not a full repeat '
                   'of every baseline attack. Model serving and trajectories can vary between runs; '
                   'a changed score alone does not isolate the causal effect of the control.')
-        table(doc, ['Case', 'Baseline', 'Rerun', 'Recorded rerun reason'], [
+        table(doc, ['Case', 'Baseline', 'Rerun'], [
             [row['id'], baseline_by_id.get(row['id'], {}).get('score') or 'Not run',
-             row.get('score') or 'Not scored', _short(row.get('reason'), 160)]
+             row.get('score') or 'Not scored']
             for row in repeated
-        ], [.65, .7, .7, 4.45])
+        ], [2.5, 2.0, 2.0])
         converted, untouched = [], []
         for row in repeated:
             values = [turn.get('report', {}).get('quality_review', {})
@@ -213,7 +219,7 @@ def build(args):
     attacks = [row for row in rows if row.get('kind') != 'benign']
     benign = [row for row in rows if row.get('kind') == 'benign']
     examples = choose_examples(rows, args.example)
-    doc = base_doc(TITLE, 'Naresh Ganji  |  The Gen Academy Week 6  |  Path B own agent')
+    doc = base_doc(TITLE, 'Naresh Ganji  The Gen Academy Week 6  Path B own agent')
     doc.core_properties.subject = 'Recorded red-team evaluation of Engineering Issue Desk'
     doc.styles['Title'].font.size = Pt(22)
     doc.styles['Heading 1'].font.size = Pt(16)
@@ -273,10 +279,12 @@ def build(args):
     if concerns:
         paragraph(doc, f'{len(concerns)} cases require follow-up. The complete report retains each '
                   'case rather than replacing earlier failures with a later success.')
-        for row in concerns[:6]:
-            paragraph(doc, f"{row['id']} {_label(row.get('score'))}: {_short(row.get('reason'), 430)}")
-        if len(concerns) > 6:
-            paragraph(doc, f'The full evidence report contains the remaining {len(concerns) - 6} cases requiring follow-up.')
+        failing = [row for row in concerns if row.get('score') == 'FAIL']
+        failure_groups = {}
+        for row in failing:
+            failure_groups.setdefault(row.get('reason', ''), []).append(row['id'])
+        for reason, ids in failure_groups.items():
+            paragraph(doc, ', '.join(ids) + ' FAIL: ' + _short(reason, 430))
     else:
         paragraph(doc, 'No configured failure was observed in the recorded cases. This result is limited '
                   'to this dataset, serving configuration, and run; broader semantic review and fresh '
@@ -294,12 +302,12 @@ def build(args):
                       + '. These WARNs remain inconclusive. A failed revision can retain the prior '
                       'draft; that saved text is not a newly completed answer to the failed prompt.')
     heading(doc, 'Limits of the evidence')
-    limits = report.get('measurement_limits')
-    if isinstance(limits, str):
-        paragraph(doc, limits)
-    elif isinstance(limits, list):
-        for item in limits:
-            paragraph(doc, str(item))
+    paragraph(doc, 'The exact-marker checks inspect authored findings, next steps, and missing-information '
+              'requests. They exclude literal support quotes because quoting an injected source can be '
+              'legitimate evidence. Citation checks establish literal source identity, not semantic '
+              'support. Crescendo cases use saved-review revisions rather than general chat. Privacy '
+              'probes use a separate synthetic saved case in the same isolated test store. The complete '
+              'report records the provider configuration, tool restrictions, and full measurement limits.')
     paragraph(doc, 'This is a bounded development evaluation with one recorded trajectory per case, '
               'not an estimate of a real-world attack success rate. Automated marker and structure '
               'checks can miss paraphrased leakage, false claims, or poor refusal quality. Refusal '
@@ -323,13 +331,15 @@ def build(args):
               'all saved revision turns. report.json retains machine-readable events, scores, reasons, '
               'and provenance; the CSV supports case review. The examples on the following pages are '
               'complete copied transcripts selected from those records, not reconstructed conversations.')
+    paragraph(doc, 'Response wording is copied in full. Paragraph spacing represents empty lines in '
+              'the Word document; the evidence JSON retains the original text and whitespace.')
     paragraph(doc, 'Evidence input: ' + str(args.report.relative_to(ROOT) if args.report.is_relative_to(ROOT) else args.report.name))
     paragraph(doc, 'Evidence SHA256: ' + hashlib.sha256(args.report.read_bytes()).hexdigest())
 
     defense_section(doc, report, args)
 
     for index, row in enumerate(examples, 1):
-        new_page(doc, f'Copied example {index} {row["id"]}')
+        new_page(doc, f'Copied example {index} {row["id"].replace("-", " ")}')
         paragraph(doc, f"{row.get('title', row['id'])}. Family: {_label(row.get('family'))}. "
                   f"Score: {row.get('score') or 'NOT SCORED'}.")
         supplied = row.get('input', {})
@@ -343,8 +353,8 @@ def build(args):
         paragraph(doc, 'Observed result: ' + str(row.get('reason', 'No reason recorded.')))
         contextual = context_by_id.get(row['id'])
         if contextual:
-            paragraph(doc, 'Separate AI contextual review: ' + str(contextual.get('interpretation')
-                      or contextual.get('ai_conclusion') or 'See the complete contextual review.'))
+            paragraph(doc, 'Separate AI contextual review: ' + str(contextual.get('ai_conclusion')
+                      or contextual.get('interpretation') or 'See the complete contextual review.'))
         if supplied.get('context'):
             _copy_text(doc, 'Exact supplied context', str(supplied['context']))
         for turn in row['turns']:
@@ -355,7 +365,8 @@ def build(args):
             if not completed:
                 paragraph(doc, 'This turn did not complete. Any text below is the last saved draft '
                           'retained by the application, not a newly completed response to this prompt.')
-            _copy_text(doc, response_label, turn['response'] or '[No response text was saved for this turn.]')
+            _copy_text(doc, response_label, turn['response'] or '[No response text was saved for this turn.]',
+                       compact_blank_lines=True)
             if turn.get('status'):
                 paragraph(doc, 'Turn status: ' + str(turn['status']))
         paragraph(doc, 'Recommended control: ' + str(row.get('recommended_defense', 'See the mapping.')))
@@ -370,7 +381,11 @@ def build(args):
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             picture = p.add_run().add_picture(str(filename), width=Inches(6.5))
             picture._inline.docPr.set('descr', 'Screenshot of the recorded Week 6 red-team evidence report ' + filename.name)
-            paragraph(doc, filename.stem.replace('_', ' ').replace('-', ' '))
+            captions = {
+                '10-baseline-credential-request-excerpt': 'Baseline W6-21 unsafe diagnostic request',
+                '11-defended-safe-diagnostic-excerpt': 'Targeted rerun W6-21 safe diagnostic replacement',
+            }
+            paragraph(doc, captions.get(filename.stem, filename.stem.replace('_', ' ').replace('-', ' ')))
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     doc.save(args.output)
